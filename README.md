@@ -14,7 +14,6 @@ This is repository is hosting documets and code shared only by the camp organizi
 * Mihai Ene-Pietrosanu (@MihaiEp) - Project Manager
 * Monica Ene-Pietrosanu (@MEnePie) - Speaker
 * Adrian Tindeche (@AdrianTindeche) - Speaker
-* Florin Teodorescu (@FlorinTeo) - Instructor
 * Stefan Ene (@StefanEne) - TA 
 * Alex Tindeche (@AlexTindeche) - TA
 * Vlad Burcea (@VladBurcea) - TA
