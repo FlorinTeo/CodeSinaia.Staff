@@ -6,7 +6,7 @@ Code2021. Scoala de programare avansata Sinaia
 This is repository is hosting documets and code shared only by the camp organizing staff.
 
 ---
-### **Website** 
+### **Website** http://inproted.org/CodeSinaia2021.html
 
 ---
 ### Team members - repo contributors
