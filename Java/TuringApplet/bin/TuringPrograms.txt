@@ -1,0 +1,31 @@
+{"#Microsoft#Softw<are#Is#Creep"}
+
+[loop]
+    L(#) L(#)
+    R m
+    R(#)
+    R s
+    R(#)
+    R I
+    [creep]
+        R(#)
+        R c
+
+{"#IIIIIIII#III#<"}
+
+[TooringLoop]
+L -J1(I)->       #L(#)aL -J2(I)->                #R(#) -<TooringLoop>
+  -J1(a)-<out1>          -J2(#)->R(!a)L#-<out2>
+
+[out1]
+IL -J3(a)-<out1>
+   -J3(I,#)->R(#)-<TooringLoop>
+
+[out2]
+L -J4(a)->I-<out2>
+  -J4(#)->R(#)R(#) [out3] -J5(I)-> # -<out3>
+
+
+{"#IIII#<"}
+[loop]
+L -J(I)-> a -<loop>
