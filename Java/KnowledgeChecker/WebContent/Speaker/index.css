@@ -1,0 +1,28 @@
+@charset "ISO-8859-1";
+
+body {
+  font-family: Helvetica, sans-serif;
+}
+
+button {
+    height: 50px;
+    width: 60px;
+}
+
+.title-highlight {
+    font-weight: 400;
+    font-size: 24px;
+}
+
+.label {
+    font-size: 14px;
+}
+
+#speakerLoginOutput {
+    color: #ee0000;
+}
+
+#speakerLoginSuggestion {
+    color: #808080;
+    font-size: 12px;
+}

@@ -1,0 +1,87 @@
+@charset "ISO-8859-1";
+
+body {
+  font-family: Helvetica, sans-serif;
+}
+
+table, th, tr, td {
+    text-align: left;
+    /* border: 1px solid black; */
+    border: none;
+    border-collapse: collapse;
+    width: 100%;
+}
+
+.title-highlight {
+    font-weight: 400;
+    font-size: 24px
+}
+
+.name-highlight {
+    font-weight: 500;
+    font-size: 26px;
+    color: #42bd45;
+}
+
+.grid-question-label { grid-area:L; font-size:24px; }
+.grid-question { grid-area:Q; height:200px; }
+.grid-answer-label { grid-area:A; margin-top:10px; font-size:24px; display:none; }
+.grid-true-false { grid-area:T; display:none; }
+.grid-yes-no { grid-area:Y; display:none; }
+.grid-numeric { grid-area:N; display:none; }
+.grid-free { grid-area:F; height:180px; display:none; }
+
+.main-grid {
+    display: grid;
+    position: relative;
+    left: 20%;
+    width: 60%;
+    grid-template-areas:
+    '. L L L L .'
+    'Q Q Q Q Q Q'
+    '. A A A A .'
+    '. . T T . .'
+    '. . Y Y . .'
+    '. N N N N .'
+    'F F F F F F';
+    grid-gap: 4px;
+    text-align: center;
+}
+
+.main-grid > div {
+    /*background-color: #d6eef8;*/
+    padding: 2px 0;
+}
+
+.main-button {
+    width: 80px;
+    height: 32px;
+    font-size: 20px;
+    font-weight: 100;
+}
+
+.main-range {
+    width: 60%;
+}
+
+.main-text-area {
+    resize: none;
+    width: 90%;
+    height: 85%;
+    font-size: 18px;
+    padding: 10px;
+}
+
+.main-free-area {
+    resize: none;
+    width: 90%;
+    height: 50%;
+    font-size: 18px;
+    padding: 10px;
+}
+
+.your-answer {
+    font-weight: 500;
+    font-size: 24px;
+    color: #800040;
+}
