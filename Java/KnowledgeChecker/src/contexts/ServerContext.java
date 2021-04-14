@@ -1,14 +1,14 @@
 package contexts;
 
 import java.time.LocalDateTime;
-import java.util.Calendar;
-import java.util.Collections;
-import java.util.HashSet;
 import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
+
+import schemas.JsonMember;
+import schemas.JsonServer;
 
 public class ServerContext extends TimerTask {
 
@@ -16,12 +16,16 @@ public class ServerContext extends TimerTask {
     public static final int INACTIVE_SECS = 60;
     
     private ConcurrentMap<String, MemberContext> _audienceMap;
+    private QuestionContext _questionContext;
     private int _tickCount;
+    private int _questionCount;
     private Timer _heartBeat;
     
     public ServerContext() {
         _audienceMap = new ConcurrentHashMap<String, MemberContext>();
+        _questionContext = null;
         _tickCount = 0;
+        _questionCount = 0;
         _heartBeat = new Timer();
         _heartBeat.schedule(this, HEARTBEAT_MS, HEARTBEAT_MS);
     }
@@ -29,6 +33,34 @@ public class ServerContext extends TimerTask {
     public int tickCount() {
         _tickCount++;
         return _tickCount;
+    }
+    
+    public int nextQuestionID() {
+        _questionCount++;
+        return _questionCount;
+    }
+    
+    public boolean setQuestion(QuestionContext questionContext) {
+        boolean success = ((_questionContext == null) && (questionContext != null))
+                       || ((_questionContext != null) && (questionContext == null));
+        
+        if (success) {
+            _questionContext = questionContext;
+        }
+        
+        for (Map.Entry<String, MemberContext> kvp : _audienceMap.entrySet()) {
+            MemberContext memberContext = kvp.getValue();
+            // since question  is changing reset all answers across all attendees
+            if (memberContext instanceof AttendantContext) {
+                ((AttendantContext)memberContext).setAnswer(null);
+            }
+        }
+        
+        return success;
+    }
+    
+    public QuestionContext getQuestion() {
+        return _questionContext;
     }
     
     public MemberContext getMember(String ipAddres) {
@@ -55,49 +87,21 @@ public class ServerContext extends TimerTask {
         return memberContext;
     }
     
+    public JsonServer toJsonSchema(String ipAddress) {
+        JsonServer jsonServer = new JsonServer(ipAddress);
+        for (Map.Entry<String, MemberContext> kvp : _audienceMap.entrySet()) {
+            MemberContext memberContext = kvp.getValue();
+            JsonMember jsonMember = memberContext.toJsonSchema();
+            jsonServer.Members.add(jsonMember);
+        }
+        
+        return jsonServer;
+    }
+    
     public void closing() {
         _heartBeat.cancel();
     }
     
-    private String mapToHtml() {
-        StringBuilder output = new StringBuilder();
-        
-        if (_audienceMap.size() > 0) {
-            output.append("<table><tr>");
-            output.append("<th width=20%>IP</th>");
-            output.append("<th>Name</th>");
-            output.append("<th width=25%>Role</th>");
-            output.append("<th width=15%>State</th>");
-            output.append("</tr>");
-            for (Map.Entry<String, MemberContext> kvp : _audienceMap.entrySet()) {
-                MemberContext memberContext = kvp.getValue();
-                output.append("<tr>");
-                output.append(String.format("<td>%s</td>", memberContext.getIP()));
-                output.append(String.format("<td>%s</td>", memberContext.getName()));
-                output.append(String.format("<td>%s</td>", memberContext.getRole()));
-                output.append(String.format("<td>%s</td>", memberContext.getState()));
-                output.append("</tr>");
-            }
-            output.append("</table>");
-        }
-        
-        return output.toString();
-    }
-    
-    @Override
-    public String toString() {
-        StringBuilder output = new StringBuilder();
-        
-        output.append("ServerContext:<br>");
-        output.append(String.format("&nbsp&nbsp&nbsp&nbsp_counter: [%d]<br>", _tickCount));
-        output.append(String.format("&nbsp&nbsp&nbsp&nbsp_audienceMap: [%d]<br>", _audienceMap.keySet().size()));
-        output.append("<p>");
-        output.append(mapToHtml());
-        
-        _tickCount++;
-        return output.toString();
-    }
-
     @Override
     public void run() {
         LocalDateTime timeNow = LocalDateTime.now();

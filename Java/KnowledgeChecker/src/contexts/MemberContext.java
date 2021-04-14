@@ -2,13 +2,12 @@ package contexts;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
-import java.time.Period;
-import java.time.format.DateTimeFormatter;
-import java.util.Date;
+
+import schemas.JsonMember;
 
 public abstract class MemberContext {
-    private String _name;
     private String _ipAddress;
+    private String _name;
     private LocalDateTime _timeStamp;
     private boolean _active;
     
@@ -19,12 +18,12 @@ public abstract class MemberContext {
         _active = true;
     }
     
-    public String getName() {
-        return _name;
-    }
-    
     public String getIP() {
         return _ipAddress;
+    }
+    
+    public String getName() {
+        return _name;
     }
     
     public boolean checkState(LocalDateTime timeStampNow) {
@@ -45,10 +44,9 @@ public abstract class MemberContext {
     
     public abstract String getRole();
     
-    @Override
-    public String toString() {
-        StringBuilder out = new StringBuilder();
-        out.append(String.format("%s:%s@%s", getRole(), _name, _ipAddress));
-        return out.toString();
+    public JsonMember toJsonSchema() {
+        JsonMember jsonMember = new JsonMember(getIP(), getName(), getRole());
+        jsonMember.State = _active ? "Active" : "Inactive";
+        return jsonMember;
     }
 }
