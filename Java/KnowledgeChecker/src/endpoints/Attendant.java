@@ -45,8 +45,6 @@ public class Attendant extends HttpServlet {
 
         if (cmd == null) {
             jsonStatus = doFail(request, response);
-        } else if (cmd.equalsIgnoreCase("ping")) {
-            jsonStatus = doCmdPing(request, response);
         } else if (cmd.equalsIgnoreCase("login")) {
             jsonStatus = doCmdLogin(request, response);
         } else  if (cmd.equalsIgnoreCase("logout")) {
@@ -91,34 +89,6 @@ public class Attendant extends HttpServlet {
         return jsonStatus;
     }
     
-    /**
-     * Handles Attendant ping:
-     * http://localhost:8080/KnowledgeChecker/Attendant?cmd=ping
-     * returns a JsonStatus
-     */
-    private JsonStatus doCmdPing(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        String ipAddress = request.getRemoteAddr();
-        JsonStatus jsonStatus = new JsonStatus(ipAddress);
-        
-        // Check if the member is logged in!
-        MemberContext memberContext = _serverContext.getMember(ipAddress);
-        jsonStatus.Assert(
-                memberContext != null && memberContext instanceof AttendantContext,
-                "Error: You are NOT logged in as Attendant!");
-
-        
-        // On success, dump the memberContext as status message
-        if (jsonStatus.Success) {
-            // "touch" the member context to keep active
-            memberContext.touch();
-            jsonStatus.Name = memberContext.getName();
-            jsonStatus.Role = memberContext.getRole();
-            jsonStatus.Message = memberContext.toString();
-        }
-        
-        return jsonStatus;
-    }
-
     /**
      * Handles Attendant login:
      * http://localhost:8080/KnowledgeChecker/Attendant?cmd=login&name=user_name
