@@ -35,11 +35,11 @@ function onLoginClick(e) {
 function onLoginResponse() {
     var jsonStatus = JSON.parse(this.response);
     if (jsonStatus.Success) {
-        window.location.href = urlAttendantMain; 
+        window.location.href = `${urlAttendantMain}?name=${jsonStatus.Name}`;
     } else if (jsonStatus.Role.length > 0) {
         attendantLoginOutput.innerHTML= jsonStatus.Message;
         urlSuggestion = (jsonStatus.Role == "Speaker") ? urlSpeakerMain : urlAttendantMain; 
-        attendantLoginSuggestion.innerHTML= `Go to the <a href=${urlSuggestion}>${jsonStatus.Role}</a> main page.`;
+        attendantLoginSuggestion.innerHTML= `Go to the <a href=${urlSuggestion}?name=${jsonStatus.Name}>${jsonStatus.Role}</a> main page.`;
     } else {
         attendantLoginOutput.innerHTML= jsonStatus.Message;
     }

@@ -50,7 +50,7 @@ public class Server extends HttpServlet {
      * http://localhost:8080/KnowledgeChecker/Speaker?abc=xyz&...
      */
     private JsonStatus doFail(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        JsonStatus jsonStatus = new JsonStatus(request.getRemoteAddr());
+        JsonStatus jsonStatus = new JsonStatus(request.getRemoteAddr(), request.getParameter("name"), "Server");
         jsonStatus.Assert(false, "Error: Command missing or unsupported!");
         return jsonStatus;
     }

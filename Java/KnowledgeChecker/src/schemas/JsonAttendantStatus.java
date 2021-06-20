@@ -1,10 +1,9 @@
 package schemas;
 
 public class JsonAttendantStatus extends JsonStatus {
-    public JsonQuestion Question;
     
-    public JsonAttendantStatus(String ipAddress) {
-        super(ipAddress);
+    public JsonAttendantStatus(String ipAddress, String name) {
+        super(ipAddress, name, "Attendant");
         Question = null;
     }
 

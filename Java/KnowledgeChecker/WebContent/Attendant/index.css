@@ -5,24 +5,29 @@ body {
 }
 
 button {
-    height: 50px;
-    width: 60px;
+    height: 20px;
+    width: 80px;
 }
 
 .title-highlight {
     font-weight: 400;
-    font-size: 24px;
+    font-size: 24px
 }
 
-.label {
-    font-size: 14px;
-}
-
-#attendantLoginOutput {
-    color: #ee0000;
-}
-
-#attendantLoginSuggestion {
-    color: #808080;
+.status-table {
+    text-align: left;
     font-size: 12px;
+    border: 1px solid #dfdfdf;
+    border-collapse: collapse;
+}
+
+.status-th {
+    border: 1px solid #dfdfdf;
+    border-collapse: collapse;
+    background-color: rgb(253, 238, 217);
+}
+
+.status-tr {
+    border: 1px solid #dfdfdf;
+    border-collapse: collapse;
 }

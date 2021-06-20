@@ -5,7 +5,7 @@
         <meta charset="ISO-8859-1">
         <title>KC Attendant</title>
         <link rel="stylesheet" href="index.css?ver=1.2">
-        <script defer src="index.js?ver=1.1"></script>
+        <script defer src="index.js?ver=1.1.2"></script>
     </head>
     <body>
         <table>

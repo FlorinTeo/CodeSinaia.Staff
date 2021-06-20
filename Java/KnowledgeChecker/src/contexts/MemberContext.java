@@ -26,6 +26,14 @@ public abstract class MemberContext {
         return _name;
     }
     
+    public static String getKey(String name, String ipAddress) {
+        return name + "@" + ipAddress;
+    }
+    
+    public String getKey() {
+        return MemberContext.getKey(_name, _ipAddress);
+    }
+    
     public boolean checkState(LocalDateTime timeStampNow) {
         boolean prevActive = _active;
         _active = Duration.between(_timeStamp, timeStampNow).getSeconds() < ServerContext.INACTIVE_SECS;

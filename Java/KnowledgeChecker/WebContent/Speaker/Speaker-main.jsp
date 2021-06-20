@@ -3,10 +3,9 @@
 <html>
     <head>
         <meta charset="ISO-8859-1">
-        <!--  meta http-equiv="refresh" content="5" -->
         <title>KC Speaker</title>
-        <link rel="stylesheet" href="Speaker-main.css?ver=1.7">
-        <script defer src="Speaker-main.js?ver=1.5"></script>
+        <link rel="stylesheet" href="Speaker-main.css?ver=1.0.0">
+        <script defer src="Speaker-main.js?ver=2.0.0"></script>
     </head>
     <body>
         <table>
@@ -19,12 +18,15 @@
         <div class="main-grid">
             <div class="grid-label">Question</div>
             <div class="grid-question"><textarea id = "txtQ" class="main-text-area"></textarea></div>
-            <div class="grid-true-false">True / False<br><input id="ckbTF" class="main-checkbox" name="TrueFalse" type="checkbox"></div>
-            <div class="grid-yes-no">Yes / No<br><input id="ckbYN" class="main-checkbox" name="YesNo" type="checkbox"></div>
-            <div class="grid-number">Number 1 to 5<br><input id="ckbNum" class="main-checkbox" name="Numeric" type="checkbox"></div>
+            <div class="grid-choice">Choice<br><input id="ckbChoice" class="main-checkbox" name="Choice" type="checkbox"></div>
+            <div class="grid-range">Range 1 to 10<br><input id="ckbRange" class="main-checkbox" name="Range" type="checkbox"></div>
             <div class="grid-free">Free text<br><input id="ckbFree" class="main-checkbox" name="Free" type="checkbox"></div>
-            <div class="grid-ask"><input id="btnAsk" class="main-button" type="submit" value="Ask"></div>
-            <div class="grid-clear"><input id="btnClear" class="main-button" type="submit" value="Clear"></div>
+
+            <div class="grid-buttons">
+                <input id="btnAsk" class="main-button" type="submit" value="Ask">
+                <input id="btnClear" class="main-button" type="submit" value="Clear">
+            </div>
+
             <div class="grid-status" >
                 <p>
                 <table id="statusTable" class="status-table" >

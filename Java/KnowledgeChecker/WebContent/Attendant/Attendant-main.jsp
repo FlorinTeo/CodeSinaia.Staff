@@ -3,10 +3,9 @@
 <html>
     <head>
         <meta charset="ISO-8859-1">
-        <!--  meta http-equiv="refresh" content="5" -->
         <title>KC Attendant</title>
-        <link rel="stylesheet" href="Attendant-main.css?ver=1.2">
-        <script defer src="Attendant-main.js?ver=1.5"></script>
+        <link rel="stylesheet" href="Attendant-main.css?ver=1.1.0">
+        <script defer src="Attendant-main.js?ver=4.0.0"></script>
     </head>
     <body>
         <table>
@@ -24,18 +23,13 @@
             <div id="divAnswerLabel" class="grid-answer-label">
                 Answer: <span id="spnAnswer" class="your-answer"></span>
             </div>
-            <div id="divTrueFalse" class="grid-true-false">
-                <input id="btnTrue" class="main-button" type="submit" value="True">
-                &nbsp;&nbsp;
-                <input id="btnFalse" class="main-button" type="submit" value="False">
+            <div id="divButtons" class="grid-buttons">
+                <!--  input id="btn1" class="main-button" type="submit" value="Button 1">&nbsp;&nbsp; -->
             </div>
-            <div id="divYesNo" class="grid-yes-no">
-                <input id="btnYes" class="main-button" type="submit" value="Yes">
-                &nbsp;&nbsp;
-                <input id="btnNo" class="main-button" type="submit" value="No">
-            </div>
-            <div id="divNumeric" class="grid-numeric">
-                1<input id="rngNumeric" class="main-range" type="range" min="1" max="5">5
+            <div id="divRange" class="grid-range">
+                <span id="rngFrom">1</span>&nbsp;
+                <input id="rngRange" class="main-range" type="range" min="1" max="10">&nbsp;
+                <span id="rngTo">10</span>
             </div>
             <div id="divFree" class="grid-free">
                 <textarea id="txtFree" class="main-free-area"></textarea>

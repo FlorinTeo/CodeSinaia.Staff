@@ -25,12 +25,13 @@ table, th, tr, td {
 
 .grid-label { grid-area: L; font-size: 24px; }
 .grid-question { grid-area: Q; height: 200px;}
-.grid-ask { grid-area: A; }
-.grid-clear { grid-area: C; }
-.grid-true-false { grid-area: T; height: 48px;}
-.grid-yes-no { grid-area: Y; height: 48px;}
-.grid-number { grid-area: N; height: 48px;}
+
+.grid-choice { grid-area: C; height: 48px;}
+.grid-range { grid-area: R; height: 48px;}
 .grid-free { grid-area: F; height: 48px;}
+
+.grid-buttons { grid-area: B; }
+
 .grid-status { grid-area: S;}
 
 .main-grid {
@@ -39,12 +40,12 @@ table, th, tr, td {
     left: 20%;
     width: 60%;
     grid-template-areas:
-    '. L L L L .'
-    'Q Q Q Q Q Q'
-    '. T Y N F .'
-    '. . A C . .'
-    '. . . . . .'
-    '. S S S S .';
+    '. L L L .'
+    'Q Q Q Q Q'
+    '. C R F .'
+    '. B B B .'
+    '. . . . .'
+    '. S S S .';
     grid-gap: 4px;
     text-align: center;
 }

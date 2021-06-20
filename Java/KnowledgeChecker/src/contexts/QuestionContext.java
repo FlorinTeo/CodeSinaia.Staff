@@ -1,36 +1,41 @@
 package contexts;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
-import schemas.JsonMember;
 import schemas.JsonQuestion;
 
 enum QuestionType {
-    YESNO,
-    TRUEFALSE,
-    NUMERIC,
+    CHOICE,
+    RANGE,
     FREEFORM
 }
 
 public class QuestionContext {
-    private final Map<String, QuestionType> _questionTypeNameMap = new HashMap<String, QuestionType>() {{
-        put("YesNo", QuestionType.YESNO);
-        put("TrueFalse", QuestionType.TRUEFALSE);
-        put("Numeric", QuestionType.NUMERIC);
-        put("Free", QuestionType.FREEFORM);
-    }};
+    private final Map<String, QuestionType> _questionTypeNameMap = new HashMap<String, QuestionType>() {
+        private static final long serialVersionUID = 1L;
+        {
+            put("Choice", QuestionType.CHOICE);
+            put("Range", QuestionType.RANGE);
+            put("Free", QuestionType.FREEFORM);
+        }
+    };
     
-    private final Map<QuestionType, String> _questionTypeIDMap = new HashMap<QuestionType, String>() {{
-        put(QuestionType.YESNO, "YesNo");
-        put(QuestionType.TRUEFALSE, "TrueFalse");
-        put(QuestionType.NUMERIC, "Numeric");
-        put(QuestionType.FREEFORM, "Free");
-    }};
+    private final Map<QuestionType, String> _questionTypeIDMap = new HashMap<QuestionType, String>() {
+        private static final long serialVersionUID = 1L;
+        {
+            put(QuestionType.CHOICE, "Choice");
+            put(QuestionType.RANGE, "Range");
+            put(QuestionType.FREEFORM, "Free");
+        }
+    };
     
     private int _questionID;
     private String _questionText;
     private QuestionType _questionType;
+    private List<String> _questionArguments;
     
     public int getID() {
         return _questionID;
@@ -48,6 +53,11 @@ public class QuestionContext {
         _questionID = jsonQuestion.QuestionID;
         _questionText = jsonQuestion.QuestionText;
         _questionType = _questionTypeNameMap.get(jsonQuestion.QuestionType);
+        _questionArguments = new ArrayList<String>();
+        String[] args = _questionText.split("\\|");
+        for (int i = 1; i < args.length; i+=2) {
+            _questionArguments.add(args[i].trim());            
+        }
     }
     
     public JsonQuestion toJsonSchema() {
@@ -55,6 +65,7 @@ public class QuestionContext {
         jsonQuestion.QuestionID = _questionID;
         jsonQuestion.QuestionText = _questionText;
         jsonQuestion.QuestionType = _questionTypeIDMap.get(_questionType);
+        jsonQuestion.QuestionArguments = _questionArguments.toArray(new String[0]);
         return jsonQuestion;
     }
 }

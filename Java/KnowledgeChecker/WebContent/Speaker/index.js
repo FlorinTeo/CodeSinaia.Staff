@@ -37,11 +37,13 @@ function onLoginClick(e) {
 function onLoginResponse() {
     var jsonStatus = JSON.parse(this.response);
     if (jsonStatus.Success) {
-        window.location.href = (jsonStatus.Role == "Speaker") ? urlSpeakerMain : urlAttendantMain;
+        window.location.href = (jsonStatus.Role == "Speaker") 
+            ? `${urlSpeakerMain}?name=${jsonStatus.Name}`
+            : `${urlAttendantMain}?name=${jsonStatus.Name}`;
     } else if (jsonStatus.Role.length > 0) {
         speakerLoginOutput.innerHTML= jsonStatus.Message;
         urlSuggestion = (jsonStatus.Role == "Speaker") ? urlSpeakerMain : urlAttendantMain; 
-        speakerLoginSuggestion.innerHTML= `Go to the <a href=${urlSuggestion}>${jsonStatus.Role}</a> main page.`;
+        speakerLoginSuggestion.innerHTML= `Go to the <a href=${urlSuggestion}?name=${jsonStatus.Name}>${jsonStatus.Role}</a> main page.`;
     } else {
         speakerLoginOutput.innerHTML= jsonStatus.Message;
     }

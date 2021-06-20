@@ -9,7 +9,6 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.google.gson.Gson;
 
-import contexts.AttendantContext;
 import contexts.MemberContext;
 import contexts.QuestionContext;
 import contexts.ServerContext;
@@ -44,8 +43,6 @@ public class Speaker extends HttpServlet {
 
         if (cmd == null) {
             jsonStatus = doFail(request, response);
-        } else if (cmd.equalsIgnoreCase("ping")) {
-            jsonStatus = doCmdPing(request, response);
         } else if (cmd.equalsIgnoreCase("login")) {
             jsonStatus = doCmdLogin(request, response);
         } else  if (cmd.equalsIgnoreCase("logout")) {
@@ -88,49 +85,21 @@ public class Speaker extends HttpServlet {
      * returns a JsonStatus
      */
     private JsonStatus doFail(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        JsonStatus jsonStatus = new JsonStatus(request.getRemoteAddr());
+        JsonSpeakerStatus jsonStatus = new JsonSpeakerStatus(request.getRemoteAddr(), request.getParameter("name"));
         jsonStatus.Assert(false, "Error: Command missing or unsupported!");
         return jsonStatus;
     }
     
-    /**
-     * Handles Speaker ping:
-     * http://localhost:8080/KnowledgeChecker/Speaker?cmd=ping
-     * returns a JsonStatus
-     */
-    private JsonStatus doCmdPing(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        String ipAddress = request.getRemoteAddr();
-        JsonStatus jsonStatus = new JsonStatus(ipAddress);
-        
-        // Check if the member is logged in!
-        MemberContext memberContext = _serverContext.getMember(ipAddress);
-        jsonStatus.Assert(
-                memberContext != null && memberContext instanceof SpeakerContext,
-                "Error: You are NOT logged in as Speaker!");
-        
-        // On success, dump the memberContext as status message
-        if (jsonStatus.Success) {
-            // "touch" the member context to keep active
-            memberContext.touch();
-            jsonStatus.Name = memberContext.getName();
-            jsonStatus.Role = memberContext.getRole();
-            jsonStatus.Message = memberContext.toString();
-        }
-        
-        return jsonStatus;
-    }
-
     /**
      * Handles Speaker login:
      * http://localhost:8080/KnowledgeChecker/Speaker?cmd=login&name=user_name
      * returns a JsonSpeakerStatus
      */
     private JsonStatus doCmdLogin(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        String ipAddress = request.getRemoteAddr();
         String name = request.getParameter("name");
         String password = request.getParameter("password");
-        JsonSpeakerStatus jsonStatus = new JsonSpeakerStatus(ipAddress);
-        
+        JsonSpeakerStatus jsonStatus = new JsonSpeakerStatus(request.getRemoteAddr(), name);
+    
         // Check if the login name is valid
         jsonStatus.Assert(name != null && name.length() > 0, "Error: Need a name to login!");
         
@@ -142,18 +111,20 @@ public class Speaker extends HttpServlet {
         // On success, check if the member is not already logged in!
         SpeakerContext speakerContext = null;
         if (jsonStatus.Success) {
-            speakerContext = new SpeakerContext(name, ipAddress);
-            MemberContext memberContext = _serverContext.getMember(ipAddress);
+            speakerContext = new SpeakerContext(jsonStatus.Name, jsonStatus.IPAddress);
+            MemberContext memberContext = _serverContext.getMember(speakerContext.getKey());
             jsonStatus.Assert(memberContext == null, "Error: You are already logged in!");
             jsonStatus.Name = memberContext == null ? speakerContext.getName() : memberContext.getName();
             jsonStatus.Role = memberContext == null ? speakerContext.getRole() : memberContext.getRole();
         }
         
-        // On success, add Members to the jsonStatus
+        // On success, add Members and current Question, if any, to the jsonStatus
         if (jsonStatus.Success) {
             _serverContext.loginMember(speakerContext);
             jsonStatus.Message = "Success: You are now logged in!";
-            jsonStatus.Members = _serverContext.toJsonSchema(ipAddress).Members;
+            jsonStatus.Members = _serverContext.toJsonSchema(jsonStatus.IPAddress).Members;
+            QuestionContext crtQuestion = _serverContext.getQuestion(); 
+            jsonStatus.Question = (crtQuestion != null) ? crtQuestion.toJsonSchema() : null; 
         }
         
         return jsonStatus;
@@ -165,18 +136,18 @@ public class Speaker extends HttpServlet {
      * returns a JsonStatus
      */
     private JsonStatus doCmdLogout(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
-        String ipAddress = request.getRemoteAddr();
-        JsonStatus jsonStatus = new JsonStatus(ipAddress);
-        
+        JsonSpeakerStatus jsonStatus = new JsonSpeakerStatus(request.getRemoteAddr(), request.getParameter("name"));
+        String memberKey = MemberContext.getKey(jsonStatus.Name,  jsonStatus.IPAddress);
+
         // Check if the member is logged in!
-        MemberContext memberContext = _serverContext.getMember(ipAddress);
+        MemberContext memberContext = _serverContext.getMember(memberKey);
         jsonStatus.Assert(
                 memberContext != null && memberContext instanceof SpeakerContext,
                 "Error: You are NOT logged in as Speaker!");
         
         // On success, logout
         if (jsonStatus.Success) {
-            _serverContext.logoutMember(ipAddress);
+            _serverContext.logoutMember(memberKey);
             jsonStatus.Name = memberContext.getName();
             jsonStatus.Role = memberContext.getRole();
             jsonStatus.Message = "You are now logged out!";
@@ -191,22 +162,24 @@ public class Speaker extends HttpServlet {
      * returns a JsonSpeakerStatus
      */
     private JsonStatus doCmdStatus(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
-        String ipAddress = request.getRemoteAddr();
-        JsonSpeakerStatus jsonStatus = new JsonSpeakerStatus(ipAddress);
+        JsonSpeakerStatus jsonStatus = new JsonSpeakerStatus(request.getRemoteAddr(), request.getParameter("name"));
+        String memberKey = MemberContext.getKey(jsonStatus.Name,  jsonStatus.IPAddress);
         
         // Check if the member is logged in!
-        MemberContext memberContext = _serverContext.getMember(ipAddress);
+        MemberContext memberContext = _serverContext.getMember(memberKey);
         jsonStatus.Assert(
                 memberContext != null && memberContext instanceof SpeakerContext,
                 "Error: You are NOT logged in as Speaker!");
-        
-        // On success, fetch and dispatch the question
+
+        // On success, add Members and current Question, if any, to the jsonStatus
         if (jsonStatus.Success) {
             // "touch" the member context to keep active
             memberContext.touch();
             jsonStatus.Name = memberContext.getName();
             jsonStatus.Role = memberContext.getRole();
-            jsonStatus.Members = _serverContext.toJsonSchema(ipAddress).Members;
+            jsonStatus.Members = _serverContext.toJsonSchema(jsonStatus.IPAddress).Members;
+            QuestionContext crtQuestion = _serverContext.getQuestion(); 
+            jsonStatus.Question = (crtQuestion != null) ? crtQuestion.toJsonSchema() : null;               
         }
         
         return jsonStatus;
@@ -219,11 +192,11 @@ public class Speaker extends HttpServlet {
      * return a JsonSpeakerStatus
      */
     private JsonStatus doCmdAsk(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
-        String ipAddress = request.getRemoteAddr();
-        JsonSpeakerStatus jsonStatus = new JsonSpeakerStatus(ipAddress);
+        JsonSpeakerStatus jsonStatus = new JsonSpeakerStatus(request.getRemoteAddr(), request.getParameter("name"));
+        String memberKey = MemberContext.getKey(jsonStatus.Name,  jsonStatus.IPAddress);
         
         // Check if the member is logged in!
-        MemberContext memberContext = _serverContext.getMember(ipAddress);
+        MemberContext memberContext = _serverContext.getMember(memberKey);
         jsonStatus.Assert(
                 memberContext != null && memberContext instanceof SpeakerContext,
                 "Error: You are NOT logged in as Speaker!");
@@ -238,9 +211,10 @@ public class Speaker extends HttpServlet {
             jsonStatus.Assert(_serverContext.setQuestion(questionContext), "Uncleared question on server!");
         }
         
-        // On success, add current members status to response
+        // On success, add Members and the current Question to the jsonStatus 
         if (jsonStatus.Success) {
-            jsonStatus.Members = _serverContext.toJsonSchema(ipAddress).Members;
+            jsonStatus.Members = _serverContext.toJsonSchema(jsonStatus.IPAddress).Members;
+            jsonStatus.Question = _serverContext.getQuestion().toJsonSchema();
         }
         
         return jsonStatus;
@@ -252,11 +226,11 @@ public class Speaker extends HttpServlet {
      * Returns a JsonSpeakerStatus
      */
     private JsonStatus doCmdClear(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
-        String ipAddress = request.getRemoteAddr();
-        JsonSpeakerStatus jsonStatus = new JsonSpeakerStatus(ipAddress);
+        JsonSpeakerStatus jsonStatus = new JsonSpeakerStatus(request.getRemoteAddr(), request.getParameter("name"));
+        String memberKey = MemberContext.getKey(jsonStatus.Name,  jsonStatus.IPAddress);
         
         // Check if the member is logged in!
-        MemberContext memberContext = _serverContext.getMember(ipAddress);
+        MemberContext memberContext = _serverContext.getMember(memberKey);
         jsonStatus.Assert(
                 memberContext != null && memberContext instanceof SpeakerContext,
                 "Error: You are NOT logged in as Speaker!");
@@ -268,9 +242,10 @@ public class Speaker extends HttpServlet {
             jsonStatus.Assert(_serverContext.setQuestion(null), "No question to clear on server!");
         }
         
-        // On success, add current members status to response
+        // On success, add Members and the current Question to the jsonStatus
         if (jsonStatus.Success) {
-            jsonStatus.Members = _serverContext.toJsonSchema(ipAddress).Members;
+            jsonStatus.Members = _serverContext.toJsonSchema(jsonStatus.IPAddress).Members;
+            jsonStatus.Question = null;
         }
         
         return jsonStatus;

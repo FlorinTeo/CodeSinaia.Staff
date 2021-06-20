@@ -1,7 +1,6 @@
 package contexts;
 
 import schemas.JsonAnswer;
-import schemas.JsonQuestion;
 
 public class AnswerContext {
     private QuestionContext _questionContext;

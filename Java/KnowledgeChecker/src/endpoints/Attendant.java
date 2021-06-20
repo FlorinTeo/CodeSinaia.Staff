@@ -16,8 +16,6 @@ import contexts.QuestionContext;
 import contexts.ServerContext;
 import schemas.JsonAnswer;
 import schemas.JsonAttendantStatus;
-import schemas.JsonQuestion;
-import schemas.JsonSpeakerStatus;
 import schemas.JsonStatus;
 
 /**
@@ -84,7 +82,7 @@ public class Attendant extends HttpServlet {
      * http://localhost:8080/KnowledgeChecker/Attendant?abc=xyz&...
      */
     private JsonStatus doFail(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        JsonStatus jsonStatus = new JsonStatus(request.getRemoteAddr());
+        JsonAttendantStatus jsonStatus = new JsonAttendantStatus(request.getRemoteAddr(), request.getParameter("name"));
         jsonStatus.Assert(false, "Error: Command missing or unsupported!");
         return jsonStatus;
     }
@@ -95,9 +93,8 @@ public class Attendant extends HttpServlet {
      * returns a JsonAttendantStatus
      */
     private JsonStatus doCmdLogin(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        String ipAddress = request.getRemoteAddr();
         String name = request.getParameter("name");
-        JsonAttendantStatus jsonStatus = new JsonAttendantStatus(ipAddress);
+        JsonAttendantStatus jsonStatus = new JsonAttendantStatus(request.getRemoteAddr(), name);
         
         // Check if the login name is valid
         jsonStatus.Assert(name != null && name.length() > 0, "Error: Need a name to login!");
@@ -105,8 +102,8 @@ public class Attendant extends HttpServlet {
         // On success, check if the member is not already logged in!
         AttendantContext attendantContext = null;
         if (jsonStatus.Success) {
-            attendantContext = new AttendantContext(name, ipAddress);
-            MemberContext memberContext = _serverContext.getMember(ipAddress);
+            attendantContext = new AttendantContext(jsonStatus.Name, jsonStatus.IPAddress);
+            MemberContext memberContext = _serverContext.getMember(attendantContext.getKey());
             jsonStatus.Assert(memberContext == null, "Error: You are already logged in!");
             jsonStatus.Name = (memberContext == null) ? attendantContext.getName() : memberContext.getName();
             jsonStatus.Role = (memberContext == null) ? attendantContext.getRole() : memberContext.getRole();
@@ -129,18 +126,18 @@ public class Attendant extends HttpServlet {
      * returns JsonStatus
      */
     private JsonStatus doCmdLogout(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
-        String ipAddress = request.getRemoteAddr();
-        JsonStatus jsonStatus = new JsonStatus(ipAddress);
+        JsonAttendantStatus jsonStatus = new JsonAttendantStatus(request.getRemoteAddr(), request.getParameter("name"));
+        String memberKey = MemberContext.getKey(jsonStatus.Name, jsonStatus.IPAddress);
         
         // Check if the member is logged in!
-        MemberContext memberContext = _serverContext.getMember(ipAddress);
+        MemberContext memberContext = _serverContext.getMember(memberKey);
         jsonStatus.Assert(
                 memberContext != null && memberContext instanceof AttendantContext,
                 "Error: You are NOT logged in as Attendant!");
         
         // On success, logout
         if (jsonStatus.Success) {
-            _serverContext.logoutMember(ipAddress);
+            _serverContext.logoutMember(memberContext.getKey());
             jsonStatus.Name = memberContext.getName();
             jsonStatus.Role = memberContext.getRole();
             jsonStatus.Message = "You are now logged out!";
@@ -155,11 +152,11 @@ public class Attendant extends HttpServlet {
      * returns JsonAttendantStatus
      */
     private JsonStatus doCmdStatus(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        String ipAddress = request.getRemoteAddr();
-        JsonAttendantStatus jsonStatus = new JsonAttendantStatus(ipAddress);
+        JsonAttendantStatus jsonStatus = new JsonAttendantStatus(request.getRemoteAddr(), request.getParameter("name"));
+        String memberKey = MemberContext.getKey(jsonStatus.Name, jsonStatus.IPAddress);
         
         // Check if the member is logged in!
-        MemberContext memberContext = _serverContext.getMember(ipAddress);
+        MemberContext memberContext = _serverContext.getMember(memberKey);
         jsonStatus.Assert(
                 memberContext != null && memberContext instanceof AttendantContext,
                 "Error: You are NOT logged in as Attendant!");
@@ -185,11 +182,11 @@ public class Attendant extends HttpServlet {
      * return a JsonSpeakerStatus
      */
     private JsonStatus doCmdAnswer(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
-        String ipAddress = request.getRemoteAddr();
-        JsonAttendantStatus jsonStatus = new JsonAttendantStatus(ipAddress);
+        JsonAttendantStatus jsonStatus = new JsonAttendantStatus(request.getRemoteAddr(), request.getParameter("name"));
+        String memberKey = MemberContext.getKey(jsonStatus.Name, jsonStatus.IPAddress);
         
         // Check if the member is logged in!
-        MemberContext memberContext = _serverContext.getMember(ipAddress);
+        MemberContext memberContext = _serverContext.getMember(memberKey);
         jsonStatus.Assert(
                 memberContext != null && memberContext instanceof AttendantContext,
                 "Error: You are NOT logged in as Attendant!");
@@ -197,7 +194,7 @@ public class Attendant extends HttpServlet {
         // On success, check if there's a standing question
         QuestionContext crtQuestion = _serverContext.getQuestion();
         if (jsonStatus.Success) {
-            jsonStatus.Assert(crtQuestion != null, "Error: Question being answer expired!");
+            jsonStatus.Assert(crtQuestion != null, "Error: Question being answered expired!");
         }
         
         // On success, fetch the answer and check if it matches the question

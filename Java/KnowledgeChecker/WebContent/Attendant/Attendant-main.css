@@ -26,9 +26,8 @@ table, th, tr, td {
 .grid-question-label { grid-area:L; font-size:24px; }
 .grid-question { grid-area:Q; height:200px; }
 .grid-answer-label { grid-area:A; margin-top:10px; font-size:24px; display:none; }
-.grid-true-false { grid-area:T; display:none; }
-.grid-yes-no { grid-area:Y; display:none; }
-.grid-numeric { grid-area:N; display:none; }
+.grid-buttons { grid-area:B; display:none; }
+.grid-range { grid-area:R; display:none; }
 .grid-free { grid-area:F; height:180px; display:none; }
 
 .main-grid {
@@ -40,9 +39,8 @@ table, th, tr, td {
     '. L L L L .'
     'Q Q Q Q Q Q'
     '. A A A A .'
-    '. . T T . .'
-    '. . Y Y . .'
-    '. N N N N .'
+    'B B B B B B'
+    '. R R R R .'
     'F F F F F F';
     grid-gap: 4px;
     text-align: center;
@@ -54,7 +52,6 @@ table, th, tr, td {
 }
 
 .main-button {
-    width: 80px;
     height: 32px;
     font-size: 20px;
     font-weight: 100;

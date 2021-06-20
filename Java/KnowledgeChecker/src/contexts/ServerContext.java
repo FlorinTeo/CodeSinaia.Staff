@@ -63,14 +63,14 @@ public class ServerContext extends TimerTask {
         return _questionContext;
     }
     
-    public MemberContext getMember(String ipAddres) {
+    public MemberContext getMember(String memberKey) {
         tickCount();
-        return _audienceMap.get(ipAddres);
+        return _audienceMap.get(memberKey);
     }
     
     public MemberContext loginMember(MemberContext memberContext) {
-        if (getMember(memberContext.getIP()) == null) {
-            _audienceMap.put(memberContext.getIP(), memberContext);
+        if (getMember(memberContext.getKey()) == null) {
+            _audienceMap.put(memberContext.getKey(), memberContext);
         } else {
             memberContext = null;
         }
@@ -81,7 +81,7 @@ public class ServerContext extends TimerTask {
     public MemberContext logoutMember(String ipAddress) {
         MemberContext memberContext = getMember(ipAddress);
         if (memberContext != null) {
-            _audienceMap.remove(memberContext.getIP());
+            _audienceMap.remove(memberContext.getKey());
         }
         
         return memberContext;

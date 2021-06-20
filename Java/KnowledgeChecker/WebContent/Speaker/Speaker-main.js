@@ -1,14 +1,15 @@
+const username = (new URLSearchParams(window.location.search)).get("name");
+
 const speakerName = document.getElementById("speakerName");
 const speakerLogout = document.getElementById("speakerLogout");
 const speakerAPI = window.location.origin + "/KnowledgeChecker/Speaker";
 const speakerLoginRef = window.location.origin + "/KnowledgeChecker/Speaker/index.jsp";
 const txtQ = document.getElementById("txtQ");
 
-const ckbYN = document.getElementById("ckbYN");
-const ckbTF = document.getElementById("ckbTF");
-const ckbNum = document.getElementById("ckbNum");
+const ckbChoice = document.getElementById("ckbChoice");
+const ckbRange = document.getElementById("ckbRange");
 const ckbFree = document.getElementById("ckbFree");
-const ckbChoices = [ckbYN, ckbTF, ckbNum, ckbFree];
+const ckbChoices = [ckbChoice, ckbRange, ckbFree];
 
 const btnAsk = document.getElementById("btnAsk");
 const btnClear = document.getElementById("btnClear");
@@ -18,22 +19,26 @@ const statusHeader = document.getElementById("statusHeader");
 
 document.addEventListener("DOMContentLoaded", onPageLoad);
 speakerLogout.addEventListener("click", onLogoutClick);
-ckbYN.addEventListener("click", onCkbClick);
-ckbTF.addEventListener("click", onCkbClick);
-ckbNum.addEventListener("click", onCkbClick);
+
+ckbChoice.addEventListener("click", onCkbClick);
+ckbRange.addEventListener("click", onCkbClick);
 ckbFree.addEventListener("click", onCkbClick);
-btnClear.addEventListener("click", onBtnClearClick);
+
 btnAsk.addEventListener("click", onBtnAskClick);
+btnClear.addEventListener("click", onBtnClearClick);
+
+var crtQuestion = null;
 
 function onPageLoad() {
     //statusTable.style.opacity = 0;
     onStatusRequest();
-    setInterval(onStatusRequest, 4000);
+    setInterval(onStatusRequest, 1000);
 }
 
 function onStatusRequest() {
     var request = new  XMLHttpRequest();
-    request.open("GET", `${speakerAPI}?cmd=status`, true);
+    speakerName.innerText = username;
+    request.open("GET", `${speakerAPI}?name=${username}&cmd=status`, true);
     request.timeout = 2000;
     request.onload = onStatusResponse;
     request.send();
@@ -42,7 +47,20 @@ function onStatusRequest() {
 function onStatusResponse() {
     var jsonStatus = JSON.parse(this.response);
     if (jsonStatus.Success) {
-        speakerName.innerText = jsonStatus.Name;
+        // fetch the current question, if any
+        var question = jsonStatus.hasOwnProperty("Question") ? jsonStatus.Question : null;
+
+        // check if we need to either fill in or reset the current question
+        if ( question != null && (crtQuestion == null || crtQuestion.QuestionID != question.QuestionID)) {
+            // Question is new or updated
+            crtQuestion = question;
+            fillQuestion();
+        } else if (question == null && crtQuestion != null) {
+            // Question has been removed 
+            resetQuestion();
+            crtQuestion = null;
+        }
+        
         fillStatusTable(jsonStatus);
     }
 }
@@ -51,7 +69,7 @@ function onLogoutClick(e) {
     e.preventDefault();
     var name = speakerName.value;
     var request = new  XMLHttpRequest();
-    request.open("GET", `${speakerAPI}?cmd=logout`, true);
+    request.open("GET", `${speakerAPI}?name=${username}&cmd=logout`, true);
     request.timeout = 2000;
     request.onload = onLogoutResponse;
     request.send();
@@ -74,32 +92,6 @@ function onCkbClick(e) {
     }
 }
 
-function onBtnClearClick(e) {
-    e.preventDefault();
-    
-    var request = new  XMLHttpRequest();
-    request.open("POST", `${speakerAPI}?cmd=clear`, true);
-    request.timeout = 2000;
-    request.setRequestHeader('Content-Type', 'application/json; charset=UTF-8');
-    request.onload = onClearResponse;
-    request.send();
-}
-
-function onClearResponse() {
-    var jsonStatus = JSON.parse(this.response);
-    if (jsonStatus.Success) {
-        txtQ.value="";
-        txtQ.disabled=false;
-        for (i = 0; i < ckbChoices.length; i++) {
-            ckbChoices[i].checked = false;
-            ckbChoices[i].disabled = false;
-        }
-        //statusTable.style.opacity = 0;
-    } else {
-        alert(jsonStatus.Message);
-    }
-}
-
 function onBtnAskClick(e) {
     e.preventDefault();
     var ckb = null;
@@ -118,7 +110,7 @@ function onBtnAskClick(e) {
     var question = { "QuestionText" : txtQ.value, "QuestionType" : ckb.name };
     
     var request = new  XMLHttpRequest();
-    request.open("POST", `${speakerAPI}?cmd=ask`, true);
+    request.open("POST", `${speakerAPI}?name=${username}&cmd=ask`, true);
     request.timeout = 2000;
     request.setRequestHeader('Content-Type', 'application/json; charset=UTF-8');
     request.onload = onAskResponse;
@@ -128,14 +120,48 @@ function onBtnAskClick(e) {
 function onAskResponse() {
     var jsonStatus = JSON.parse(this.response);
     if (jsonStatus.Success) {
-        txtQ.disabled = true;
-        for (i = 0; i < ckbChoices.length; i++) {
-            ckbChoices[i].disabled = true;
-        }
-        //statusTable.style.opacity = 1;
-        fillStatusTable(jsonStatus);
+        crtQuestion = jsonStatus.Question;
+        fillQuestion();
     } else {
         alert(jsonStatus.Message);
+    }
+}
+
+function onBtnClearClick(e) {
+    e.preventDefault();
+    
+    var request = new  XMLHttpRequest();
+    request.open("POST", `${speakerAPI}?name=${username}&cmd=clear`, true);
+    request.timeout = 2000;
+    request.setRequestHeader('Content-Type', 'application/json; charset=UTF-8');
+    request.onload = onClearResponse;
+    request.send();
+}
+
+function onClearResponse() {
+    var jsonStatus = JSON.parse(this.response);
+    if (jsonStatus.Success) {
+        resetQuestion();
+    } else {
+        alert(jsonStatus.Message);
+    }
+}
+
+function fillQuestion() {
+    txtQ.disabled = true;
+    txtQ.value = crtQuestion.QuestionText;
+    for (i = 0; i < ckbChoices.length; i++) {
+        ckbChoices[i].checked = (crtQuestion.QuestionType == ckbChoices[i].name);
+        ckbChoices[i].disabled = true;
+    }
+}
+
+function resetQuestion() {
+    txtQ.value="";
+    txtQ.disabled=false;
+    for (i = 0; i < ckbChoices.length; i++) {
+        ckbChoices[i].checked = false;
+        ckbChoices[i].disabled = false;
     }
 }
 
