@@ -40,6 +40,11 @@ public abstract class MemberContext {
         return prevActive;
     }
     
+    public boolean checkExpired(LocalDateTime timeStampNow) {
+        return !_active
+                && Duration.between(_timeStamp, timeStampNow).getSeconds() > ServerContext.EXPIRED_SECS;
+    }
+    
     public void touch() {
         _timeStamp = LocalDateTime.now();
         _active = true;

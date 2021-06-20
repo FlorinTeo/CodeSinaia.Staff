@@ -1,6 +1,8 @@
 package contexts;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -14,6 +16,7 @@ public class ServerContext extends TimerTask {
 
     public static final long HEARTBEAT_MS = 5000;
     public static final int INACTIVE_SECS = 60;
+    public static final int EXPIRED_SECS = 120;
     
     private ConcurrentMap<String, MemberContext> _audienceMap;
     private QuestionContext _questionContext;
@@ -105,9 +108,17 @@ public class ServerContext extends TimerTask {
     @Override
     public void run() {
         LocalDateTime timeNow = LocalDateTime.now();
+        List<MemberContext> expiredMembers = new ArrayList<MemberContext>();
         for (Map.Entry<String, MemberContext> kvp : _audienceMap.entrySet()) {
             MemberContext memberContext = kvp.getValue();
             memberContext.checkState(timeNow);
+            if (memberContext.checkExpired(timeNow)) {
+                expiredMembers.add(memberContext);
+            }
+        }
+        
+        for (MemberContext expiredMember : expiredMembers) {
+            _audienceMap.remove(expiredMember.getKey());
         }
         
         _tickCount++;
