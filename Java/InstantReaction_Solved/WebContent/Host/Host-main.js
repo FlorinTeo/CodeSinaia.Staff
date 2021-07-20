@@ -18,8 +18,8 @@ btnHostLogout.addEventListener("click", onClickLogout);
 /**
  * Static resources needed in the Host main code
  */
-const urlHostAPI = window.location.origin + "/InstantReaction/IRHost";
-const urlHostLogin = window.location.origin + "/InstantReaction/Host/index.jsp";
+const urlHostAPI = window.location.origin + "/InstantReaction_Solved/IRHost";
+const urlHostLogin = window.location.origin + "/InstantReaction_Solved/Host/index.jsp";
 
 /**
  * Callback for the initial loading of the Host main page.

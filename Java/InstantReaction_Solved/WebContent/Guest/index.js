@@ -13,8 +13,8 @@ btnGuestLogin.addEventListener("click", onClickLogin);
 /**
  * Static resources needed in the Guest Login code
  */
-const urlGuestAPI = window.location.origin + "/InstantReaction/IRGuest";
-const urlGuestMain = window.location.origin + "/InstantReaction/Guest/Guest-main.jsp";
+const urlGuestAPI = window.location.origin + "/InstantReaction_Solved/IRGuest";
+const urlGuestMain = window.location.origin + "/InstantReaction_Solved/Guest/Guest-main.jsp";
  
 /**
  * Callback for clicking on the "Login" button
