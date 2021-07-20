@@ -7,15 +7,25 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import contexts.MemberContext;
+import contexts.ServerContext;
+
 /**
  * Servlet implementation class IRHost
  */
 @WebServlet("/IRHost")
 public class IRHost extends HttpServlet {
     private static final long serialVersionUID = 1L;
+    // ServerContext shared across all servlets
+    private ServerContext _serverContext = null;
     
-    private boolean _stateLogin = false;
-       
+    /**
+     * On initialization retrieve and retain _serverContext 
+     */
+    public void init() throws ServletException {
+        _serverContext = (ServerContext) getServletContext().getAttribute("context");
+    }
+    
     /**
      * @see HttpServlet#HttpServlet()
      */
@@ -66,14 +76,17 @@ public class IRHost extends HttpServlet {
         if (name == null || password == null) {
             // need both name and password to login
             answer = "IRHost_Error: missing parameter(s) for ?cmd=login command.";
-        } else if (_stateLogin) {
-            // cannot login twice
-            answer = String.format("IRHost_Error1: %s@%s is already logged in!", name, remoteIP);
         } else {
-            // TODO: handling the "login" command
-            answer = String.format("IRHost_TODO: {login} command processor for %s@%s", name, remoteIP);
-            // login successful, update internal state
-            _stateLogin = true;
+            // all is good, build a guest context before proceeding further.
+            MemberContext hostContext = new MemberContext(remoteIP, name);
+            
+            // attempt to login the host, answer the call with "succeeded" or "failed"
+            // depending on the success as returned by the server context login call.
+            if (_serverContext.loginMember(hostContext)) {
+                answer = String.format("IRHost_TODO: {login} command processor for %s succeeded!", hostContext);
+            } else {
+                answer = String.format("IRHost_TODO: {login} command processor for %s failed!", hostContext);
+            }
         }
         
         return answer;
@@ -90,14 +103,17 @@ public class IRHost extends HttpServlet {
         
         if (name == null) {
             answer = "IRHost_Error: missing parameter(s) for ?cmd=logout command.";
-        } else if (!_stateLogin) {
-            // cannot logout if not logged in
-            answer = String.format("IRHost_Error2: %s@%s is not logged in!", name, remoteIP);
         } else {
-            // TODO: handling the "logout" command
-            answer = String.format("IRHost_TODO: {logout} command processor for %s@%s", name, remoteIP);
-            // logout successful, update internal state
-            _stateLogin = false;
+            // all is good, build a guest context before proceeding further.
+            MemberContext hostContext = new MemberContext(remoteIP, name);
+            
+            // attempt to logout the host, answer the call with "succeeded" or "failed"
+            // depending on the success as returned by the server context logout call.
+            if (_serverContext.logoutMember(hostContext)) {
+                answer = String.format("IRHost_TODO: {logout} command processor for %s succeeded!", hostContext);
+            } else {
+                answer = String.format("IRHost_TODO: {logout} command processor for %s failed!", hostContext);
+            }
         }
         
         return answer;

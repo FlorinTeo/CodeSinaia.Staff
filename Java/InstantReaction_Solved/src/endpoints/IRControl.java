@@ -7,13 +7,24 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import contexts.ServerContext;
+
 /**
  * Servlet implementation class IRControl
  */
 @WebServlet(description = "Instant Reaction Control Panel", urlPatterns = { "/IRControl" })
 public class IRControl extends HttpServlet {
     private static final long serialVersionUID = 1L;
-       
+    // ServerContext shared across all servlets
+    private ServerContext _serverContext = null;
+    
+    /**
+     * On initialization retrieve and retain _serverContext 
+     */
+    public void init() throws ServletException {
+        _serverContext = (ServerContext) getServletContext().getAttribute("context");
+    }
+    
     /**
      * @see HttpServlet#HttpServlet()
      */
@@ -50,7 +61,8 @@ public class IRControl extends HttpServlet {
      */
     private String doCmdStatus(HttpServletRequest request, HttpServletResponse response) throws IOException {
         // TODO: handling the "status" command
-        return "IRControl_TODO: {status} command processor to be implemented!";
+        // Just return the description/summary as reflected in _serverContext
+        return String.format("IRControl_TODO: Current server status: %s", _serverContext.toString());
     }
 
     /**
