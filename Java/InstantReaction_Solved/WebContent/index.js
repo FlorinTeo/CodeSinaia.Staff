@@ -11,7 +11,7 @@ document.addEventListener("DOMContentLoaded", onPageLoad);
 /**
  * Static resources needed in the Host Login code
  */
-const urlControlAPI = window.location.origin + "/InstantReaction/IRControl";
+const urlControlAPI = window.location.origin + "/InstantReaction_Solved/IRControl";
 
 /**
  * Callback for the initial loading of the Control page.
