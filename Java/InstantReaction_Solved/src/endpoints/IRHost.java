@@ -11,7 +11,10 @@ import com.google.gson.Gson;
 
 import contexts.HostContext;
 import contexts.MemberContext;
+import contexts.QuestionContext;
 import contexts.ServerContext;
+import schemas.JsonQuestionContext;
+import schemas.JsonServerStatus;
 import schemas.JsonStatus;
 
 /**
@@ -39,7 +42,7 @@ public class IRHost extends HttpServlet {
     }
 
     /**
-     * IRHost REST API: http://localhost:8080/InstantReaction/IRHost?cmd={command}...
+     * IRHost REST (GET) API: http://localhost:8080/InstantReaction/IRHost?cmd={command}...
      * 
      * Supported commands:
      *     ?cmd=login&name={username}&password={password}: authenticates and logs in the user. 
@@ -85,7 +88,7 @@ public class IRHost extends HttpServlet {
             result.Success = false;
             result.Message = "IRHost_Error: missing parameter(s) for ?cmd=login command.";
         } else {
-            // all is good, build a guest context before proceeding further.
+            // all is good, build a host context before proceeding further.
             MemberContext hostContext = new HostContext(remoteIP, name);
             
             // attempt to login the host, answer the call with "succeeded" or "failed"
@@ -148,11 +151,95 @@ public class IRHost extends HttpServlet {
     }
 
     /**
-     * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
+     * IRHost REST (POST) API: http://localhost:8080/InstantReaction/IRHost?cmd={command}...
+     * 
+     * Supported commands:
+     *     ?cmd=ask&name={username}: ask the question given in the request body (JsonQuestionContext instance). 
+     *     ?cmd=clear&name={username}: clears the currently outstanding question.
+     *
+     * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
      */
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        // TODO Auto-generated method stub
-        doGet(request, response);
+        String cmd = request.getParameter("cmd");
+        JsonStatus result = new JsonStatus();
+
+        if (cmd == null) {
+            result.Success = false;
+            result.Message = "IRHost_Error: (null) command is invalid!";
+        } else if (cmd.equalsIgnoreCase("ask")) {
+            result = doCmdAsk(request, response);
+        } else if (cmd.equalsIgnoreCase("clear")) {
+            result = doCmdClear(request, response);
+        } else {
+            result.Success = false;
+            result.Message = String.format("IRHost_Error: Command {%s} is not supported!", cmd);
+        }
+        
+        String answer = (new Gson()).toJson(result);
+        response.getWriter().print(answer);
+    }
+    
+    /**
+     * Handles Speaker ask:
+     * http://localhost:8080/IRHost?cmd=ask
+     * POST body request contains a JSON serialized Question
+     * return a JsonSpeakerStatus
+     */
+    private JsonStatus doCmdAsk(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
+        JsonServerStatus result = new JsonServerStatus();
+        MemberContext memberContext = _serverContext.getMember(
+                new HostContext(
+                        request.getRemoteAddr(),
+                        request.getParameter("name")));
+        
+        // verify the identity of the caller
+        if (memberContext == null || !(memberContext instanceof HostContext)) {
+            result.Success = false;
+            result.Message = "IRHost_Error: unrecognized host name for the ?cmd=ask command.";
+        } else {
+            JsonQuestionContext jsonQuestion = (new Gson()).fromJson(request.getReader(), JsonQuestionContext.class);
+            QuestionContext questionContext = new QuestionContext(jsonQuestion);
+            result.Success = _serverContext.setQuestion(questionContext);
+            if (!result.Success) {
+                result.Message = "IRHost_Error: failed setting question on server.";
+            }
+        }
+        
+        if (result.Success) {
+            result = _serverContext.toJson();
+        }
+        
+        return result;
+    }
+    
+    /**
+     * Handles the clear question request:
+     * http://localhost:8080/IRHost?cmd=clear
+     * Returns a JsonSpeakerStatus
+     */
+    private JsonStatus doCmdClear(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
+        JsonServerStatus result = new JsonServerStatus();
+        MemberContext memberContext = _serverContext.getMember(
+                new HostContext(
+                        request.getRemoteAddr(),
+                        request.getParameter("name")));
+        
+        // verify the identity of the caller
+        if (memberContext == null || !(memberContext instanceof HostContext)) {
+            result.Success = false;
+            result.Message = "IRHost_Error: unrecognized host name for the ?cmd=clear command.";
+        } else {
+            result.Success = _serverContext.setQuestion(null);
+            if (!result.Success) {
+                result.Message = "IRHost_Error: failed clearing question from server.";
+            }
+        }
+        
+        if (result.Success) {
+            result = _serverContext.toJson();
+        }
+        
+        return result;
     }
 
 }
