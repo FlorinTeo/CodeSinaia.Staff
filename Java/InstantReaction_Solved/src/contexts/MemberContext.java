@@ -1,9 +1,9 @@
 package contexts;
 
 /**
- * Member Context class holding all data of one member (Host or Guest)
+ * Member Context abstract class holding data common to Host or Guest members
  */
-public class MemberContext {
+public abstract class MemberContext {
     // Client IP Address of the member
     private String _ipAddress;
     // Member name
@@ -43,6 +43,6 @@ public class MemberContext {
      */
     @Override
     public String toString() {
-        return String.format("Member %s", getKey());
+        return String.format("%s", getKey());
     }
 }

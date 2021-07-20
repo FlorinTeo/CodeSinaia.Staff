@@ -7,6 +7,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import contexts.GuestContext;
 import contexts.MemberContext;
 import contexts.ServerContext;
 
@@ -76,7 +77,7 @@ public class IRGuest extends HttpServlet {
             answer = "IRGuest_Error: missing parameter(s) for ?cmd=login command.";
         } else {
             // all is good, build a guest context before proceeding further.
-            MemberContext guestContext = new MemberContext(remoteIP, name);
+            MemberContext guestContext = new GuestContext(remoteIP, name);
             
             // attempt to login the guest, answer the call with "succeeded" or "failed"
             // depending on the success as returned by the server context login call.
@@ -103,7 +104,7 @@ public class IRGuest extends HttpServlet {
             answer = "IRGuest_Error: missing parameter(s) for ?cmd=logout command.";
         } else {
             // all is good, build a guest context before proceeding further.
-            MemberContext guestContext = new MemberContext(remoteIP, name);
+            MemberContext guestContext = new GuestContext(remoteIP, name);
             
             // attempt to logout the guest, answer the call with "succeeded" or "failed"
             // depending on the success as returned by the server context logout call.
