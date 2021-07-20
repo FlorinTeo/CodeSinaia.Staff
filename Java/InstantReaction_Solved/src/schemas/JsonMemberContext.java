@@ -4,4 +4,5 @@ public class JsonMemberContext {
     public String IPAddress;
     public String Name;
     public String Role;
+    public JsonAnswerContext Answer;
 }

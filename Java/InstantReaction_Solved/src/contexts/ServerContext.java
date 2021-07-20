@@ -104,20 +104,30 @@ public class ServerContext {
      * Returns true on success, false otherwise.
      */
     public boolean setQuestion(QuestionContext question) {
+        boolean result = false;
+        
         if ((question != null) && (_currentQuestion == null)) {
             // setting a new question, since the current question is cleared.
             _currentQuestion = question;
             _questionCount++;
-            return true;
-        }
-        
-        if ((question == null) && (_currentQuestion != null)) {
+            result = true;
+        } else if ((question == null) && (_currentQuestion != null)) {
             // clearing the current outstanding question.
             _currentQuestion = null;
-            return true;
+            result = true;
         }
         
-        return false;
+        // If a question was set/cleared, reset any previous answer from all guests.
+        if (result) {
+            for (Map.Entry<String, MemberContext> kvp : _audienceMap.entrySet()) {
+                MemberContext memberContext = kvp.getValue();
+                if (memberContext instanceof GuestContext) {
+                    ((GuestContext)memberContext).setAnswer(null);
+                }
+            }
+        }
+        
+        return result;
     }
     
     /**
