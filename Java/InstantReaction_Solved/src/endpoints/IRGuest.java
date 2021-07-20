@@ -9,9 +9,11 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.google.gson.Gson;
 
+import contexts.AnswerContext;
 import contexts.GuestContext;
 import contexts.MemberContext;
 import contexts.ServerContext;
+import schemas.JsonAnswerContext;
 import schemas.JsonServerStatus;
 import schemas.JsonStatus;
 
@@ -146,11 +148,66 @@ public class IRGuest extends HttpServlet {
     }
     
     /**
-     * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
+     * IRGuest REST (POST) API: http://localhost:8080/InstantReaction/IRGuest?cmd={command}...
+     * 
+     * Supported commands:
+     *     ?cmd=answer&name={username}: provides the answer for the outstanding question on server
+     *                                  (JsonAnswerContext in the POST body). 
      */
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        // TODO Auto-generated method stub
-        doGet(request, response);
+        String cmd = request.getParameter("cmd");
+        JsonStatus result = new JsonStatus();
+
+        if (cmd == null) {
+            result.Success = false;
+            result.Message = "IRGuest_Error: (null) command is invalid!";
+        } else if (cmd.equalsIgnoreCase("answer")) {
+            result = doCmdAnswer(request, response);
+        } else {
+            result.Success = false;
+            result.Message = String.format("IRGuest_Error: Command {%s} is not supported!", cmd);
+        }
+        
+        String answer = (new Gson()).toJson(result);
+        response.getWriter().print(answer);
     }
 
+    /**
+     * IRGuest ?cmd=status handler.
+     * http://localhost:8080/InstantReaction/IRGuest?cmd=status
+     */
+    private JsonStatus doCmdAnswer(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        JsonStatus result = new JsonStatus();
+        MemberContext memberContext = _serverContext.getMember(
+                new GuestContext(
+                        request.getRemoteAddr(),
+                        request.getParameter("name")));
+        AnswerContext answerContext = new AnswerContext();
+        
+        // verify the identity of the caller
+        if (memberContext == null || !(memberContext instanceof GuestContext)) {
+            result.Success = false;
+            result.Message = "IRGuest_Error: unrecognized guest name for the ?cmd=answer command.";
+        } else if (_serverContext.getQuestion() == null) {
+            result.Success = false;
+            result.Message = "IRGuest_Error: No outstanding question.";
+        } else {
+            // deserialize the answer from the POST body
+            JsonAnswerContext jsonAnswer = (new Gson()).fromJson(request.getReader(), JsonAnswerContext.class);
+            answerContext = new AnswerContext(jsonAnswer);
+            
+            // verify if the answer is not stale (for an old question)
+            if (answerContext.getQuestionID() != _serverContext.getQuestionCount()) {
+                result.Success = false;
+                result.Message = "IRGuest_Error: Answering to obsolete question.";
+            } else {
+                // if all good set the answer in the member context and loop it back
+                ((GuestContext)memberContext).setAnswer(answerContext);
+                result.Success = true;
+                result.Message = answerContext.getText();
+            }
+        }
+        
+        return result;
+    }
 }

@@ -39,6 +39,11 @@ const urlGuestAPI = window.location.origin + "/InstantReaction_Solved/IRGuest";
 const urlGuestLogin = window.location.origin + "/InstantReaction_Solved/Guest/index.jsp";
 
 /**
+ * Global variables
+ */
+ var currentQuestion;
+
+/**
  * Callback for the initial loading of the Guest main page.
  */
 function onPageLoad() {
@@ -58,8 +63,10 @@ function onStatusResponse() {
     if (jsonStatus.Success) {
         if (jsonStatus.hasOwnProperty("Question")) {
             setupQuestion(jsonStatus.Question);
+            currentQuestion = jsonStatus.Question;
         } else {
             resetQuestion();
+            currentQuestion = null;
         }
     } else {
         alert(jsonStatus.Message);
@@ -96,7 +103,8 @@ function onLogoutResponse() {
  */
 function onClickChoice(e) {
     e.preventDefault();
-    spnAnswer.innerHTML = e.currentTarget.value;
+    // identify the choice and post the answer request
+    postAnswerRequest(e.currentTarget.value);
 }
 
 /**
@@ -104,7 +112,7 @@ function onClickChoice(e) {
  */
 function onChangeRange(e) {
     e.preventDefault();
-    spnAnswer.innerHTML = rngRange.value;
+    postAnswerRequest(rngRange.value);
 }
 
 /**
@@ -112,7 +120,36 @@ function onChangeRange(e) {
  */
 function onClickSubmit(e) {
     e.preventDefault();
-    spnAnswer.innerHTML = 'Submitted!';
+    postAnswerRequest(txtFreeFormAnswer.value);
+}
+
+function postAnswerRequest(answer) {
+    // construct the JSON object for the answer to be sent to the server
+    var answer = { "QuestionID" : currentQuestion.QuestionID, "AnswerText" : answer };
+    
+    // prepare the web POST request
+    var request = new  XMLHttpRequest();
+    request.open("POST", `${urlGuestAPI}?name=${username}&cmd=answer`, true);
+    request.timeout = 2000;
+    request.setRequestHeader('Content-Type', 'application/json; charset=UTF-8');
+    request.onload = onAnswerResponse;
+    request.send(JSON.stringify(answer));
+}
+
+/**
+ * Callback for receiving the response from the REST API "cmd=answer" call
+ */
+function onAnswerResponse() {
+    var jsonStatus = JSON.parse(this.response);
+    if (jsonStatus.Success) {
+        // trim the answer to max 10 chars to fit in the answer label.
+        if (jsonStatus.Message.length > 10) {
+            jsonStatus.Message = jsonStatus.Message.substring(0, 9) + '...';
+        }
+        spnAnswer.innerHTML = jsonStatus.Message;
+    } else {
+        alert(jsonStatus.Message);
+    }
 }
 
 /**
