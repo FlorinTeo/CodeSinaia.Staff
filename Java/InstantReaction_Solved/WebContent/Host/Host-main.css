@@ -26,3 +26,82 @@ table, th, tr, td {
     color:#0D1DE0;
 }
 
+/* Grid of controls for formulating the question with its text and selection of types
+ * and for and seeing the answers. Page includes:
+ * [grid-label]: a "Question" label on top of the page,
+ * [grid-question]: a text area for the question itself,
+ * [grid-choice|range|free]: a row of checkboxes for the type of question being asked,
+ * [grid-buttons]: a row of buttons for Ask|Clear actions,
+ * [grid-status]: a table for displaying the answers to the question as they are being filled in.
+ */
+.grid-label { grid-area: L; font-size: 24px; }
+.grid-question { grid-area: Q; height: 200px;}
+.grid-choice { grid-area: C; height: 48px;}
+.grid-range { grid-area: R; height: 48px;}
+.grid-free { grid-area: F; height: 48px;}
+.grid-buttons { grid-area: B; }
+.grid-status { grid-area: S;}
+
+.main-grid {
+    display: grid;
+    position: relative;
+    left: 20%;
+    width: 60%;
+    grid-template-areas:
+    '. L L L .'
+    'Q Q Q Q Q'
+    '. C R F .'
+    '. B B B .'
+    '. . . . .'
+    '. S S S .';
+    grid-gap: 4px;
+    text-align: center;
+}
+
+/* styles for all the main grid elements */
+.main-grid > div {
+    /* background-color: #d6eef8; */
+    padding: 2px 0;
+}
+
+.main-button {
+    width: 80px;
+    height: 32px;
+    font-size: 20px;
+    font-weight: 100;
+}
+
+.main-text-area {
+    resize: none;
+    width: 90%;
+    height: 90%;
+    font-size: 18px;
+    padding: 10px;
+}
+
+.main-checkbox {
+    width: 20px;
+    height: 20px;
+}
+
+.status-table {
+    text-align: left;
+    font-size: 12px;
+    border: 1px solid #dfdfdf;
+    border-collapse: collapse;
+}
+
+.status-th {
+    background-color: rgb(198, 253, 239);
+    border: 2px solid #dfdfdf;
+}
+
+.status-host-tr {
+    color: rgb(128, 128, 128);
+    border: 1px solid #dfdfdf;
+}
+
+.status-guest-tr {
+    font-weight: bold;
+    border: 1px solid #dfdfdf;
+}
