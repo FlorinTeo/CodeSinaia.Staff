@@ -139,11 +139,27 @@ public class IRHost extends HttpServlet {
     }
     
     /**
-     * IRHost ?cmd=status handler.
-     * http://localhost:8080/InstantReaction/IRHost?cmd=status
+     * IRHost ?cmd=status handler. Expects name as command parameter.
+     * http://localhost:8080/InstantReaction/IRHost?cmd=status&name={username}
      */
     private JsonStatus doCmdStatus(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        return _serverContext.toJson();
+        JsonServerStatus result = new JsonServerStatus();
+        MemberContext memberContext = _serverContext.getMember(
+                new HostContext(
+                        request.getRemoteAddr(),
+                        request.getParameter("name")));
+        
+        // verify the identity of the caller
+        if (memberContext == null || !(memberContext instanceof HostContext)) {
+            result.Success = false;
+            result.Message = "IRHost_Error: unrecognized host name for the ?cmd=status command.";
+        } else {
+            result = _serverContext.toJson();
+            // "touch" this host to mark it as active
+            memberContext.touch();
+        }
+        
+        return result;
     }
 
     /**

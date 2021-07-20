@@ -25,5 +25,7 @@ public class ServerListener implements ServletContextListener {
      */
     @Override
     public void contextDestroyed(ServletContextEvent event) {
+        ServerContext serverContext = (ServerContext)event.getServletContext().getAttribute("context");
+        serverContext.closing();
     }
 }

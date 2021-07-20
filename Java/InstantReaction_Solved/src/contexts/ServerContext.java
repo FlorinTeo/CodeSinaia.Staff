@@ -3,6 +3,8 @@ package contexts;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Timer;
+import java.util.TimerTask;
 import java.util.concurrent.ConcurrentHashMap;
 
 import schemas.JsonServerStatus;
@@ -10,7 +12,10 @@ import schemas.JsonServerStatus;
 /**
  * Server Context class, holding all data shared across all servlets.
  */
-public class ServerContext {
+public class ServerContext extends TimerTask {
+    // Every 5 seconds check and purge stale member contexts
+    private static final int HEARTBEAT_MS = 5000;
+    
     // Dictionary indexing (by their key) all the members, guests or hosts, currently logged in
     private ConcurrentHashMap<String, MemberContext> _audienceMap;
     
@@ -20,6 +25,9 @@ public class ServerContext {
     // Current outstanding question (or null if there's none)
     private QuestionContext _currentQuestion;
     
+    // Timer for the checking the stale members at HEARTBEAT_MS intervals.
+    private Timer _heartBeat;
+    
     /**
      * ServerContext constructor creates an empty audience map a null (cleared) question.
      */
@@ -27,6 +35,15 @@ public class ServerContext {
         _audienceMap = new ConcurrentHashMap<String, MemberContext>();
         _questionCount = 0;
         _currentQuestion = null;
+        _heartBeat = new Timer();
+        _heartBeat.schedule(this, HEARTBEAT_MS, HEARTBEAT_MS);
+    }
+    
+    /**
+     * Cleans up resources when context is about to be destroyed.
+     */
+    public void closing() {
+        _heartBeat.cancel();
     }
     
     /**
@@ -167,5 +184,26 @@ public class ServerContext {
         jsonServerStatus.Message = String.format("Current server status: %d members logged in; questions count = %d.", 
                     membersList.size(), _questionCount);
         return jsonServerStatus;
+    }
+
+    /**
+     * Timer run method. Triggered every HEARTBEAT_MS to perform a check on the audience map.
+     * Members who did not reach out for status in a certain amount of time (60sec) will be purged.
+     */
+    @Override
+    public void run() {
+        // collect stale members in a separate list (can't remove elements from a collection while iterating it)
+        List<MemberContext> staleMembers = new ArrayList<MemberContext>();
+        for (Map.Entry<String, MemberContext> kvp : _audienceMap.entrySet()) {
+            MemberContext memberContext = kvp.getValue();
+            if (memberContext.isStale()) {
+                staleMembers.add(memberContext);
+            }
+        }
+        
+        // remove the members detected as stale.
+        for (MemberContext staleMember : staleMembers) {
+            _audienceMap.remove(staleMember.getKey());
+        }
     }
 }

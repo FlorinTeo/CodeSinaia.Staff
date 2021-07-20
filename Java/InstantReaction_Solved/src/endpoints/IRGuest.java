@@ -137,13 +137,28 @@ public class IRGuest extends HttpServlet {
     }
     
     /**
-     * IRGuest ?cmd=status handler.
-     * http://localhost:8080/InstantReaction/IRGuest?cmd=status
+     * IRGuest ?cmd=status handler. Expects name as command parameter.
+     * http://localhost:8080/InstantReaction/IRGuest?cmd=status&name={username}
      */
     private JsonStatus doCmdStatus(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        JsonServerStatus result = _serverContext.toJson();
-        // For guest we do not want to return the list of members, we only want the outstanding question.
-        result.Members = null;
+        JsonServerStatus result = new JsonServerStatus();
+        MemberContext memberContext = _serverContext.getMember(
+                new GuestContext(
+                        request.getRemoteAddr(),
+                        request.getParameter("name")));
+        
+        // verify the identity of the caller
+        if (memberContext == null || !(memberContext instanceof GuestContext)) {
+            result.Success = false;
+            result.Message = "IRGuest_Error: unrecognized guest name for the ?cmd=status command.";
+        } else {
+            result = _serverContext.toJson();
+            // For guest we do not want to return the list of members, we only want the outstanding question.
+            result.Members = null;
+            // "touch" this guest to mark it as active
+            memberContext.touch();
+        }
+        
         return result;
     }
     
