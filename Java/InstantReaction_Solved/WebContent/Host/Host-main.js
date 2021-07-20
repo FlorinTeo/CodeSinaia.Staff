@@ -76,7 +76,13 @@ function onStatusResponse() {
             newRow.cells[0].innerHTML = jsonStatus.Members[i].Name;
             // fill in the guest answer, if any
             newRow.insertCell().style = 'width:65%';
-            newRow.cells[1].innerHTML = (jsonStatus.Members[i].Role == 'Host') ? '-' : 'TODO';
+            // check if the member provided an answer
+            if (jsonStatus.Members[i].hasOwnProperty("Answer")) {
+                newRow.cells[1].innerHTML = jsonStatus.Members[i].Answer.AnswerText;
+            } else {
+                // there's no answer
+                newRow.cells[1].innerHTML = '-';
+            }
         }
     } else {
         alert(jsonStatus.Message);
