@@ -15,6 +15,7 @@ const ckbFree = document.getElementById("ckbFree");
 const ckbChoices = [ckbChoice, ckbRange, ckbFree];
 const btnAsk = document.getElementById("btnAsk");
 const btnClear = document.getElementById("btnClear");
+const tblServerStatus = document.getElementById("statusTable").getElementsByTagName('tbody')[0];
 
 /**
  * Hook code listeners to actions and events in the Host main flow
@@ -43,6 +44,43 @@ const urlHostLogin = window.location.origin + "/InstantReaction_Solved/Host/inde
  */
 function onPageLoad() {
     txtTitleName.innerText = username;
+    var request = new  XMLHttpRequest();
+    request.open("GET", `${urlHostAPI}?cmd=status&name=${username}`, true);
+    request.timeout = 2000;
+    request.onload = onStatusResponse;
+    request.send();
+}
+
+/**
+ * Callback for receiving the response from the REST API "cmd=status" call
+ */
+function onStatusResponse() {
+    var jsonStatus = JSON.parse(this.response);
+    if (jsonStatus.Success) {
+        if (jsonStatus.hasOwnProperty("Question")) {
+            question = jsonStatus.Question;
+            lockQuestion();
+        } else if (question != null){
+            unlockQuestion();
+            question = null;
+        }
+        
+        // fill in server status table by emptying it and repopulating with current state
+        tblServerStatus.innerHTML = '';
+        for (i = 0; i < jsonStatus.Members.length; i++) {
+            // fill in only the guest information
+            var newRow = tblServerStatus.insertRow();
+            newRow.className = (jsonStatus.Members[i].Role == 'Host') ? 'status-host-tr' : 'status-guest-tr';
+            // fill in the guest name cell
+            newRow.insertCell().style= 'width:35%';
+            newRow.cells[0].innerHTML = jsonStatus.Members[i].Name;
+            // fill in the guest answer, if any
+            newRow.insertCell().style = 'width:65%';
+            newRow.cells[1].innerHTML = (jsonStatus.Members[i].Role == 'Host') ? '-' : 'TODO';
+        }
+    } else {
+        alert(jsonStatus.Message);
+    }
 }
 
 /**
@@ -110,21 +148,8 @@ function onBtnAskClick(e) {
     request.open("POST", `${urlHostAPI}?name=${username}&cmd=ask`, true);
     request.timeout = 2000;
     request.setRequestHeader('Content-Type', 'application/json; charset=UTF-8');
-    request.onload = onAskResponse;
+    request.onload = onStatusResponse;
     request.send(JSON.stringify(question));
-}
-
-/**
- * Callback for receiving the response from the REST API "cmd=ask" call
- */
-function onAskResponse() {
-    var jsonStatus = JSON.parse(this.response);
-    if (jsonStatus.Success) {
-        question = jsonStatus.Question;
-        lockQuestion(question);
-    } else {
-        alert(jsonStatus.Message);
-    }
 }
 
 /**
@@ -149,22 +174,8 @@ function onBtnClearClick(e) {
     request.open("POST", `${urlHostAPI}?name=${username}&cmd=clear`, true);
     request.timeout = 2000;
     request.setRequestHeader('Content-Type', 'application/json; charset=UTF-8');
-    request.onload = onClearResponse;
+    request.onload = onStatusResponse;
     request.send();
-}
-
-/**
- * Callback for receiving the response from the REST API "cmd=clear" call
- */
-function onClearResponse() {
-    var jsonStatus = JSON.parse(this.response);
-    if (jsonStatus.Success && question != null) {
-        // unlock the question only if it is currently locked
-        unlockQuestion();
-        question = null;
-    } else {
-        alert(jsonStatus.Message);
-    }
 }
 
 /**

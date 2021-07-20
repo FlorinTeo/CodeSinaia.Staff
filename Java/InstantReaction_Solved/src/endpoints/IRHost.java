@@ -143,11 +143,7 @@ public class IRHost extends HttpServlet {
      * http://localhost:8080/InstantReaction/IRHost?cmd=status
      */
     private JsonStatus doCmdStatus(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        // TODO: handling the "status" command
-        JsonStatus result = new JsonStatus();
-        result.Success = true;
-        result.Message = "IRHost_TODO: {status} command processor to be implemented!";
-        return result;
+        return _serverContext.toJson();
     }
 
     /**
