@@ -1,5 +1,7 @@
 package contexts;
 
+import schemas.JsonMemberContext;
+
 /**
  * HostContext class extending MemberContext with Host specific data
  */
@@ -19,5 +21,15 @@ public class HostContext extends MemberContext {
     @Override
     public String toString() {
         return String.format("Host %s", super.toString());
+    }
+    
+    /**
+     * Returns the json container for this host member.
+     */
+    @Override
+    public JsonMemberContext toJson() {
+        JsonMemberContext jsonHostContext = super.toJson();
+        jsonHostContext.Role = "Host";
+        return jsonHostContext;
     }
 }

@@ -66,11 +66,8 @@ public class IRControl extends HttpServlet {
      * IRServer ?cmd=status handler: http://localhost:8080/InstantReaction/IRServer?cmd=status
      */
     private JsonStatus doCmdStatus(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        // Just return the description/summary as reflected in _serverContext
-        JsonStatus result = new JsonStatus();
-        result.Success = true;
-        result.Message = String.format("IRControl_TODO: Current server status: %s", _serverContext.toString());
-        return result;
+        // Returns the complete server status in json form.
+        return _serverContext.toJson();
     }
 
     /**

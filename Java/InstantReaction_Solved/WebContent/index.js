@@ -2,6 +2,7 @@
  * Variables for the Control UI elements
  */
 const txtControlOutput = document.getElementById("controlOutput");
+const tblServerStatus = document.getElementById("statusTable").getElementsByTagName('tbody')[0];
 
 /**
  * Hook code listeners to actions and events in the Control page
@@ -28,10 +29,21 @@ function onPageLoad() {
  * Callback for receiving the response from the REST API Control status call
  */
 function onStatusResponse() {
-    // if successful or user not logged in go to the main page, otherwise alert error.
+    // if successful print out the server status message and list, otherwise alert error.
     var jsonResponse = JSON.parse(this.response);
     if (jsonResponse.Success) {
+        // print out the summary message
         txtControlOutput.innerHTML = jsonResponse.Message;
+        // empty the table and repopulate it with the current server status
+        tblServerStatus.innerHTML = '';
+        for (i = 0; i < jsonResponse.Members.length; i++) {
+            var newRow = tblServerStatus.insertRow();
+            // chose the row styling based on the role of this member
+            newRow.className = (jsonResponse.Members[i].Role == 'Host') ? 'status-host-tr': 'status-guest-tr';
+            newRow.insertCell().innerHTML = jsonResponse.Members[i].Role;
+            newRow.insertCell().innerHTML = jsonResponse.Members[i].IPAddress;
+            newRow.insertCell().innerHTML = jsonResponse.Members[i].Name;
+        }
     } else {
         alert(jsonResponse.Message);
     }

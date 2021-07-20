@@ -1,7 +1,11 @@
 package contexts;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+
+import schemas.JsonServerStatus;
 
 /**
  * Server Context class, holding all data shared across all servlets.
@@ -58,6 +62,20 @@ public class ServerContext {
     }
     
     /**
+     * Returns the complete list of member contexts.
+     */
+    public List<MemberContext> getMembersList() {
+        List<MemberContext> membersList = new ArrayList<MemberContext>();
+        
+        for (Map.Entry<String, MemberContext> kvp : _audienceMap.entrySet()) {
+            MemberContext memberContext = kvp.getValue();
+            membersList.add(memberContext);
+        }
+        
+        return membersList;
+    }
+    
+    /**
      * Return a summary of the context on the server:
      * number of members currently logged in and the full list of members.
      */
@@ -71,5 +89,20 @@ public class ServerContext {
         }
         
         return output;
+    }
+    
+    /**
+     * Returns the json container for the server context
+     */
+    public JsonServerStatus toJson() {
+        JsonServerStatus jsonServerStatus = new JsonServerStatus();
+        List<MemberContext> membersList = getMembersList();
+        for(MemberContext member : membersList) {
+            jsonServerStatus.Members.add(member.toJson());
+        }
+        
+        jsonServerStatus.Success = true;
+        jsonServerStatus.Message = String.format("Current server status: %d members logged in.", membersList.size());
+        return jsonServerStatus;
     }
 }

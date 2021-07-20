@@ -29,5 +29,17 @@
         <!--  Output area -->
         <p>
         <div id="controlOutput" class="text-output"></div>
+        <p>
+        <table id="statusTable" style="width:80%" class="status-table">
+            <thead>
+	            <tr id="statusHeader" class="status-tr">
+	                <th style="width:15%" class="status-th">Role</th>
+	                <th style="width:25%" class="status-th">IP</th>
+	                <th style="width:60%" class="status-th">Name</th>
+	            </tr>
+            </thead>
+            <tbody>
+            </tbody>
+        </table>
     </body>
 </html>

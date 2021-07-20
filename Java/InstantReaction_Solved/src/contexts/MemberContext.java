@@ -1,5 +1,7 @@
 package contexts;
 
+import schemas.JsonMemberContext;
+
 /**
  * Member Context abstract class holding data common to Host or Guest members
  */
@@ -44,5 +46,15 @@ public abstract class MemberContext {
     @Override
     public String toString() {
         return String.format("%s", getKey());
+    }
+    
+    /**
+     * Returns the json container for this member
+     */
+    public JsonMemberContext toJson() {
+        JsonMemberContext jsonMemberContext = new JsonMemberContext();
+        jsonMemberContext.IPAddress = _ipAddress;
+        jsonMemberContext.Name = _name;
+        return jsonMemberContext;
     }
 }
