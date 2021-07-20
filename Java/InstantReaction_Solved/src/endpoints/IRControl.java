@@ -23,11 +23,34 @@ public class IRControl extends HttpServlet {
     }
 
     /**
+     * IRServer REST API: http://localhost:8080/InstantReaction/IRServer?cmd={command}
+     * 
+     * Supported commands:
+     *     ?cmd=status: returns a list of all Hosts and Guests logged into the site
+     *     
      * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
      */
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        // TODO Auto-generated method stub
-        response.getWriter().append("Served at: ").append(request.getContextPath());
+        String cmd = request.getParameter("cmd");
+        String answer;
+        
+        if (cmd == null) {
+            answer = "IRControl_Error: (null) command is invalid!";
+        } else if (cmd.equalsIgnoreCase("status")) {
+            answer = doCmdStatus(request, response);
+        } else {
+            answer = String.format("IRControl_Error: Command {%s} is not supported!", cmd);
+        }
+        
+        response.getWriter().print(answer);
+    }
+    
+    /**
+     * IRServer ?cmd=status handler: http://localhost:8080/InstantReaction/IRServer?cmd=status
+     */
+    private String doCmdStatus(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        // TODO: handling the "status" command
+        return "IRControl_TODO: {status} command processor to be implemented!";
     }
 
     /**
