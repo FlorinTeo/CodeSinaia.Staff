@@ -66,7 +66,7 @@ public class IRGuest extends HttpServlet {
             answer = "IRGuest_Error: missing parameter(s) for ?cmd=login command.";
         } else if (_stateLogin){
             // cannot login twice
-            answer = String.format("IRGuest_Error: %s@%s is already logged in!", name, remoteIP);
+            answer = String.format("IRGuest_Error1: %s@%s is already logged in!<br>", name, remoteIP);
         } else {
             // TODO: handling the "login" command
             answer = String.format("IRGuest_TODO: {login} command processor for %s@%s", name, remoteIP);
@@ -90,7 +90,7 @@ public class IRGuest extends HttpServlet {
             answer = "IRGuest_Error: missing parameter(s) for ?cmd=logout command.";
         } else if (!_stateLogin) {
             // cannot logout if not logged in
-            answer = String.format("IRGuest_Error: %s@%s is not logged in!", name, remoteIP);
+            answer = String.format("IRGuest_Error2: %s@%s is not logged in!", name, remoteIP);
         } else {
             // TODO: handling the "logout" command
             answer = String.format("IRGuest_TODO: {logout} command processor for %s@%s", name, remoteIP);

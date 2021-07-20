@@ -6,6 +6,7 @@
         <!-- Text on the browser tab: "IR Control Panel" -->
         <title>IR Control Panel</title>
         <link rel="stylesheet" href="index.css?ver=1.0">
+        <script defer src="index.js?ver=1.0"></script>
     </head>
     <body>
     
@@ -24,5 +25,9 @@
              each leading to new browser pages for the Host and Guest entry page-->
         <a href="Host/index.jsp" target="_blank"><button>Host</button></a>
         <a href="Guest/index.jsp" target="_blank"><button>Guest</button></a>
+        
+        <!--  Output area -->
+        <p>
+        <div id="controlOutput" class="text-output"></div>
     </body>
 </html>

@@ -6,6 +6,7 @@
         <!-- Text on the browser tab: "IR Host" -->  
         <title>IR Host</title>
         <link rel="stylesheet" href="index.css?ver=1.0">
+        <script defer src="index.js?ver=1.0"></script>
     </head>
     <body>
 
@@ -24,16 +25,20 @@
         <table>
             <tr>
                 <td>Name:</td>
-                <td><input type="text"></td>
+                <td><input id="hostName" type="text"></td>
             </tr>
             <tr>
                 <td>Password:</td>
-                <td><input type="password"></td>
+                <td><input id="hostPassword" type="password"></td>
             </tr>
             <tr>
                 <td></td>
-                <td><input class="input-login" type="submit" value="Login" ></td>
+                <td><input id="hostLogin" class="input-login" type="submit" value="Login" ></td>
             </tr>
         </table>
+        
+        <!--  Output area -->
+        <p>
+        <div id="hostOutput"></div>
     </body>
 </html>

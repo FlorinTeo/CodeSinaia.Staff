@@ -16,3 +16,9 @@ button {
     font-size: 24px;
     color:#ee0000;
 }
+
+.text-output {
+    font-weight: 200;
+    font-size: 14px;
+    color:rgb(116, 164, 173);
+}

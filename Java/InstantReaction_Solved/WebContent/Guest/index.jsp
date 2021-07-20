@@ -2,10 +2,11 @@
 <!DOCTYPE html>
 <html>
     <head>
-	    <meta charset="ISO-8859-1">
+        <meta charset="ISO-8859-1">
         <!-- Text on the browser tab: "IR Guest" -->
-	    <title>IR Guest</title>
+        <title>IR Guest</title>
         <link rel="stylesheet" href="index.css?ver=1.0">
+        <script defer src="index.js?ver=1.0"></script>
     </head>
     <body>
     
@@ -24,12 +25,16 @@
         <table>
             <tr>
                 <td>Name:</td>
-                <td><input type="text"></td>
+                <td><input id="guestName" type="text"></td>
             </tr>
             <tr>
                 <td></td>
-                <td><input class="input-login" type="submit" value="Login"></td>
+                <td><input id="guestLogin" class="input-login" type="submit" value="Login"></td>
             </tr>
         </table>
+        
+        <!--  Output area -->
+        <p>
+        <div id="guestOutput"></div>
 	</body>
 </html>
