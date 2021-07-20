@@ -14,8 +14,8 @@ btnHostLogin.addEventListener("click", onClickLogin);
 /**
  * Static resources needed in the Host Login code
  */
-const urlHostAPI = window.location.origin + "/InstantReaction/IRHost";
-const urlHostMain = window.location.origin + "/InstantReaction/Host/Host-main.jsp";
+const urlHostAPI = window.location.origin + "/InstantReaction_Solved/IRHost";
+const urlHostMain = window.location.origin + "/InstantReaction_Solved/Host/Host-main.jsp";
 
 /**
  * Callback for clicking on the "Login" button

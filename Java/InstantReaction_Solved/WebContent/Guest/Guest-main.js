@@ -18,8 +18,8 @@ btnGuestLogout.addEventListener("click", onClickLogout);
 /**
  * Static resources needed in the Guest Main code
  */
-const urlGuestAPI = window.location.origin + "/InstantReaction/IRGuest";
-const urlGuestLogin = window.location.origin + "/InstantReaction/Guest/index.jsp";
+const urlGuestAPI = window.location.origin + "/InstantReaction_Solved/IRGuest";
+const urlGuestLogin = window.location.origin + "/InstantReaction_Solved/Guest/index.jsp";
 
 /**
  * Callback for the initial loading of the Guest main page.
