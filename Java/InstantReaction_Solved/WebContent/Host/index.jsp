@@ -5,15 +5,16 @@
         <meta charset="ISO-8859-1">
         <!-- Text on the browser tab: "IR Host" -->  
         <title>IR Host</title>
+        <link rel="stylesheet" href="index.css?ver=1.0">
     </head>
-    <body style="font-family:Helvetica,sans-serif">
+    <body>
 
         <!-- Title of the page: "Instant Reaction HOST -->    
         <table>
             <tr>
                 <td>
                     <span>Instant Reaction</span>
-                    <span style="font-weight:400;font-size:24px;color:#0D1DE0;">Host</span>
+                    <span class="title-highlight">Host</span>
                 </td>
             </tr>
         </table>
@@ -31,7 +32,7 @@
             </tr>
             <tr>
                 <td></td>
-                <td><input type="submit" value="Login" ></td>
+                <td><input class="input-login" type="submit" value="Login" ></td>
             </tr>
         </table>
     </body>

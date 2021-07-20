@@ -1,0 +1,18 @@
+@charset "ISO-8859-1";
+
+/* Cascading Style Sheet for Control Panel page */
+
+body {
+  font-family: Helvetica, sans-serif;
+}
+
+button {
+    height: 20px;
+    width: 120px;
+}
+
+.title-highlight {
+    font-weight: 400;
+    font-size: 24px;
+    color:#ee0000;
+}

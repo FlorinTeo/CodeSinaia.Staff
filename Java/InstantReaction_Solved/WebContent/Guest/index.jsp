@@ -5,15 +5,16 @@
 	    <meta charset="ISO-8859-1">
         <!-- Text on the browser tab: "IR Guest" -->
 	    <title>IR Guest</title>
+        <link rel="stylesheet" href="index.css?ver=1.0">
     </head>
-    <body style="font-family:Helvetica,sans-serif">
+    <body>
     
-        <!-- Title of the page: "Instant Reaction GUEST -->
+        <!-- Title of the page: "Instant Reaction GUEST" -->
         <table>
             <tr>
                 <td>
                     <span>Instant Reaction</span>
-                    <span style="font-weight:400;font-size:24px;color:#00BB42;">Guest</span>
+                    <span class="title-highlight">Guest</span>
                 </td>
             </tr>
         </table>
@@ -27,7 +28,7 @@
             </tr>
             <tr>
                 <td></td>
-                <td><input type="submit" value="Login"></td>
+                <td><input class="input-login" type="submit" value="Login"></td>
             </tr>
         </table>
 	</body>
