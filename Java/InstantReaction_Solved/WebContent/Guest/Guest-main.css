@@ -26,3 +26,71 @@ table, th, tr, td {
     color:#00BB42;
 }
 
+/* Grid of controls for displaying the question and formulating the answer according
+ * to the type of the question. Page includes:
+ * [grid-question-label]: a "Question" label on top of the page,
+ * [grid-question]: a text area for the question itself,
+ * [grid-answer-label]: an "Answer: {answer}" label for the answer,
+ * [grid-choice]: Choice_A|B buttons for the choice question,
+ * [grid-range]: Range slider for the range question,
+ * [grid-freeform]: A text area and Submit button for the free form question.
+ */
+.grid-question-label { grid-area:L; font-size:24px; }
+.grid-question { grid-area:Q; height:200px; }
+.grid-answer-label { grid-area:A; margin-top:10px; font-size:24px; display:none; }
+.grid-choice { grid-area:B; display:none; }
+.grid-range { grid-area:R; display:none; }
+.grid-freeform { grid-area:F; height:180px; display:none; }
+
+.main-grid {
+    display: grid;
+    position: relative;
+    left: 20%;
+    width: 60%;
+    grid-template-areas:
+    '. L L L L .'
+    'Q Q Q Q Q Q'
+    '. A A A A .'
+    'B B B B B B'
+    '. R R R R .'
+    'F F F F F F';
+    grid-gap: 4px;
+    text-align: center;
+}
+
+.main-grid > div {
+    /*background-color: #d6eef8;*/
+    padding: 2px 0;
+}
+
+.grid-question > textarea {
+    resize: none;
+    width: 90%;
+    height: 85%;
+    font-size: 18px;
+    padding: 10px;
+}
+
+.grid-choice > input {
+    height: 32px;
+    font-size: 20px;
+    font-weight: 100;
+}
+
+.grid-range > input {
+    width: 60%;
+}
+
+.grid-freeform > textarea {
+    resize: none;
+    width: 90%;
+    height: 50%;
+    font-size: 18px;
+    padding: 10px;
+}
+
+.grid-freeform > input {
+    height: 32px;
+    font-size: 20px;
+    font-weight: 100;
+}

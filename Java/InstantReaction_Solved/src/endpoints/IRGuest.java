@@ -12,6 +12,7 @@ import com.google.gson.Gson;
 import contexts.GuestContext;
 import contexts.MemberContext;
 import contexts.ServerContext;
+import schemas.JsonServerStatus;
 import schemas.JsonStatus;
 
 /**
@@ -138,10 +139,9 @@ public class IRGuest extends HttpServlet {
      * http://localhost:8080/InstantReaction/IRGuest?cmd=status
      */
     private JsonStatus doCmdStatus(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        // TODO: handling the "status" command
-        JsonStatus result = new JsonStatus();
-        result.Success = true;
-        result.Message = "IRGuest_TODO: {status} command processor to be implemented!";
+        JsonServerStatus result = _serverContext.toJson();
+        // For guest we do not want to return the list of members, we only want the outstanding question.
+        result.Members = null;
         return result;
     }
     
