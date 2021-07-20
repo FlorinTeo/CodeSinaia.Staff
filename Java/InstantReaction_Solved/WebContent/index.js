@@ -29,9 +29,10 @@ function onPageLoad() {
  */
 function onStatusResponse() {
     // if successful or user not logged in go to the main page, otherwise alert error.
-    if (this.response.includes("IRControl_TODO")) {
-        txtControlOutput.innerHTML = this.response;
+    var jsonResponse = JSON.parse(this.response);
+    if (jsonResponse.Success) {
+        txtControlOutput.innerHTML = jsonResponse.Message;
     } else {
-        alert(this.response);
+        alert(jsonResponse.Message);
     }
 }

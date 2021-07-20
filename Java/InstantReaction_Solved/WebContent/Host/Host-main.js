@@ -44,10 +44,11 @@ function onClickLogout(e) {
  * Callback for receiving the response from the REST API Host Logout call
  */
 function onLogoutResponse() {
+    var jsonResponse = JSON.parse(this.response);
     // if successful or user not logged in go to the main page, otherwise alert error.
-    if (this.response.includes("IRHost_TODO") || this.response.includes("IRHost_Error2")) {
+    if (jsonResponse.Success) {
         window.location.href = urlHostLogin;
     } else {
-        alert(this.response);
+        alert(json.Message);
     }
 }

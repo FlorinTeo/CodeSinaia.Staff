@@ -38,11 +38,12 @@ function onClickLogin(e) {
  * Callback for receiving the response from the REST API Guest Login call
  */
 function onLoginResponse() {
+    var jsonResponse = JSON.parse(this.response);
     // if successful or guest already logged in redirect to the host main page
     // otherwise display the response on the host login page.
-    if (this.response.includes("IRGuest_TODO") || this.response.includes("IRGuest_Error1")) {
+    if (jsonResponse.Success) {
         window.location.href = `${urlGuestMain}?name=${edtGuestName.value}`;
     } else {
-        txtGuestOutput.innerHTML = this.response;
+        txtGuestOutput.innerHTML = jsonResponse.Message;
     }
 }

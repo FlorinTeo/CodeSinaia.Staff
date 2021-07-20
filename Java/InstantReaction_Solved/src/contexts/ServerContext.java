@@ -46,6 +46,18 @@ public class ServerContext {
     }
     
     /**
+     * Returns the full member context from the audience map using the key from the given memberContext.
+     */
+    public MemberContext getMember(MemberContext memberContext) {
+        MemberContext memberInAudience = null;
+        if (memberContext != null) {
+            memberInAudience = _audienceMap.get(memberContext.getKey());
+        }
+        
+        return memberInAudience;
+    }
+    
+    /**
      * Return a summary of the context on the server:
      * number of members currently logged in and the full list of members.
      */

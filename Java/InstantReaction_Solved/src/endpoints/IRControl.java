@@ -7,7 +7,10 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.google.gson.Gson;
+
 import contexts.ServerContext;
+import schemas.JsonStatus;
 
 /**
  * Servlet implementation class IRControl
@@ -43,26 +46,31 @@ public class IRControl extends HttpServlet {
      */
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String cmd = request.getParameter("cmd");
-        String answer;
+        JsonStatus result = new JsonStatus();
         
         if (cmd == null) {
-            answer = "IRControl_Error: (null) command is invalid!";
+            result.Success = false;
+            result.Message = "IRControl_Error: (null) command is invalid!";
         } else if (cmd.equalsIgnoreCase("status")) {
-            answer = doCmdStatus(request, response);
+            result = doCmdStatus(request, response);
         } else {
-            answer = String.format("IRControl_Error: Command {%s} is not supported!", cmd);
+            result.Success = false;
+            result.Message = String.format("IRControl_Error: Command {%s} is not supported!", cmd);
         }
         
+        String answer = (new Gson()).toJson(result);
         response.getWriter().print(answer);
     }
     
     /**
      * IRServer ?cmd=status handler: http://localhost:8080/InstantReaction/IRServer?cmd=status
      */
-    private String doCmdStatus(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        // TODO: handling the "status" command
+    private JsonStatus doCmdStatus(HttpServletRequest request, HttpServletResponse response) throws IOException {
         // Just return the description/summary as reflected in _serverContext
-        return String.format("IRControl_TODO: Current server status: %s", _serverContext.toString());
+        JsonStatus result = new JsonStatus();
+        result.Success = true;
+        result.Message = String.format("IRControl_TODO: Current server status: %s", _serverContext.toString());
+        return result;
     }
 
     /**

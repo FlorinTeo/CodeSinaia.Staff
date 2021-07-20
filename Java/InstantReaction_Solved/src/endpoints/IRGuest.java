@@ -7,9 +7,12 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.google.gson.Gson;
+
 import contexts.GuestContext;
 import contexts.MemberContext;
 import contexts.ServerContext;
+import schemas.JsonStatus;
 
 /**
  * Servlet implementation class IRGuest
@@ -47,20 +50,23 @@ public class IRGuest extends HttpServlet {
      */
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String cmd = request.getParameter("cmd");
-        String answer;
+        JsonStatus result = new JsonStatus();
         
         if (cmd == null) {
-            answer = "IRGuest_Error: (null) command is invalid!";
+            result.Success = false;
+            result.Message = "IRGuest_Error: (null) command is invalid!";
         } else if (cmd.equalsIgnoreCase("login")) {
-            answer = doCmdLogin(request, response);
+            result = doCmdLogin(request, response);
         } else if (cmd.equalsIgnoreCase("logout")) {
-            answer = doCmdLogout(request, response);
+            result = doCmdLogout(request, response);
         } else if (cmd.equalsIgnoreCase("status")) {
-            answer = doCmdStatus(request, response);
+            result = doCmdStatus(request, response);
         } else {
-            answer = String.format("IRGuest_Error: Command {%s} is not supported!", cmd);
+            result.Success = false;
+            result.Message = String.format("IRGuest_Error: Command {%s} is not supported!", cmd);
         }
         
+        String answer = (new Gson()).toJson(result);
         response.getWriter().print(answer);
     }
 
@@ -68,13 +74,14 @@ public class IRGuest extends HttpServlet {
      * IRGuest ?cmd=login handler. Expects name as command parameter.
      * http://localhost:8080/InstantReaction/IRGuest?cmd=login&name={username}
      */
-    private String doCmdLogin(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    private JsonStatus doCmdLogin(HttpServletRequest request, HttpServletResponse response) throws IOException {
         String remoteIP = request.getRemoteAddr();
         String name=request.getParameter("name");
-        String answer;
+        JsonStatus result = new JsonStatus();
         
         if (name == null) {
-            answer = "IRGuest_Error: missing parameter(s) for ?cmd=login command.";
+            result.Success = false;
+            result.Message = "IRGuest_Error: missing parameter(s) for ?cmd=login command.";
         } else {
             // all is good, build a guest context before proceeding further.
             MemberContext guestContext = new GuestContext(remoteIP, name);
@@ -82,26 +89,31 @@ public class IRGuest extends HttpServlet {
             // attempt to login the guest, answer the call with "succeeded" or "failed"
             // depending on the success as returned by the server context login call.
             if (_serverContext.loginMember(guestContext)) {
-                answer = String.format("IRGuest_TODO: {login} command processor for %s succeeded!", guestContext);
+                result.Success = true;
+                result.Message = String.format("IRGuest_TODO: {login} command processor for %s succeeded!", guestContext);
             } else {
-                answer = String.format("IRGuest_TODO: {login} command processor for %s failed!", guestContext);
+                // if the guest is already logged in, the result is actually successful.
+                MemberContext memberContext = _serverContext.getMember(guestContext);
+                result.Success = (memberContext != null) && (memberContext instanceof GuestContext);
+                result.Message = String.format("IRGuest_TODO: {login} command processor for %s failed!", guestContext);
             }
         }
         
-        return answer;
+        return result;
     }
     
     /**
      * IRGuest ?cmd=logout handler. Expects name as command parameter.
      * http://localhost:8080/InstantReaction/IRGuest?cmd=logout&name={username}
      */
-    private String doCmdLogout(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    private JsonStatus doCmdLogout(HttpServletRequest request, HttpServletResponse response) throws IOException {
         String remoteIP = request.getRemoteAddr();
         String name=request.getParameter("name");
-        String answer;
+        JsonStatus result = new JsonStatus();
         
         if (name == null) {
-            answer = "IRGuest_Error: missing parameter(s) for ?cmd=logout command.";
+            result.Success = false;
+            result.Message = "IRGuest_Error: missing parameter(s) for ?cmd=logout command.";
         } else {
             // all is good, build a guest context before proceeding further.
             MemberContext guestContext = new GuestContext(remoteIP, name);
@@ -109,22 +121,28 @@ public class IRGuest extends HttpServlet {
             // attempt to logout the guest, answer the call with "succeeded" or "failed"
             // depending on the success as returned by the server context logout call.
             if (_serverContext.logoutMember(guestContext)) {
-                answer = String.format("IRGuest_TODO: {logout} command processor for %s succeeded!", guestContext);
+                result.Success = true;
+                result.Message = String.format("IRGuest_TODO: {logout} command processor for %s succeeded!", guestContext);
             } else {
-                answer = String.format("IRGuest_TODO: {logout} command processor for %s failed!", guestContext);
+                // if the guest is not logged in, the result is actually successful.
+                result.Success = (_serverContext.getMember(guestContext) == null);
+                result.Message = String.format("IRGuest_TODO: {logout} command processor for %s failed!", guestContext);
             }
         }
         
-        return answer;
+        return result;
     }
     
     /**
      * IRGuest ?cmd=status handler.
      * http://localhost:8080/InstantReaction/IRGuest?cmd=status
      */
-    private String doCmdStatus(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    private JsonStatus doCmdStatus(HttpServletRequest request, HttpServletResponse response) throws IOException {
         // TODO: handling the "status" command
-        return "IRGuest_TODO: {status} command processor to be implemented!";
+        JsonStatus result = new JsonStatus();
+        result.Success = true;
+        result.Message = "IRGuest_TODO: {status} command processor to be implemented!";
+        return result;
     }
     
     /**
