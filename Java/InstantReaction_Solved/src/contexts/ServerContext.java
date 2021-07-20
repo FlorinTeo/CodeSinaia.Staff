@@ -14,11 +14,19 @@ public class ServerContext {
     // Dictionary indexing (by their key) all the members, guests or hosts, currently logged in
     private ConcurrentHashMap<String, MemberContext> _audienceMap;
     
+    // Counter for questions being asked;
+    private int _questionCount;
+    
+    // Current outstanding question (or null if there's none)
+    private QuestionContext _currentQuestion;
+    
     /**
-     * ServerContext constructor creates an empty audience map.
+     * ServerContext constructor creates an empty audience map a null (cleared) question.
      */
     public ServerContext() {
         _audienceMap = new ConcurrentHashMap<String, MemberContext>();
+        _questionCount = 0;
+        _currentQuestion = null;
     }
     
     /**
@@ -76,12 +84,50 @@ public class ServerContext {
     }
     
     /**
+     * Returns the question counter.
+     */
+    public int getQuestionCount() {
+        return _questionCount;
+    }
+    
+    /**
+     * Returns the current question, or null if there's none outstanding.
+     */
+    public QuestionContext getQuestion() {
+        return _currentQuestion;
+    }
+    
+    /**
+     * Sets the current question to a new one. If the given question is not null
+     * it means a new question is being asked (can do it only if the current question is cleared).
+     * If the given question is null it means the current question is cleared (it has to exist). 
+     * Returns true on success, false otherwise.
+     */
+    public boolean setQuestion(QuestionContext question) {
+        if ((question != null) && (_currentQuestion == null)) {
+            // setting a new question, since the current question is cleared.
+            _currentQuestion = question;
+            _questionCount++;
+            return true;
+        }
+        
+        if ((question == null) && (_currentQuestion != null)) {
+            // clearing the current outstanding question.
+            _currentQuestion = null;
+            return true;
+        }
+        
+        return false;
+    }
+    
+    /**
      * Return a summary of the context on the server:
      * number of members currently logged in and the full list of members.
      */
     @Override
     public String toString() {
-        String output = String.format("%d members currently logged in", _audienceMap.size());
+        String output = String.format("%d members logged in; questions count = %d",
+                        _audienceMap.size(), _questionCount);
         
         for (Map.Entry<String, MemberContext> kvp : _audienceMap.entrySet()) {
             MemberContext memberContext = kvp.getValue();
@@ -101,8 +147,15 @@ public class ServerContext {
             jsonServerStatus.Members.add(member.toJson());
         }
         
+        // Serialize current question, if there is an outstanding one
+        if (_currentQuestion != null) {
+            jsonServerStatus.Question = _currentQuestion.toJson();
+            jsonServerStatus.Question.QuestionID = _questionCount;
+        }
+        
         jsonServerStatus.Success = true;
-        jsonServerStatus.Message = String.format("Current server status: %d members logged in.", membersList.size());
+        jsonServerStatus.Message = String.format("Current server status: %d members logged in; questions count = %d.", 
+                    membersList.size(), _questionCount);
         return jsonServerStatus;
     }
 }

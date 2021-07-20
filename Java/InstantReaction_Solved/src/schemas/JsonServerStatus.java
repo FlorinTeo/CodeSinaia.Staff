@@ -5,4 +5,5 @@ import java.util.List;
 
 public class JsonServerStatus extends JsonStatus {
     public List<JsonMemberContext> Members = new ArrayList<JsonMemberContext>();
+    public JsonQuestionContext Question = null;
 }
