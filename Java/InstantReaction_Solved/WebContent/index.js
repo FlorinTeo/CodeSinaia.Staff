@@ -18,6 +18,14 @@ const urlControlAPI = window.location.origin + "/InstantReaction_Solved/IRContro
  * Callback for the initial loading of the Control page.
  */
 function onPageLoad() {
+    setInterval(onStatusRequest, 4000);
+    onStatusRequest();
+}
+
+/**
+ * Timer callback sending an IRControl?cmd=status request to the server.
+ */
+function onStatusRequest() {
     var request = new  XMLHttpRequest();
     request.open("GET", `${urlControlAPI}?cmd=status`, true);
     request.timeout = 2000;

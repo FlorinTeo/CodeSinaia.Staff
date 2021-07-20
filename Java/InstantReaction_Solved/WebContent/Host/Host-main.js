@@ -44,6 +44,14 @@ const urlHostLogin = window.location.origin + "/InstantReaction_Solved/Host/inde
  */
 function onPageLoad() {
     txtTitleName.innerText = username;
+    setInterval(onStatusRequest, 4000);
+    onStatusRequest();
+}
+
+/**
+ * Timer callback sending an IRHost?cmd=status request to the server.
+ */
+function onStatusRequest() {
     var request = new  XMLHttpRequest();
     request.open("GET", `${urlHostAPI}?cmd=status&name=${username}`, true);
     request.timeout = 2000;

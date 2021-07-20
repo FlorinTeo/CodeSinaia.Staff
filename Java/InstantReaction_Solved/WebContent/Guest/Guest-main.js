@@ -48,6 +48,14 @@ const urlGuestLogin = window.location.origin + "/InstantReaction_Solved/Guest/in
  */
 function onPageLoad() {
     txtTitleName.innerText = username;
+    setInterval(onStatusRequest, 4000);
+    onStatusRequest();
+}
+
+/**
+ * Timer callback sending an IRGuest?cmd=status request to the server.
+ */
+function onStatusRequest() {
     var request = new  XMLHttpRequest();
     request.open("GET", `${urlGuestAPI}?cmd=status&name=${username}`, true);
     request.timeout = 2000;
