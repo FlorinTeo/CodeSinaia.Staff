@@ -1,20 +1,18 @@
-# Code2021-Sinaia
-Code2021. Scoala de programare avansata Sinaia
+# Code Sinaia (Staff)
+Code Sinaia. Scoala de programare avansata Sinaia.
 
 ---
 ### Scope
-This is repository is hosting documets and code shared only by the camp organizing staff.
+This is repository is hosting documents and code shared only by the camp organizing staff.
 
 ---
-### **Website** http://inproted.org/CodeSinaia2021.html
+### **Website** http://inproted.org/
 
 ---
 ### Team members - repo contributors
 * Florin Teodorescu (@FlorinTeo) - Instructor/developer
 * Mihai Ene-Pietrosanu (@MihaiEp) - Project Manager
-* Monica Ene-Pietrosanu (@MEnePie) - Speaker
-* Adrian Tindeche (@AdrianTindeche) - Speaker
+* Monica Ene-Pietrosanu (@MEnePie) - Project Manager
+* Adrian Tindeche (@AdrianTindeche) - Collaborator
 * Stefan Ene (@StefanEne) - TA 
-* Alex Tindeche (@AlexTindeche) - TA
-* Vlad Burcea (@VladBurcea) - TA
-* Tudor Branga Peicu (@MTBrangaPeicu) - TA
+
