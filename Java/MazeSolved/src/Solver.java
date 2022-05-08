@@ -1,5 +1,5 @@
 import java.awt.Color;
-import java.util.List;
+import java.util.ArrayList;
 
 import graphics.MazeCanvas;
 import graphics.MazeCanvas.Side;
@@ -16,7 +16,7 @@ public class Solver extends Explorer {
         return (cell instanceof ExitCell);
     }
     
-    protected List<Side> onGetNextSteps(Cell cell) {
+    protected ArrayList<Side> onGetNextSteps(Cell cell) {
         return shuffle(cell.getPaths());
     }
     

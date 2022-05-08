@@ -1,5 +1,5 @@
 import java.awt.Color;
-import java.util.List;
+import java.util.ArrayList;
 
 import graphics.MazeCanvas;
 import graphics.MazeCanvas.Side;
@@ -17,8 +17,8 @@ public class Generator extends Explorer {
         return false;
     }
     
-    protected List<Side> onGetNextSteps(Cell cell) {
-        List<Side> walls = cell.getWalls();
+    protected ArrayList<Side> onGetNextSteps(Cell cell) {
+        ArrayList<Side> walls = cell.getWalls();
         walls = this.shuffle(walls);
         return walls;
     }

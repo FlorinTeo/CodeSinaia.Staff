@@ -4,8 +4,6 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-import org.javatuples.Pair;
-
 public class WordChecker {
     /**
      * Array of 5 Character values.

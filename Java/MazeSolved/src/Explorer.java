@@ -1,6 +1,5 @@
 import java.awt.Color;
 import java.util.ArrayList;
-import java.util.List;
 
 import graphics.MazeCanvas;
 import graphics.MazeCanvas.Side;
@@ -19,8 +18,8 @@ public class Explorer {
         _bktPathColor = bktPathColor;
     }
     
-    protected List<Side> shuffle(List<Side> sides) {
-        List<Side> shuffled = new ArrayList<Side>();
+    protected ArrayList<Side> shuffle(ArrayList<Side> sides) {
+        ArrayList<Side> shuffled = new ArrayList<Side>();
         
         while(sides.size() > 0) {
             int i = (int)(Math.random() * sides.size());
@@ -47,12 +46,12 @@ public class Explorer {
     public boolean run(Cell cell, Side fromSide) {
         cell.setVisited(true);
         boolean done = onEnterCell(cell, fromSide);
-        List<Side> nextSteps = onGetNextSteps(cell);
+        ArrayList<Side> nextSteps = onGetNextSteps(cell);
        
         for (Side path : nextSteps) {
             if (!done) {
                 Cell neighbor = _m.getNeighbor(cell, path);
-                if (!neighbor.getVisited()) {
+                if (neighbor != null && !neighbor.getVisited()) {
                     onStepForward(cell, path);
                     done = run(neighbor, getOpposite(path));
                     onStepBack(done, cell, path);
@@ -81,7 +80,7 @@ public class Explorer {
         return false;
     }
     
-    protected List<Side> onGetNextSteps(Cell cell) {
+    protected ArrayList<Side> onGetNextSteps(Cell cell) {
         return new ArrayList<Side>();
     }
     
