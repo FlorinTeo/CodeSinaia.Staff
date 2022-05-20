@@ -22,6 +22,7 @@ print("Let me help you with today's WORDLE...")
 wordleHelper = WordleHelper.WordleHelper()
 
 ##comment yey
+##SECOND COMMENT
 
 while(True):
     cmdLine = input("WORDLE Helper? > ").split()
