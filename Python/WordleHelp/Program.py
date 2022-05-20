@@ -21,6 +21,8 @@ def printHelp():
 print("Let me help you with today's WORDLE...")
 wordleHelper = WordleHelper.WordleHelper()
 
+##comment yey
+
 while(True):
     cmdLine = input("WORDLE Helper? > ").split()
     cmd = cmdLine[0].upper()
