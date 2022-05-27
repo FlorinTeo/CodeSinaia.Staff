@@ -14,17 +14,17 @@ class WordleHelper:
     def __init__(self):
         self._wordleChecker = WordChecker.WordChecker()
         self._wordleWordsMap = dict(); #use python dictionaries as hash maps
-        self.coutner = 0; #word counter for dictionary
+        self.counter = 0; #word counter for dictionary
 
     def cmdAdd(self, args):
         print(f"cmdAdd {list(args)}")
         #adds one word at a time
-        if(args.length != 1):
+        if(len(args) != 1):
             print(f"Input error")
-        word = args.lower();
+        word = args[0].lower();
         #word checker to make sure it is five letters
         self._wordleWordsMap[self.counter] = word;
-        counter = counter + 1; #increment word counter
+        self.counter = self.counter + 1; #increment word counter
         print(f"Added {word.upper()} to the words list!")
 
 
