@@ -23,7 +23,7 @@ class WordleHelper:
             print(f"Input error")
         word = args.lower();
         #word checker to make sure it is five letters
-        _wordleWordsMap[counter] = word;
+        self._wordleWordsMap[self.counter] = word;
         counter = counter + 1; #increment word counter
         print(f"Added {word.upper()} to the words list!")
 
@@ -39,5 +39,5 @@ class WordleHelper:
 
     def cmdClear(self, args):
         print(f"cmdClear {list(args)}")
-        counter = 0; #reset word counter
+        self.counter = 0; #reset word counter
 
