@@ -25,22 +25,26 @@ wordleHelper = WordleHelper.WordleHelper()
 ##SECOND COMMENT
 
 while(True):
-    cmdLine = input("WORDLE Helper? > ").split()
-    cmd = cmdLine[0].upper()
-    if (cmd == "?" or cmd == "HELP"):
-        printHelp()
-    elif(cmd == "ADD"):
-        wordleHelper.cmdAdd(cmdLine[1:])
-    elif(cmd == "LOAD"):
-        wordleHelper.cmdLoad(cmdLine[1:])
-    elif(cmd == "SAVE"):
-        wordleHelper.cmdSave(cmdLine[1:])
-    elif(cmd == "MATCH"):
-        wordleHelper.cmdMatch(cmdLine[1:])
-    elif(cmd == "CLEAR"):
-        wordleHelper.cmdClear(cmdLine[1:])
-    elif(cmd == "QUIT" or cmd == "EXIT"):
-        break
-    else:
-        print(f"Command '{cmd}' is not supported")
+    try:
+        cmdLine = input("WORDLE Helper? > ").split()
+        cmd = cmdLine[0].upper()
+        if (cmd == "?" or cmd == "HELP"):
+            printHelp()
+        elif(cmd == "ADD"):
+            wordleHelper.cmdAdd(cmdLine[1:])
+        elif(cmd == "LOAD"):
+            wordleHelper.cmdLoad(cmdLine[1:])
+        elif(cmd == "SAVE"):
+            wordleHelper.cmdSave(cmdLine[1:])
+        elif(cmd == "MATCH"):
+            wordleHelper.cmdMatch(cmdLine[1:])
+        elif(cmd == "CLEAR"):
+            wordleHelper.cmdClear(cmdLine[1:])
+        elif(cmd == "QUIT" or cmd == "EXIT"):
+            break
+        else:
+            print(f"Command '{cmd}' is not supported")
+    except Exception as e:
+        print(f"ERROR: {e}")
+
 print("Goodbye!")
