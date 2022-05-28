@@ -11,7 +11,7 @@ This is repository is hosting documets and code shared only by the camp organizi
 ---
 ### Team members - repo contributors
 * Florin Teodorescu (@FlorinTeo) - Instructor/developer
-* Mihai Ene-Pietrosanu (@MihaiEp) - Project Manager
+* Mihai Ene-Pietrosanu (@Mihaienepiet) - Project Manager
 * Monica Ene-Pietrosanu (@MEnePie) - Speaker
 * Adrian Tindeche (@AdrianTindeche) - Speaker
 * Stefan Ene (@StefanEne) - TA 
