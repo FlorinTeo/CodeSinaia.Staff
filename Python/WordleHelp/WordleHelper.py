@@ -110,9 +110,9 @@ class WordleHelper:
      # @param args - if present it's like ["-H", "~U", "-M", "-A", "+N"]
      # which will be used to update the WordChecker.
     def cmdMatch(self, args):
-        hint = "".join(args)
+        hint = "".join(args).upper()
         if hint != "":
-            self._wordChecker.update(args[0])
+            self._wordChecker.update(hint)
         nResults = 0
         for word in self._wordleWordsMap:
             if self._wordChecker.check(word):

@@ -21,26 +21,24 @@ def printHelp():
 print("Let me help you with today's WORDLE...")
 wordleHelper = WordleHelper.WordleHelper()
 
-##comment yey
-##SECOND COMMENT
-
+# command loop
 while(True):
     try:
         cmdLine = input("WORDLE Helper? > ").split()
         cmd = cmdLine[0].upper()
-        if (cmd == "?" or cmd == "HELP"):
+        if cmd == "?" or cmd == "HELP":
             printHelp()
-        elif(cmd == "ADD"):
+        elif cmd == "ADD":
             wordleHelper.cmdAdd(cmdLine[1:])
-        elif(cmd == "LOAD"):
+        elif cmd == "LOAD":
             wordleHelper.cmdLoad(cmdLine[1:])
-        elif(cmd == "SAVE"):
+        elif cmd == "SAVE":
             wordleHelper.cmdSave(cmdLine[1:])
-        elif(cmd == "MATCH"):
+        elif cmd == "MATCH":
             wordleHelper.cmdMatch(cmdLine[1:])
-        elif(cmd == "CLEAR"):
+        elif cmd == "CLEAR":
             wordleHelper.cmdClear(cmdLine[1:])
-        elif(cmd == "QUIT" or cmd == "EXIT"):
+        elif cmd == "QUIT" or cmd == "EXIT":
             break
         else:
             print(f"Command '{cmd}' is not supported")
