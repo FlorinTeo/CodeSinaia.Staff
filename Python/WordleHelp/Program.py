@@ -15,6 +15,8 @@ def printHelp():
         saves the wordle database to a text file.
     load {file_name}:
         loads the wordle database from a text file.
+    stats {words|hints}:
+        prints stats data on words database or the list of hints. 
     quit:
         quits WORDLE Helper.""")
 
@@ -38,6 +40,8 @@ while(True):
             wordleHelper.cmdMatch(cmdLine[1:])
         elif cmd == "CLEAR":
             wordleHelper.cmdClear(cmdLine[1:])
+        elif cmd == "STATS":
+            wordleHelper.cmdStats(cmdLine[1:])
         elif cmd == "QUIT" or cmd == "EXIT":
             break
         else:

@@ -8,7 +8,11 @@ class WordleHelper:
     # The number of characters in a WORDLE word
     WORDLE_LENGTH = 5
     # The number of results to suggest when matching hints
-    TOP_N_RESULTS = 100
+    TOP_N_RESULTS = 200
+    # Arguments for commands taking arguments such as {clear} and {stats}
+    ARG_WORDS = "words"
+    ARG_MATCHES = "matches"
+    ARG_HINTS = "hints"
 
     ###
     # Class constructor and fields:
@@ -41,7 +45,7 @@ class WordleHelper:
     def isWordleWord(word):
         if len(word) != WordleHelper.WORDLE_LENGTH: return False
         if not WordleHelper.hasOnlyLetters(word): return False
-        if not WordleHelper.hasDistinctLetters(word): return False
+        #if not WordleHelper.hasDistinctLetters(word): return False
         return True
 
     ###
@@ -116,32 +120,49 @@ class WordleHelper:
         if hint != "":
             self._wordChecker.update(hint)
         nResults = 0
+        nPrinted = 0
         for word in self._wordleWordsMap:
             if self._wordChecker.check(word):
-                print(word)
                 nResults += 1
-            if nResults == WordleHelper.TOP_N_RESULTS:
-                break
-
-    ###
-    # Expected arguments for the command "clear"
-    CLEAR_ARG_WORDS = "words"
-    CLEAR_ARG_MATCHES = "matches"
+                if nResults <= WordleHelper.TOP_N_RESULTS:
+                    nPrinted += 1
+                    print(f"{word} ", end= "" if nPrinted % 10 != 0 else "\n")
+        if nPrinted % 10 != 0:
+            print()
+        print(f"________ Found {nResults} matches. _________")
 
     ###
     # Command handler for clearing either the internal database of words
     # or the history of matches
     # @param args - either of "words" or "matches"
     def cmdClear(self, args):
-        errMessage = f"Missing or invalid argument '{args}'. Expected {WordleHelper.CLEAR_ARG_WORDS} or {WordleHelper.CLEAR_ARG_MATCHES}!"
+        errMessage = f"Missing or invalid argument '{args}'. Expected {WordleHelper.ARG_WORDS} or {WordleHelper.ARG_MATCHES}!"
         if len(args) != 1: 
             raise Exception(errMessage)
         arg = args[0]
-        if arg == WordleHelper.CLEAR_ARG_WORDS:
+        if arg == WordleHelper.ARG_WORDS:
             self._wordleWordsMap = {}
             print(f"Database of WORDLE words is now empty!")
-        elif arg == WordleHelper.CLEAR_ARG_MATCHES:
+        elif arg == WordleHelper.ARG_MATCHES:
             self._wordChecker.clear()
             print(f"History of matches is now empty!")
+        else:
+            raise Exception(errMessage)
+
+    ###
+    # Command handler for clearing either the internal database of words
+    # or the history of matches
+    # @param args - either of "words" or "matches"
+    def cmdStats(self, args):
+        errMessage = f"Missing or invalid argument '{args}'. Expected {WordleHelper.ARG_WORDS} or {WordleHelper.ARG_HINTS}!"
+        if len(args) != 1: 
+            raise Exception(errMessage)
+        arg = args[0]
+        if arg == WordleHelper.ARG_WORDS:
+            print(f"{len(self._wordleWordsMap.keys())} WORDLE words in the database!")
+        elif arg == WordleHelper.ARG_HINTS:
+            print(f"({len(self._wordChecker._allHints)}) hints in the database:")
+            for hint in self._wordChecker._allHints:
+                print(f"    {hint}")
         else:
             raise Exception(errMessage)

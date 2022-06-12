@@ -12,6 +12,7 @@ class WordChecker:
         self._greenChars = [None for i in range(0, WordleHelper.WordleHelper.WORDLE_LENGTH)]
         self._blackChars = set()
         self._orangeChars = {}
+        self._allHints = []
         print(f"WorldChecker is cleared!")
 
     ###
@@ -69,6 +70,7 @@ class WordChecker:
                 self._orangeChars[ch][iChar] = True
             iChar += 1
             lastMarker = None
+        self._allHints.append(hint)
 
      ###
      # Checks whether the given word is conforming with all the WORDLE hints
