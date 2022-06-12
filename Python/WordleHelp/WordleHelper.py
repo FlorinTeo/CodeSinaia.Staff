@@ -1,6 +1,6 @@
 import WordChecker
+import WordScraper
 import os.path
-import requests
 
 class WordleHelper:
     ###
@@ -52,18 +52,17 @@ class WordleHelper:
         if len(args) != 1:
             raise Exception(f"Missing or invalid argument '{args}'. Expected a word or a URL!")
         
-        page = requests.get(args[0])
         nNewWordleWords = 0
-        for line in page.text.splitlines():
-            for word in line.split():
-                word = word.upper()
-                if WordleHelper.isWordleWord(word):
-                    wordCount = 1
-                    if word in self._wordleWordsMap:
-                        wordCount = self._wordleWordsMap[word] + 1
-                    else:
-                        nNewWordleWords += 1
-                    self._wordleWordsMap[word] = wordCount
+        webScraper = WordScraper.WordScraper(args[0])
+        for word in webScraper:
+            word = word.upper()
+            if WordleHelper.isWordleWord(word):
+                wordCount = 1
+                if word in self._wordleWordsMap:
+                    wordCount = self._wordleWordsMap[word] + 1
+                else:
+                    nNewWordleWords += 1
+                self._wordleWordsMap[word] = wordCount
         print(f"Added {nNewWordleWords} to the words list!")
 
     ###
