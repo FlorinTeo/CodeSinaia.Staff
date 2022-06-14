@@ -11,7 +11,6 @@ class WordleHelper:
     TOP_N_RESULTS = 200
     # Arguments for commands taking arguments such as {clear} and {stats}
     ARG_WORDS = "words"
-    ARG_MATCHES = "matches"
     ARG_HINTS = "hints"
 
     ###
@@ -111,9 +110,9 @@ class WordleHelper:
         print()
 
      ###
-     # Command handler for incorporating more matches into the WordChecker, and
-     # print out the words from the dictionary that verify all accumulated matches.
-     # @param args - if present it's like ["-H", "~U", "-M", "-A", "+N"]
+     # Command handler for incorporating more hints into the WordChecker, and
+     # print out the words from the dictionary that verify all accumulated hints.
+     # @param args - if present it's like ["H", "~U", "M", "A", "+N"]
      # which will be used to update the WordChecker.
     def cmdMatch(self, args):
         hint = "".join(args).upper()
@@ -133,26 +132,26 @@ class WordleHelper:
 
     ###
     # Command handler for clearing either the internal database of words
-    # or the history of matches
-    # @param args - either of "words" or "matches"
+    # or the history of hints
+    # @param args - either of "words" or "hints"
     def cmdClear(self, args):
-        errMessage = f"Missing or invalid argument '{args}'. Expected {WordleHelper.ARG_WORDS} or {WordleHelper.ARG_MATCHES}!"
+        errMessage = f"Missing or invalid argument '{args}'. Expected {WordleHelper.ARG_WORDS} or {WordleHelper.ARG_HINTS}!"
         if len(args) != 1: 
             raise Exception(errMessage)
         arg = args[0]
         if arg == WordleHelper.ARG_WORDS:
             self._wordleWordsMap = {}
             print(f"Database of WORDLE words is now empty!")
-        elif arg == WordleHelper.ARG_MATCHES:
+        elif arg == WordleHelper.ARG_HINTS:
             self._wordChecker.clear()
-            print(f"History of matches is now empty!")
+            print(f"History of hints is now empty!")
         else:
             raise Exception(errMessage)
 
     ###
     # Command handler for clearing either the internal database of words
-    # or the history of matches
-    # @param args - either of "words" or "matches"
+    # or the history of hints
+    # @param args - either of "words" or "hints"
     def cmdStats(self, args):
         errMessage = f"Missing or invalid argument '{args}'. Expected {WordleHelper.ARG_WORDS} or {WordleHelper.ARG_HINTS}!"
         if len(args) != 1: 
