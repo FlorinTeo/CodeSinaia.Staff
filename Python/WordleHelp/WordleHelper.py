@@ -1,6 +1,7 @@
 import WordChecker
 import WordScraper
 import os.path
+import os
 
 class WordleHelper:
     ###
@@ -135,6 +136,9 @@ class WordleHelper:
     # or the history of hints
     # @param args - either of "words" or "hints"
     def cmdClear(self, args):
+        if len(args) == 0:
+            os.system('cls')
+            return
         errMessage = f"Missing or invalid argument '{args}'. Expected {WordleHelper.ARG_WORDS} or {WordleHelper.ARG_HINTS}!"
         if len(args) != 1: 
             raise Exception(errMessage)

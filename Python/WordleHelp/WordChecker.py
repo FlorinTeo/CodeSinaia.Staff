@@ -58,7 +58,7 @@ class WordChecker:
             if not ch.isalpha():
                 lastMarker = ch
                 continue
-            if lastMarker == None:
+            if lastMarker == None and not self._greenChars.__contains__(ch):
                 self._blackChars.add(ch)
             elif lastMarker == WordChecker.GREEN:
                 if self._greenChars[iChar] != None and self._greenChars[iChar] != ch:
