@@ -7,7 +7,7 @@ class WordChecker:
     ORANGE = '~'
 
     ###
-    # Clears the history of matches
+    # Clears the history of hints
     def clear(self):
         self._greenChars = [None for i in range(0, WordleHelper.WordleHelper.WORDLE_LENGTH)]
         self._blackChars = set()
