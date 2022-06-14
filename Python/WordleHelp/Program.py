@@ -9,8 +9,9 @@ def printHelp():
         clears the database of words or the past matches
     match {pattern}:
         matches a given pattern against the database and prints top results.
-        i.e> match ~H+U-M-A-N
-        where WORDLE hints are ~(Orange), +(Green) and -(Black)
+        i.e> match ~H+UM~AN
+        where WORDLE hints are ~(Orange), +(Green). A letter without a prefix
+        is assumed to be (Black).
     save {file_name}:
         saves the wordle database to a text file.
     load {file_name}:

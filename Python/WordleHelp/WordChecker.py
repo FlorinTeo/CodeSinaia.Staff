@@ -80,7 +80,7 @@ class WordChecker:
     def check(self, word):
         if not WordleHelper.WordleHelper.isWordleWord(word):
             raise Exception(f"Invalid WORDLE word '{word}'")
-        nOrange = 0
+        matchedAsOrange = set()
         for i in range(0, len(word)):
             if word[i] in self._blackChars:
                 return False
@@ -89,7 +89,6 @@ class WordChecker:
             if word[i] in self._orangeChars:
                 if self._orangeChars[word[i]][i]:
                     return False
-                else:
-                    nOrange += 1
-        return nOrange == len(self._orangeChars)
+                matchedAsOrange.add(word[i])
+        return len(matchedAsOrange) == len(self._orangeChars)
         
