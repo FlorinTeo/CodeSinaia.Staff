@@ -5,8 +5,8 @@ def printHelp():
     add {url}:
         add words from the given url.
         i.e> add https://www.gutenberg.org/files/16/16-0.txt
-    clear {words|matches}:
-        clears the database of words or the past matches
+    clear {words|hints}:
+        clears the database of words or the list of provided hints.
     match {pattern}:
         matches a given pattern against the database and prints top results.
         i.e> match ~H+UM~AN
