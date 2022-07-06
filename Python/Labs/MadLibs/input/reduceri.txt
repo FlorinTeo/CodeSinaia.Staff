@@ -1,0 +1,13 @@
+<prenume-masculin> tocmai a anuntat ca cel mai <adjectiv-masculin-singular>
+magazin de moda din centrul orasului <nume-de-oras> are reduceri de preturi
+<adjectiv-feminin-plural> la toate produsele. Sunt reduse costume 
+<adjectiv-feminin-plural-atipic> si <substantiv-plural> cu defecte minore de fabricatie. 
+<substantiv-masculin-plural> cusute la masina, la doar 30 RON.
+<substantiv-feminin-plural> italiene, croite manual la jumatate de pret.
+
+<substantiv-neutru-plural> din panza topita, 200 RON. <substantiv-feminin-plural>
+<culoare-feminin-plural> din piele originala la pachet cu pantofi <adjectiv-masculin-plural>.
+Batiste <adjectiv-feminin-plural-entuziast> din <material-substantiv-singular> si
+<substantiv-plural> impermeabile pentru copii, toate la preturi <adjectiv-feminin-plural>.
+
+Nu ratati acum sansa <adjectiv-feminin-singular> a unor <substantiv-feminin-plural> imbatabile. 
