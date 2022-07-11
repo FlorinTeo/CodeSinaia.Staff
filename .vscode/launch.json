@@ -17,7 +17,7 @@
             "cwd": "${workspaceFolder}\\Python\\Labs\\PrimeFactorization",
             "type": "python",
             "request": "launch",
-            "program": "${file}",
+            "program": "Program.py",
             "console": "integratedTerminal",
             "justMyCode": true
         },
