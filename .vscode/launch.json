@@ -14,7 +14,7 @@
         },
         {
             "name": "Python: PrimeFactorization",
-            "cwd": "${workspaceFolder}\\Python\\PrimeFactorization",
+            "cwd": "${workspaceFolder}\\Python\\Labs\\PrimeFactorization",
             "type": "python",
             "request": "launch",
             "program": "${file}",
