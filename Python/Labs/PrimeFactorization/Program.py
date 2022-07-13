@@ -1,2 +1,3 @@
 print("Hello to PrimeFactorization!")
-exec(open("PrimeFactorization#2.py").read())
+#import PrimeFactorization_1
+exec(open("PrimeFactorization_2.py").read())
