@@ -4,7 +4,7 @@ import sys
 ###
 # Function taking as input a MadLibs text file, plays the game
 # and returns the resulting text.
-def PlayMadLibs(filePath):
+def playMadLibs(filePath):
     if not os.path.isfile(filePath):
         raise Exception(f"File {filePath} cannot be located!")
 
@@ -29,4 +29,4 @@ def PlayMadLibs(filePath):
 # Tests the PlayMadLibs function on the simplest MadLibs text
 if __name__ == "__main__":
     # print the resulting text
-    print(PlayMadLibs("input\simple.txt"))
+    print(playMadLibs("input\simple.txt"))

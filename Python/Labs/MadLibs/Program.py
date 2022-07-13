@@ -6,4 +6,4 @@ print("Hello to MadLibs!")
 for fileName in ["tarzan.txt", "university.txt"]:
     filePath = f"input\{fileName}"
     print(f"\nPlaying MadLibs on '{filePath}'")
-    print(MadLibs_2.PlayMadLibs(filePath))
+    print(MadLibs_2.playMadLibs(filePath))
