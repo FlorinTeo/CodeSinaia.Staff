@@ -1,4 +1,5 @@
 import requests
+import pyperclip
 
 ###
 # Iterable class taking a URL as a parameter in the constructor,
@@ -18,10 +19,23 @@ class WordScraper:
     # - raw input from the console (if any text is provided)
     # - clipboard content (if any)
     def loadText(source):
+        # extract the text from each specific type of source
         if source.startswith("http"):
-            return requests.get(source).text
-        elif source != "":
-            return source
+            # source is a URL -> text is a web page content
+            print("Adding words from web page content...")
+            text = requests.get(source).text
+        elif source == "":
+            # source is empty string -> text is the clipboard content
+            print("Adding words from clipboard content...")
+            text = pyperclip.paste()
+        else:
+            # source is some random text -> add it as such
+            print("Adding words directly from console...")
+            text = source
+
+        # if at this point we have a valid text, just return it, otherwise raise an error 
+        if "text" in locals() and text != "":
+            return text
         else:
             raise Exception("Missing content in any of the supported forms (URL, clipboard, raw text)")
 
