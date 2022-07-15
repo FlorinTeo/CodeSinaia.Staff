@@ -18,7 +18,7 @@ class WordScraper:
     # - raw input from the console (if any text is provided)
     # - clipboard content (if any)
     def loadText(source):
-        if source.startsWith("http"):
+        if source.startswith("http"):
             return requests.get(source).text
         elif source != "":
             return source
