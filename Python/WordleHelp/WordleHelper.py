@@ -1,3 +1,4 @@
+import string
 import WordChecker
 import WordScraper
 import os.path
@@ -53,11 +54,8 @@ class WordleHelper:
     # @param args - url string pointing to a web page to scrape and load words from.
     # @throws IOException
     def cmdAdd(self, args):
-        if len(args) != 1:
-            raise Exception(f"Missing or invalid argument '{args}'. Expected a word or a URL!")
-        
         nNewWordleWords = 0
-        webScraper = WordScraper.WordScraper(args[0])
+        webScraper = WordScraper.WordScraper(" ".join(args))
         for word in webScraper:
             word = word.upper()
             if WordleHelper.isWordleWord(word):

@@ -12,18 +12,24 @@ class WordScraper:
     # _iWord: current word index within _content[_iLine]
 
     ###
-    # Class constructor.
-    # url: URL to be scraped (i.e. https://www.gutenberg.org/files/147/147-0.txt)
-    def __init__(self, url):
-        self._url = url
+    # "Static" class method, returning the flat text extracted from one
+    # of the following sources:
+    # - a webpage (if the source starts with "http")
+    # - raw input from the console (if any text is provided)
+    # - clipboard content (if any)
+    def loadText(source):
+        if source.startsWith("http"):
+            return requests.get(source).text
+        elif source != "":
+            return source
+        else:
+            raise Exception("Missing content in any of the supported forms (URL, clipboard, raw text)")
 
     ###
-    # Iterable initialization:
-    # Scrapes the full page and loads it in the jagged array
-    # Sets the initial indexes to the postion *before* the first word
-    # (_iLine = 0, iWord = -1)
-    def __iter__(self):
-        lines = requests.get(self._url).text.splitlines()
+    # Class constructor.
+    # url: URL to be scraped (i.e. https://www.gutenberg.org/files/147/147-0.txt)
+    def __init__(self, source):
+        lines = WordScraper.loadText(source).splitlines()
         self._content = []
         self._iLine = 0
         for line in lines:
@@ -32,6 +38,13 @@ class WordScraper:
             for word in words:
                 self._content[self._iLine].append(word)
             self._iLine += 1
+
+    ###
+    # Iterable initialization:
+    # Scrapes the full page and loads it in the jagged array
+    # Sets the initial indexes to the postion *before* the first word
+    # (_iLine = 0, iWord = -1)
+    def __iter__(self):
         self._iLine = 0
         self._iWord = -1
         return self
