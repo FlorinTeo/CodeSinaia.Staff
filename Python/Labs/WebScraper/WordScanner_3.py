@@ -1,4 +1,5 @@
 import WebScraper_2 as ws
+import TrieNode as tn
 
 ###
 # Class collecting statistics about a set of words
@@ -7,6 +8,7 @@ class WordScanner:
     # Class fields:
     # _uniqueWords: set collecting all unique words
     # _mapWordCounts: map pairing each word (key) to its occurrence count (value)
+    # _trieNGrams: trie structure to count the n-grams frequencies
     # _nWords: total number of words that were scanned
 
     ###
@@ -14,6 +16,7 @@ class WordScanner:
     def __init__(self):
         self._uniqueWords = set()
         self._mapWordCounts = {}
+        self._trieNGrams = tn.TrieNode(None, None)
         self._nWords = 0
 
     ###
@@ -25,6 +28,7 @@ class WordScanner:
             count = self._mapWordCounts[word]
         count += 1
         self._mapWordCounts[word] = count
+        self._trieNGrams.addWord(word)
         self._nWords += 1
 
     ###
@@ -66,3 +70,5 @@ if __name__ == "__main__":
     print(webScraper)
     # Prints the scanner
     print(wordScanner)
+    # Print the n-gram frequencies for a particular word
+    wordScanner._trieNGrams.trace("THOSE")

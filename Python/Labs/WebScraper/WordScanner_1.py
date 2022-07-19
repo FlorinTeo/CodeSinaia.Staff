@@ -1,4 +1,3 @@
-from re import L
 import WebScraper_2 as ws
 
 ###
