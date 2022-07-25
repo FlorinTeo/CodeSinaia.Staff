@@ -2,6 +2,13 @@
     "version": "0.2.0",
     "configurations": [
         {
+            "type": "java",
+            "name": "Launch CmdLoop",
+            "request": "launch",
+            "mainClass": "Java.CmdLoop.CmdLoop",
+            "projectName": "CodeSinaia.Staff_e2b42c3d"
+        },
+        {
             "name": "(Windows) Launch",
             "type": "cppvsdbg",
             "request": "launch",
