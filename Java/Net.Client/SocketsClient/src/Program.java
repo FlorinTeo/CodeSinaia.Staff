@@ -1,4 +1,5 @@
 import java.awt.image.BufferedImage;
+import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
@@ -17,7 +18,7 @@ import javax.imageio.ImageIO;
 
 public class Program {
     
-    private static final String _IP = "10.69.112.225"; //"10.69.112.155";
+    private static final String _IP = "192.168.4.20"; //"10.69.112.155";
     private static final int _PORT = 5015;
     
     private static void interactive() throws IOException {
@@ -42,33 +43,48 @@ public class Program {
         
         console.close();
     }
+    
+    private static byte[] imageToBytes(BufferedImage image) throws IOException {
+        ByteArrayOutputStream baStream = new ByteArrayOutputStream();
+        ImageIO.write(image, "jpg", baStream);
+        return baStream.toByteArray();
+    }
+    
+    private static BufferedImage bytesToImage(byte[] rawBytes) throws IOException {
+        InputStream imageStream = new ByteArrayInputStream(rawBytes);
+        return ImageIO.read(imageStream);
+    }
 
     private static void imgExchange() throws IOException {
         // Read image from file in byte[]
         String inFile = "shelter.jpg";
         BufferedImage inImg = ImageIO.read(new File(inFile));
-        ByteArrayOutputStream inImgStream = new ByteArrayOutputStream();
-        ImageIO.write(inImg, "jpg", inImgStream);
-        byte[] inImgBytes = inImgStream.toByteArray();
         
-        // Write byte[] to server
+        // Open socket to server and get its the out/in streams
         Socket socket = new Socket(_IP, _PORT);
         OutputStream outStream = socket.getOutputStream();
-        outStream.write(inImgBytes);
+        InputStream inStream = socket.getInputStream();
+        
+        // Write byte[] to server
+        outStream.write(imageToBytes(inImg));
         outStream.close();
         
         // Read answer from server in byte[]
-        InputStream inStream = socket.getInputStream();
-        BufferedImage outImg = ImageIO.read(inStream);
-        ByteArrayOutputStream outImgStream = new ByteArrayOutputStream();
-        ImageIO.write(outImg, "jpg", outImgStream);
-        byte[] outImgBytes = outImgStream.toByteArray();
+        byte[] rawBytes = inStream.readAllBytes();
+        BufferedImage outImg = bytesToImage(rawBytes);
+        System.out.println(outImg);
+        
+        inStream.close();
+        outStream.close();
+        socket.close();
         
         // Write image from byte[] into file
         Path outPath = Paths.get("received.jpg");
-        Files.write(outPath, outImgBytes, StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING);
-        
-        socket.close();
+        Files.write(
+                outPath,
+                rawBytes,
+                StandardOpenOption.CREATE,
+                StandardOpenOption.TRUNCATE_EXISTING);
     }
     
     public static void main(String[] args) throws IOException {

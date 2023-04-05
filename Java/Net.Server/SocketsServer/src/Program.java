@@ -1,6 +1,7 @@
 import java.awt.Graphics;
 import java.awt.image.BufferedImage;
 import java.io.BufferedInputStream;
+import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.DataInputStream;
 import java.io.IOException;
@@ -16,7 +17,7 @@ import javax.imageio.ImageIO;
 
 public class Program {
     
-    private static final String _IP = "10.69.112.225"; //"10.69.112.155";
+    private static final String _IP = "192.168.4.20"; //"10.69.112.155";
     private static final int _PORT = 5015;
 
     private static byte[] ipToBytes(String strIP) {
@@ -53,6 +54,17 @@ public class Program {
 
         server.close();
     }
+
+    private static byte[] imageToBytes(BufferedImage image) throws IOException {
+        ByteArrayOutputStream baStream = new ByteArrayOutputStream();
+        ImageIO.write(image, "jpg", baStream);
+        return baStream.toByteArray();
+    }
+    
+    private static BufferedImage bytesToImage(byte[] rawBytes) throws IOException {
+        InputStream imageStream = new ByteArrayInputStream(rawBytes);
+        return ImageIO.read(imageStream);
+    }
     
     private static BufferedImage toGrayScale(BufferedImage img) {
         return img;
@@ -67,22 +79,25 @@ public class Program {
         do {
             System.out.println("Waiting for client!");
             Socket socket = server.accept();
+            InputStream inStream = socket.getInputStream();
+            OutputStream outStream = socket.getOutputStream();
             
             // Receive image from the socket
             System.out.print("Image received: ");
-            InputStream inStream = socket.getInputStream();
-            BufferedImage inImg = ImageIO.read(inStream);
+            inStream = socket.getInputStream();
+            BufferedImage inImg = bytesToImage(inStream.readAllBytes());        
             
             // convert image to gray scale
             BufferedImage outImg = toGrayScale(inImg);
             
             // Send image to the socket
-            ByteArrayOutputStream outImgStream = new ByteArrayOutputStream();
-            ImageIO.write(outImg, "jpg", outImgStream);
-            byte[] outImgBytes = outImgStream.toByteArray();
-            OutputStream outStream = socket.getOutputStream();
+            byte[] outImgBytes = imageToBytes(outImg);
             outStream.write(outImgBytes);
+            
             outStream.close();
+            inStream.close();
+            socket.close();
+            
             break;
         } while(true);
 
