@@ -6,6 +6,8 @@ import java.io.ByteArrayOutputStream;
 import java.io.DataInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.io.OutputStream;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
@@ -17,7 +19,7 @@ import javax.imageio.ImageIO;
 
 public class Program {
     
-    private static final String _IP = "192.168.4.20"; //"10.69.112.155";
+    private static final String _IP = "127.0.0.1"; //"10.69.112.155";
     private static final int _PORT = 5015;
 
     private static byte[] ipToBytes(String strIP) {
@@ -70,41 +72,35 @@ public class Program {
         return img;
     }
     
-    private static void imgExchange() throws IOException {
+    private static void imgExchange() throws IOException, ClassNotFoundException {
         InetAddress ipAddr = InetAddress.getByAddress(ipToBytes(_IP));
         SocketAddress endPoint = new InetSocketAddress(ipAddr, _PORT);  
         ServerSocket server = new ServerSocket();
         server.bind(endPoint);
         
-        do {
-            System.out.println("Waiting for client!");
-            Socket socket = server.accept();
-            InputStream inStream = socket.getInputStream();
-            OutputStream outStream = socket.getOutputStream();
+        System.out.println("Waiting for client!");
+        Socket socket = server.accept();
+        ObjectInputStream inStream = new ObjectInputStream(socket.getInputStream());
+        ObjectOutputStream outStream = new ObjectOutputStream(socket.getOutputStream());
             
-            // Receive image from the socket
-            System.out.print("Image received: ");
-            inStream = socket.getInputStream();
-            BufferedImage inImg = bytesToImage(inStream.readAllBytes());        
+        // Receive image from the socket
+        System.out.print("Image received: ");
+        BufferedImage inImg = (BufferedImage)inStream.readObject();
             
-            // convert image to gray scale
-            BufferedImage outImg = toGrayScale(inImg);
+        // convert image to gray scale
+        BufferedImage outImg = toGrayScale(inImg);
             
-            // Send image to the socket
-            byte[] outImgBytes = imageToBytes(outImg);
-            outStream.write(outImgBytes);
-            
-            outStream.close();
-            inStream.close();
-            socket.close();
-            
-            break;
-        } while(true);
-
+        // Send image to the socket
+        outStream.writeObject(outImg);
+        
+        // Close streams, socket and server
+        outStream.close();
+        inStream.close();
+        socket.close();        
         server.close();
     }
     
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) throws IOException, ClassNotFoundException {
         System.out.println("Hello to Java Sockets Server!");
         //interactive();
         imgExchange();
