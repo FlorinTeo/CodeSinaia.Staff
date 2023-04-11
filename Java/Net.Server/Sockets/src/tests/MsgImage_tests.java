@@ -21,8 +21,8 @@ class MsgImage_tests {
 
     @Test
     void test_read_write() throws IOException, ClassNotFoundException {
-        BufferedImage image1 = Helpers.read("data/shelter.jpg");
-        BufferedImage image2 = Helpers.read("data/flower.jpg");
+        BufferedImage image1 = Helpers.readImage("data/shelter.jpg");
+        BufferedImage image2 = Helpers.readImage("data/flower.jpg");
         MsgImage msgImage1 = new MsgImage(image1);
         MsgImage msgImage2 = new MsgImage(image2);
         
