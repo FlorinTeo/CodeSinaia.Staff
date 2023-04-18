@@ -11,19 +11,10 @@ import java.net.SocketAddress;
 
 import common.Helpers;
 
-public class Program {
+public class Srv_ImgXChange {
     
     private static final String _IP = "127.0.0.1"; //"10.69.112.155";
     private static final int _PORT = 5015;
-
-    private static byte[] ipToBytes(String strIP) {
-        byte[] byteIP = new byte[4];
-        int i = 0;
-        for(String strNum : strIP.split("\\.")) {
-            byteIP[i++] = (byte)Integer.parseInt(strNum);
-        }
-        return byteIP;
-    }
     
     private static BufferedImage toGrayScale(BufferedImage image) {
         for (int x = 0; x < image.getWidth(); x++) {
@@ -40,8 +31,9 @@ public class Program {
         return image;
     }
     
-    private static void imgExchange() throws IOException, ClassNotFoundException {
-        InetAddress ipAddr = InetAddress.getByAddress(ipToBytes(_IP));
+    public static void main(String[] args) throws IOException, ClassNotFoundException {
+        System.out.println("Hello to Java Sockets Server!");
+        InetAddress ipAddr = InetAddress.getByAddress(Helpers.ipToBytes(_IP));
         SocketAddress endPoint = new InetSocketAddress(ipAddr, _PORT);  
         ServerSocket server = new ServerSocket();
         server.bind(endPoint);
@@ -62,11 +54,6 @@ public class Program {
         socket.close();
         // Shutdown server
         server.close();
-    }
-    
-    public static void main(String[] args) throws IOException, ClassNotFoundException {
-        System.out.println("Hello to Java Sockets Server!");
-        imgExchange();
         System.out.println("Server shut down!");
     }
 }

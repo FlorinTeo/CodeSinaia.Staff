@@ -6,12 +6,13 @@ import java.net.Socket;
 
 import common.Helpers;
 
-public class Program {
+public class Cli_ImgXChange {
     
     private static final String _IP = "127.0.0.1"; //"10.69.112.155";
     private static final int _PORT = 5015;
     
-    private static void imgExchange() throws IOException, ClassNotFoundException {
+    public static void main(String[] args) throws IOException, ClassNotFoundException {
+        System.out.println("Hello to Java Sockets Client!");
         // Read image from file
         BufferedImage inImg = Helpers.readImage("data/shelter.jpg");
         System.out.print("Image read .. ");
@@ -28,11 +29,6 @@ public class Program {
         System.out.println("written!");
         // Cleanup
         socket.close();
-    }
-    
-    public static void main(String[] args) throws IOException, ClassNotFoundException {
-        System.out.println("Hello to Java Sockets Client!");
-        imgExchange();
         System.out.println("Goodbye!");
     }
 }

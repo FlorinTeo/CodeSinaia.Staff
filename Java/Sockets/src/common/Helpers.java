@@ -11,6 +11,15 @@ import javax.imageio.ImageIO;
 
 public final class Helpers {
     
+    public static byte[] ipToBytes(String strIP) {
+        byte[] byteIP = new byte[4];
+        int i = 0;
+        for(String strNum : strIP.split("\\.")) {
+            byteIP[i++] = (byte)Integer.parseInt(strNum);
+        }
+        return byteIP;
+    }
+    
     public static BufferedImage readImage(String fileName) throws IOException {
         return ImageIO.read(new File(fileName));
     }
