@@ -23,7 +23,13 @@ public class Cli_TblStone {
             if (line.equalsIgnoreCase("quit")) {
                 break;
             }
+            
             MsgTblStone message = MsgTblStone.parseMessage(line);
+            if (message == null) {
+                System.out.println("Invalid message!");
+                continue;
+            }
+            
             System.out.printf("Sending:\n");
             System.out.println(message);
             Socket socket = new Socket(_IP, _PORT);
