@@ -1,4 +1,0 @@
-INDEX VERSION 1.131+D:\Git.Hub\FlorinTeo\CodeSinaia.Staff\Java\Net.Server\.metadata\.plugins\org.eclipse.jdt.core
-1865797976.index
-739334273.index
-3718210651.index
