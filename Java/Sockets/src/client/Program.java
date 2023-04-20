@@ -1,6 +1,7 @@
 package client;
 
 import java.awt.image.BufferedImage;
+import java.io.File;
 import java.io.IOException;
 import java.net.Socket;
 
@@ -13,7 +14,7 @@ public class Program {
     
     private static void imgExchange() throws IOException, ClassNotFoundException {
         // Read image from file
-        BufferedImage inImg = Helpers.readImage("data/shelter.jpg");
+        BufferedImage inImg = Helpers.readImage("../data/shelter.jpg");
         System.out.print("Image read .. ");
         // Open socket to server
         Socket socket = new Socket(_IP, _PORT);
@@ -24,13 +25,15 @@ public class Program {
         BufferedImage outImg = Helpers.receiveImage(socket);
         System.out.print("received .. ");
         // Write processed image to file
-        Helpers.writeImage(outImg, "data/shelter_bw.jpg");
+        Helpers.writeImage(outImg, "../data/shelter_bw.jpg");
         System.out.println("written!");
         // Cleanup
         socket.close();
     }
     
     public static void main(String[] args) throws IOException, ClassNotFoundException {
+        File f= new File(".");
+        System.out.println(f.getAbsolutePath());
         System.out.println("Hello to Java Sockets Client!");
         imgExchange();
         System.out.println("Goodbye!");
