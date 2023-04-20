@@ -1,14 +1,12 @@
 package server;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.ObjectInputStream;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.SocketAddress;
-import java.net.UnknownHostException;
 
 import common.Helpers;
 import common.MsgTblStone;
@@ -29,7 +27,6 @@ public class Srv_TblStone {
             Socket socket = server.accept();
             
             System.out.println("Message received: ");
-            InputStream rawStream = socket.getInputStream();
             ObjectInputStream objInStream = new ObjectInputStream(socket.getInputStream());
             MsgTblStone message = (MsgTblStone)objInStream.readObject();
             System.out.println(message);

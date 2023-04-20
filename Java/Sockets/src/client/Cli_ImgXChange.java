@@ -1,7 +1,6 @@
 package client;
 
 import java.awt.image.BufferedImage;
-import java.io.File;
 import java.io.IOException;
 import java.net.Socket;
 
@@ -30,16 +29,6 @@ public class Cli_ImgXChange {
         System.out.println("written!");
         // Cleanup
         socket.close();
-<<<<<<< HEAD:Java/Sockets/src/client/Program.java
-    }
-    
-    public static void main(String[] args) throws IOException, ClassNotFoundException {
-        File f= new File(".");
-        System.out.println(f.getAbsolutePath());
-        System.out.println("Hello to Java Sockets Client!");
-        imgExchange();
-=======
->>>>>>> 45740dce6df1a6601b0513aebcc56691339541a0:Java/Sockets/src/client/Cli_ImgXChange.java
         System.out.println("Goodbye!");
     }
 }
