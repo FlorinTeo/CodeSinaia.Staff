@@ -1,0 +1,32 @@
+1676413405407	Move file
+1676413410266	Delete element
+1676413802137	Move compilation units
+1676419160789	Rename resource 'graph1.txt'
+1676425380548	Move file
+1676425463106	Rename resource 'inGraph1.txt'
+1676425473311	Rename resource 'outGraph1.txt'
+1676425771881	Delete elements
+1676426124021	Rename resource 'graph1.txt'
+1676427118054	Rename type 'Graph_tests'
+1676427186821	Rename type 'Helper'
+1676427570143	Rename resource 'graph1_in.txt'
+1676427580657	Rename resource 'graph1_out.txt'
+1676488449714	Move compilation unit
+1676490910583	Move compilation unit
+1676490918294	Delete element
+1676490977521	Rename type 'TestsRoot'
+1676491545114	Rename type 'Basic_tests'
+1676491556100	Rename type 'Traversal_tests'
+1676491565841	Rename type 'Advanced_tests'
+1676491582044	Move compilation unit
+1676491592262	Delete element
+1676491994375	Rename type 'TestsCommon'
+1676566080670	Copy file
+1676566695332	Rename resource 'basic1_in.txt'
+1676566700807	Delete element
+1676566708541	Rename resource 'basic2_in.txt'
+1676566714271	Delete element
+1676567546963	Rename method 'getMarker'
+1676743370840	Rename type 'DGraph'
+1676746786534	Copy file
+1676750160095	Copy file

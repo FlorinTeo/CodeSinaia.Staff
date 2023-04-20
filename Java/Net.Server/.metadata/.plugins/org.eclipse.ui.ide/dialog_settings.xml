@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<section name="Workbench">
+	<section name="ExternalProjectImportWizard">
+		<item key="WizardProjectsImportPage.STORE_NESTED_PROJECTS" value="false"/>
+		<item key="WizardProjectsImportPage.STORE_COPY_PROJECT_ID" value="false"/>
+		<item key="WizardProjectsImportPage.STORE_ARCHIVE_SELECTED" value="false"/>
+		<item key="WizardProjectsImportPage.STORE_CLOSE_CREATED_PROJECTS_ID" value="false"/>
+		<item key="WizardProjectsImportPage.STORE_HIDE_CONFLICTING_PROJECTS_ID" value="false"/>
+		<list key="WizardProjectsImportPage.STORE_DIRECTORIES">
+			<item value="D:\Git.Hub\FlorinTeo\CodeSinaia.Staff\Java\Net.Server"/>
+			<item value="D:\Git.Hub\FlorinTeo\LWHS.22-23"/>
+			<item value=""/>
+			<item value="D:\Git.Src\Java"/>
+			<item value="D:\Git.Hub\FlorinTeo\LWHS.22-23\ColoringBook"/>
+			<item value="D:\Git.Src\Java\1709-1806.LWHS\Unit7.Sort"/>
+			<item value="D:\Git.Src\Java\2009-2106.LWHS\Graph"/>
+			<item value="D:\Git.Hub\FlorinTeo\Temp"/>
+			<item value="D:\Git.Src\Java\RestOfJava"/>
+		</list>
+		<list key="WizardProjectsImportPage.STORE_ARCHIVES">
+			<item value=""/>
+			<item value="C:\Users\Florin\Desktop\Checpoint 2b Bug.zip"/>
+			<item value="C:\Users\Florin\Downloads\Maze1AriP.zip"/>
+			<item value="C:\Users\Florin\Desktop\Maze1AriP.zip"/>
+			<item value="C:\Users\Florin\Downloads\TrafficFlow_Startup.zip"/>
+			<item value="C:\Users\Florin\Downloads\ColoringBook_Startup.zip"/>
+			<item value="C:\Users\Florin\Downloads\CafeArt_Startup.zip"/>
+			<item value="D:\ODrive\TEALS_LWHS\LWHS CS.22-23 - Documents\General\AP CS-A\Unit 2\Equestria\Equestria.zip"/>
+			<item value="D:\ODrive\TEALS_LWHS\LWHS CS.22-23 - Documents\General\AP CS-A\Unit 2\Equestria\EquestriaFlight.zip"/>
+			<item value="C:\Users\Florin\Desktop\Calculator_Startup2.zip"/>
+			<item value="C:\Users\Florin\Desktop\Calculator_Startup.zip"/>
+			<item value="C:\Users\Florin\Downloads\Calculator_Startup.zip"/>
+			<item value="D:\ODrive\TEALS_LWHS\LWHS CS.22-23 - Documents\General\Data Structures\Labs\2.MountainsDb_Solved.zip"/>
+		</list>
+	</section>
+	<section name="ChooseWorkspaceDialogSettings">
+		<item key="DIALOG_X_ORIGIN" value="390"/>
+		<item key="DIALOG_Y_ORIGIN" value="199"/>
+	</section>
+	<section name="WORKBENCH_SETTINGS">
+		<list key="ENABLED_TRANSFERS">
+		</list>
+	</section>
+</section>

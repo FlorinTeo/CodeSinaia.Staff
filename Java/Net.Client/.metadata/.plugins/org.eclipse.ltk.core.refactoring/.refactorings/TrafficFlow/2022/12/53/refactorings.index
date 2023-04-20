@@ -1,0 +1,7 @@
+1672433642961	Rename method 'getOverlays'
+1672433846230	Rename method 'buildOverlayInfoMap'
+1672433923154	Rename field '_overlayInfoMap'
+1672433938213	Rename local variable 'overlays'
+1672433949173	Rename local variable 'overlayName'
+1672434003228	Rename type 'RouteInfo'
+1672434103160	Rename field '_overlayNames'

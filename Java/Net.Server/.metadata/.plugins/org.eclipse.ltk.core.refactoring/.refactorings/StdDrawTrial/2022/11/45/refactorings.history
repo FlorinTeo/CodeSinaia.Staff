@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<session version="1.0">
+<refactoring comment="Rename resource &apos;StdDrawTrial/src/StdDraw.java.txt&apos; to &apos;StdDraw.java&apos;" description="Rename resource &apos;StdDraw.java.txt&apos;" flags="7" id="org.eclipse.ltk.core.refactoring.rename.resource" input="src/StdDraw.java.txt" name="StdDraw.java" stamp="1667315533840" updateReferences="true"/>
+</session>
