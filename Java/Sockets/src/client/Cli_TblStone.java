@@ -41,7 +41,7 @@ public class Cli_TblStone {
         } while(true);
         
         console.close();
-
+        System.out.println("Client is done! Goodbye!");
     }
 
 }

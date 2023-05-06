@@ -31,11 +31,12 @@ public class Srv_TblStone {
             MsgTblStone message = (MsgTblStone)objInStream.readObject();
             System.out.println(message);
             
-            if (message.getData().equalsIgnoreCase("shutdown")) {
+            if (message.getData().equalsIgnoreCase("shtdwn")) {
                 break;
             }
         } while(true);
-
+        
         server.close();
+        System.out.println("Server is shutdown! Goodbye!");
     }
 }
