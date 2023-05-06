@@ -52,7 +52,5 @@ public class Cli_NetId {
         InetAddress inAddr = InetAddress.getLocalHost();
         MsgNetId msgNetId = new MsgNetId(name, inAddr);
         System.out.println(msgNetId);
-        
-        
     }
 }
