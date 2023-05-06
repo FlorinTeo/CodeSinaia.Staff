@@ -4,11 +4,16 @@ import java.net.InetAddress;
 import java.net.NetworkInterface;
 import java.net.SocketException;
 import java.net.UnknownHostException;
-import java.util.Arrays;
 import java.util.Enumeration;
 import java.util.Scanner;
 
+import common.MsgNetId;
+
 public class Cli_NetId {
+    
+    private static final String SRV_NETID_IP = "127.0.0.1";
+    private static final int SRV_NETID_PORT = 5055;
+    private static final int CLI_PORT = 5025;
 
     private static void netInfo() throws SocketException {
         Enumeration<NetworkInterface> netIfs = NetworkInterface.getNetworkInterfaces();
@@ -45,7 +50,9 @@ public class Cli_NetId {
         }
         System.out.printf("Hello '%s'\n", name);
         InetAddress inAddr = InetAddress.getLocalHost();
-        System.out.printf("Your computer name is '%s'\n", inAddr.getHostName());
-        System.out.printf("Your IP address is '%s'\n", Arrays.toString(inAddr.getAddress()));
+        MsgNetId msgNetId = new MsgNetId(name, inAddr);
+        System.out.println(msgNetId);
+        
+        
     }
 }

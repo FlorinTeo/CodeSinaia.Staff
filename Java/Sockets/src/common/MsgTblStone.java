@@ -38,9 +38,9 @@ public class MsgTblStone implements Serializable {
     @Override
     public String toString() {
         String output =
-              String.format("   from: %s\n", _from)
-            + String.format("     to: %s\n" , _to)
-            + String.format("message: \"%s\"\n", new String(_data));
+              String.format("  [From: %s]\n", _from)
+            + String.format("  [To: %s]\n" , _to)
+            + String.format("  \"%s\"\n", new String(_data));
         return output;
     }
 }
