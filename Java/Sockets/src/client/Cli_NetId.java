@@ -1,7 +1,10 @@
 package client;
 
+import java.io.IOException;
+import java.io.ObjectOutputStream;
 import java.net.InetAddress;
 import java.net.NetworkInterface;
+import java.net.Socket;
 import java.net.SocketException;
 import java.net.UnknownHostException;
 import java.util.Enumeration;
@@ -37,7 +40,7 @@ public class Cli_NetId {
         }
     }
 
-    public static void main(String[] args) throws SocketException, UnknownHostException {
+    public static void main(String[] args) throws IOException {
         String name;
         if (args.length > 0) {
             name = args[0];
@@ -52,5 +55,10 @@ public class Cli_NetId {
         InetAddress inAddr = InetAddress.getLocalHost();
         MsgNetId msgNetId = new MsgNetId(name, inAddr);
         System.out.println(msgNetId);
+        
+        Socket socket = new Socket(SRV_NETID_IP, SRV_NETID_PORT);
+        ObjectOutputStream objOutStream = new ObjectOutputStream(socket.getOutputStream());
+        objOutStream.writeObject(msgNetId);
+        socket.close();
     }
 }
