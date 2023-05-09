@@ -14,9 +14,8 @@ import common.MsgNetId;
 
 public class Cli_NetId {
     
-    private static final String SRV_NETID_IP = "127.0.0.1";
-    private static final int SRV_NETID_PORT = 5055;
-    private static final int CLI_PORT = 5025;
+    private static final String SRV_NETID_IP = "10.84.160.100";
+    private static final int SRV_NETID_PORT = 2011;
 
     private static void netInfo() throws SocketException {
         Enumeration<NetworkInterface> netIfs = NetworkInterface.getNetworkInterfaces();
@@ -60,5 +59,6 @@ public class Cli_NetId {
         ObjectOutputStream objOutStream = new ObjectOutputStream(socket.getOutputStream());
         objOutStream.writeObject(msgNetId);
         socket.close();
+        System.out.println("Registered and .. Goodbye!");
     }
 }
