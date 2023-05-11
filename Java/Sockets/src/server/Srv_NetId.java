@@ -14,8 +14,8 @@ import common.MsgTblStone;
 
 public class Srv_NetId {
     
-    private static final String _IP = "10.84.160.100";
-    private static final int _PORT = 2011;
+    private static final String _IP = "127.0.0.1"; //"10.84.160.20";
+    private static final int _PORT = 5025;
 
     public static void main(String[] args) throws IOException, ClassNotFoundException {
         InetAddress ipAddr = InetAddress.getByAddress(Helpers.ipToBytes(_IP));

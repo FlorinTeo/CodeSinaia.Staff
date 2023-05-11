@@ -4,11 +4,19 @@ import java.io.Serializable;
 
 public class MsgTblStone implements Serializable {
     private static final long serialVersionUID = 1L;
+
+    private MsgCode _msgCode;
     private String _from;
     private String _to;
     private char[] _data;
+    private String _status;
     
-    public MsgTblStone(String from, String to, char[] data) {
+    public MsgTblStone(MsgCode msgCode) {
+        _msgCode = msgCode;
+    }
+    
+    public MsgTblStone(MsgCode msgCode, String from, String to, char[] data) {
+        this(msgCode);
         if (data.length != 6) {
             throw new RuntimeException("Invalid data size!");
         }
@@ -28,7 +36,7 @@ public class MsgTblStone implements Serializable {
         String from = parts[0].substring("from:".length());
         String to = parts[1].substring("to:".length());
         char[] data = parts[2].toCharArray();
-        return new MsgTblStone(from, to, data);
+        return new MsgTblStone(MsgCode.Send, from, to, data);
     }
     
     public String getData() {
