@@ -2,6 +2,7 @@ package server;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.ServerSocket;
@@ -24,16 +25,20 @@ public class Srv_TblStone {
         
         do {
             System.out.println("Waiting for client!");
-            Socket socket = server.accept();
             
+            // Wait for the socket connecting to a client
+            Socket socket = server.accept();
             System.out.println("Message received: ");
-            ObjectInputStream objInStream = new ObjectInputStream(socket.getInputStream());
-            MsgTblStone message = (MsgTblStone)objInStream.readObject();
+
+            // Use the input stream of the socket to get the message from the client
+            ObjectInputStream inStream = new ObjectInputStream(socket.getInputStream());
+            MsgTblStone message = (MsgTblStone)inStream.readObject();
             System.out.println(message);
             
-            if (message.getData().equalsIgnoreCase("shtdwn")) {
-                break;
-            }
+            // Use the output stream of the socket to respond to the client with a status message
+            ObjectOutputStream outStream = new ObjectOutputStream(socket.getOutputStream());
+            message = new MsgTblStone();
+            
         } while(true);
         
         server.close();
