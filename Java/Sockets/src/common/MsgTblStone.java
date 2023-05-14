@@ -131,7 +131,7 @@ public class MsgTblStone implements Serializable {
     @Override
     public String toString() {
         String output = 
-              String.format("--[%d]----\n", _msgType)
+              String.format("--[%d]----\n", _msgType.ordinal())
             + toString(_msgType);
         return output;
     }
@@ -150,8 +150,10 @@ public class MsgTblStone implements Serializable {
                 + String.format("  \"%s\"\n", new String(_data));
             break;
         case Status:
-            output = "    Undefined!";
+            output = "  " + _status;
             break;
+        default:
+            output = "  Undefined!";
         }
         return output;
     }

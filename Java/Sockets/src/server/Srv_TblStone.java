@@ -32,12 +32,19 @@ public class Srv_TblStone {
 
             // Use the input stream of the socket to get the message from the client
             ObjectInputStream inStream = new ObjectInputStream(socket.getInputStream());
-            MsgTblStone message = (MsgTblStone)inStream.readObject();
-            System.out.println(message);
+            MsgTblStone inMessage = (MsgTblStone)inStream.readObject();
+            System.out.println(inMessage);
             
             // Use the output stream of the socket to respond to the client with a status message
             ObjectOutputStream outStream = new ObjectOutputStream(socket.getOutputStream());
-            message = new MsgTblStone();
+            MsgTblStone outMessage = new MsgTblStone();
+            outStream.writeObject(outMessage);
+            
+            // Shutting down on special command
+            if (inMessage.getData().equalsIgnoreCase("shtdwn")) {
+                System.out.println("Shutting down...");
+                break;
+            }
             
         } while(true);
         
