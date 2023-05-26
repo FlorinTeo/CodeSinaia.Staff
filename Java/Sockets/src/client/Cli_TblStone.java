@@ -30,7 +30,7 @@ public class Cli_TblStone {
         String from = parts[0].substring("from:".length());
         String to = parts[1].substring("to:".length());
         char[] data = parts[2].toCharArray();
-        return new MsgTblStone(from, to, data);
+        return MsgTblStone.newSendMessage(from, to, data);
     }
 
     public static void main(String[] args) throws UnknownHostException, IOException, ClassNotFoundException {

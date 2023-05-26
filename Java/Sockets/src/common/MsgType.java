@@ -1,8 +1,9 @@
 package common;
 
 public enum MsgType {
-    Identity,
-    Data,
-    DataRequest,
+    Login,
+    Logout,
+    Send,
+    Receive,
     Status
 }

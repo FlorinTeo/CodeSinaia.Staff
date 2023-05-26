@@ -11,11 +11,36 @@ import java.net.SocketAddress;
 
 import common.Helpers;
 import common.MsgTblStone;
+import common.MsgType;
 
 public class Srv_TblStone {
     
     private static final String _IP = "127.0.0.1"; //"10.69.112.155";
     private static final int _PORT = 5025;
+    
+    public static MsgTblStone processMessage(MsgTblStone inMessage) {
+        switch(inMessage.getType()) {
+        case Login:
+            System.out.println(">>>> Client login");
+            break;
+        case Logout:
+            System.out.println(">>>> Client logout");
+            break;
+        case Send:
+            System.out.println(">>>> Client sending data");
+            break;
+        case Receive:
+            System.out.println(">>>> Client requesting data");
+            break;
+        case Status:
+            System.out.println(">>>> Client sending status?");
+            break;
+        default:
+            System.out.println(">>>> Unsupported message!");
+        }
+        
+        return MsgTblStone.newStatusMessage("OK!");
+    }
 
     public static void main(String[] args) throws IOException, ClassNotFoundException {
         InetAddress ipAddr = InetAddress.getByAddress(Helpers.ipToBytes(_IP));
@@ -33,11 +58,12 @@ public class Srv_TblStone {
             // Use the input stream of the socket to get the message from the client
             ObjectInputStream inStream = new ObjectInputStream(socket.getInputStream());
             MsgTblStone inMessage = (MsgTblStone)inStream.readObject();
-            System.out.println(inMessage);
+            
+            // Process the incoming message and get the response message in return
+            MsgTblStone outMessage = processMessage(inMessage);
             
             // Use the output stream of the socket to respond to the client with a status message
             ObjectOutputStream outStream = new ObjectOutputStream(socket.getOutputStream());
-            MsgTblStone outMessage = new MsgTblStone();
             outStream.writeObject(outMessage);
             
             // Shutting down on special command
