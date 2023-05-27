@@ -67,7 +67,7 @@ public class Srv_TblStone {
             outStream.writeObject(outMessage);
             
             // Shutting down on special command
-            if (inMessage.getData().equalsIgnoreCase("shtdwn")) {
+            if (inMessage.getType() == MsgType.Send && inMessage.getData().equalsIgnoreCase("shtdwn")) {
                 System.out.println("Shutting down...");
                 break;
             }
