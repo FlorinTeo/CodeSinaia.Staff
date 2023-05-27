@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
-import java.net.InetAddress;
 
 public class MsgTblStone implements Serializable {
     private static final long serialVersionUID = 1L;
