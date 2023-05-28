@@ -23,7 +23,7 @@ public class Cli_TblStone {
     }
     
     // Region: parseMessage* utility methods
-    public static MsgTblStone parseMessage(String message) {
+    public static MsgTblStone parseMessage(String message) throws UnknownHostException {
         String[] parts = message.split(" ", 2);
         if (parts[0].equalsIgnoreCase("login")) {
             return parseMessageLogin(parts[1].split(" "));
@@ -38,7 +38,7 @@ public class Cli_TblStone {
         }
     }
 
-    public static MsgTblStone parseMessageLogin(String[] args) {
+    public static MsgTblStone parseMessageLogin(String[] args) throws UnknownHostException {
         if (args.length != 1 || !args[0].startsWith("name:")) {
             throw new RuntimeException("##Err##: Invalid syntax!");
         }
@@ -46,7 +46,7 @@ public class Cli_TblStone {
         return MsgTblStone.newLoginMessage(name);
     }
     
-    public static MsgTblStone parseMessageLogout(String[] args) {
+    public static MsgTblStone parseMessageLogout(String[] args) throws UnknownHostException {
         if (args.length != 1 || !args[0].startsWith("name:")) {
             throw new RuntimeException("##Err##: Invalid syntax!");
         }
@@ -54,7 +54,7 @@ public class Cli_TblStone {
         return MsgTblStone.newLogoutMessage(name);
     }
     
-    public static MsgTblStone parseMessageSend(String[] args) {
+    public static MsgTblStone parseMessageSend(String[] args) throws UnknownHostException {
         if (args.length != 3
             || !args[0].startsWith("from:")
             || !args[1].startsWith("to:")
@@ -67,7 +67,7 @@ public class Cli_TblStone {
         return MsgTblStone.newSendMessage(from, to, data);
     }
     
-    public static MsgTblStone parseMessageReceive(String[] args) {
+    public static MsgTblStone parseMessageReceive(String[] args) throws UnknownHostException {
         if (args.length != 1 || !args[0].startsWith("name:")) {
             throw new RuntimeException("##Err##: Invalid syntax!");
         }

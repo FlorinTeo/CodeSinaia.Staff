@@ -8,13 +8,12 @@ import java.net.InetSocketAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.SocketAddress;
+import java.net.UnknownHostException;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Queue;
 
-import common.Helpers;
 import common.MsgTblStone;
-import common.MsgType;
 
 public class Srv_TblStone {
     
@@ -23,8 +22,12 @@ public class Srv_TblStone {
     private static HashMap<String, Queue<MsgTblStone>> _msgQueues = new HashMap<String, Queue<MsgTblStone>>();
     
     // Region: processMessage* methods
-    public static MsgTblStone processMessage(MsgTblStone inMessage) {
+    public static MsgTblStone processMessage(String ipAddress, MsgTblStone inMessage) throws UnknownHostException {
         MsgTblStone outMessage;
+        
+        if (!ipAddress.equalsIgnoreCase(inMessage.getIp())) {
+            return MsgTblStone.newStatusMessage("[Err] Tampered message!");
+        }
         
         switch(inMessage.getType()) {
         case Login:
@@ -46,7 +49,7 @@ public class Srv_TblStone {
         return outMessage;
     }
     
-    public static MsgTblStone processMessageLogin(String name) {
+    public static MsgTblStone processMessageLogin(String name) throws UnknownHostException {
         System.out.print(">");
         if (_msgQueues.containsKey(name)) {
             return MsgTblStone.newStatusMessage("[Err] Already logged in!");
@@ -56,7 +59,7 @@ public class Srv_TblStone {
         return MsgTblStone.newStatusMessage("[Success] OK!");
     }
     
-    public static MsgTblStone processMessageLogout(String name) {
+    public static MsgTblStone processMessageLogout(String name) throws UnknownHostException {
         System.out.print("<");
         if (!_msgQueues.containsKey(name)) {
             return MsgTblStone.newStatusMessage("[Err] Not logged in!");
@@ -65,7 +68,7 @@ public class Srv_TblStone {
         return MsgTblStone.newStatusMessage("[Success] OK!");
     }
 
-    public static MsgTblStone processMessageSend(String from, String to, MsgTblStone message) {
+    public static MsgTblStone processMessageSend(String from, String to, MsgTblStone message) throws UnknownHostException {
         System.out.print("+");
 
         if (!_msgQueues.containsKey(from)) {
@@ -92,7 +95,7 @@ public class Srv_TblStone {
         return MsgTblStone.newStatusMessage("[Success] OK!");
     }
     
-    public static MsgTblStone processMessageReceive(String name) {
+    public static MsgTblStone processMessageReceive(String name) throws UnknownHostException {
         System.out.print("?");
         
         if (!_msgQueues.containsKey(name)) {
@@ -119,13 +122,14 @@ public class Srv_TblStone {
         do {
             // Wait for the socket connecting to a client
             Socket socket = server.accept();
+            String clientIpAddress = socket.getInetAddress().getHostAddress();
 
             // Use the input stream of the socket to get the message from the client
             ObjectInputStream inStream = new ObjectInputStream(socket.getInputStream());
             MsgTblStone inMessage = (MsgTblStone)inStream.readObject();
             
             // Process the incoming message and get the response message in return
-            MsgTblStone outMessage = processMessage(inMessage);
+            MsgTblStone outMessage = processMessage(clientIpAddress, inMessage);
             
             // Use the output stream of the socket to respond to the client with a status message
             ObjectOutputStream outStream = new ObjectOutputStream(socket.getOutputStream());

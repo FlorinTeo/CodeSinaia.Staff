@@ -4,6 +4,8 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 
 public class MsgTblStone implements Serializable {
     private static final long serialVersionUID = 1L;
@@ -11,7 +13,10 @@ public class MsgTblStone implements Serializable {
     // Command code for this message
     private MsgType _msgType;
     
-    // Fields for MsgCode.Register and MsgCode.Receive
+    // IP address of the creator of this message
+    private String _ipAddress;
+    
+    // Fields for MsgCode.Login,Logout,Receive
     private String _name;
     
     // Fields for MsgCode.Send
@@ -24,14 +29,12 @@ public class MsgTblStone implements Serializable {
     
     // Region: Factory methods
     /**
-     * Creates a new generic message, filling in only the necessary fields,
-     * according to the message type.
+     * Creates a new generic message, filling in only the necessary fields, according to the message type.
      */
-    private static MsgTblStone newMessage(
-            MsgType msgType,
-            Object... args) {
+    private static MsgTblStone newMessage(MsgType msgType, Object... args) throws UnknownHostException {
         MsgTblStone message = new MsgTblStone();
         message._msgType = msgType;
+        message._ipAddress = InetAddress.getLocalHost().getHostAddress();
         
         switch(msgType) {
         case Login:
@@ -57,23 +60,23 @@ public class MsgTblStone implements Serializable {
         return message;
     }
     
-    public static MsgTblStone newLoginMessage(String name) {
+    public static MsgTblStone newLoginMessage(String name) throws UnknownHostException {
         return newMessage(MsgType.Login, name);
     }
     
-    public static MsgTblStone newLogoutMessage(String name) {
+    public static MsgTblStone newLogoutMessage(String name) throws UnknownHostException {
         return newMessage(MsgType.Logout, name);
     }
     
-    public static MsgTblStone newSendMessage(String from, String to, char[] data) {
+    public static MsgTblStone newSendMessage(String from, String to, char[] data) throws UnknownHostException {
         return newMessage(MsgType.Send, from, to, data);
     }
     
-    public static MsgTblStone newReceiveMessage(String name) {
+    public static MsgTblStone newReceiveMessage(String name) throws UnknownHostException {
         return newMessage(MsgType.Receive, name);
     }
     
-    public static MsgTblStone newStatusMessage(String status) {
+    public static MsgTblStone newStatusMessage(String status) throws UnknownHostException {
         return newMessage(MsgType.Status, status);
     }
     // EndRegion: FactoryMethods
@@ -81,6 +84,14 @@ public class MsgTblStone implements Serializable {
     // Region: Accessors
     public MsgType getType() {
         return _msgType;
+    }
+    
+    public String getIp() {
+        return _ipAddress;
+    }
+    
+    public String getName() {
+        return _name;
     }
     
     public String getFrom() {
@@ -95,10 +106,6 @@ public class MsgTblStone implements Serializable {
         return new String(_data);
     }
     
-    public String getName() {
-        return _name;
-    }
-    
     public String getStatus() {
         return _status;
     }
@@ -106,7 +113,8 @@ public class MsgTblStone implements Serializable {
     
     // Region: Serialization / Deserialization
     private void writeObject(ObjectOutputStream out) throws IOException {
-        out.writeObject(_msgType);        
+        out.writeObject(_msgType);
+        out.writeObject(_ipAddress);
         switch(_msgType) {
         case Login:
         case Logout:
@@ -128,6 +136,7 @@ public class MsgTblStone implements Serializable {
 
     private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
         _msgType = (MsgType)in.readObject();
+        _ipAddress = (String)in.readObject();
         switch(_msgType) {
         case Login:
         case Logout:
@@ -151,7 +160,7 @@ public class MsgTblStone implements Serializable {
     @Override
     public String toString() {
         String output = 
-              String.format("--[MsgType:%d]----\n", _msgType.ordinal())
+              String.format("--[IP:%s:MsgType:%d]----\n", _ipAddress, _msgType.ordinal())
             + toString(_msgType);
         return output;
     }
