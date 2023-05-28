@@ -16,6 +16,7 @@ public class Cli_NetId {
     private static final String SRV_NETID_IP = "127.0.0.1"; // "10.84.160.100";
     private static final int SRV_NETID_PORT = 5025;
 
+    @SuppressWarnings("unused")
     private static void netInfo() throws SocketException {
         Enumeration<NetworkInterface> netIfs = NetworkInterface.getNetworkInterfaces();
         while (netIfs.hasMoreElements()) {
