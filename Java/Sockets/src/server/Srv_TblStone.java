@@ -49,7 +49,7 @@ public class Srv_TblStone {
     }
     
     public static MsgTblStone processMessageLogin(String name) {
-        System.out.println(">>>> Client login");
+        System.out.print(">");
         if (_msgQueues.containsKey(name)) {
             return MsgTblStone.newStatusMessage("[Err] Already logged in!");
         }
@@ -59,7 +59,7 @@ public class Srv_TblStone {
     }
     
     public static MsgTblStone processMessageLogout(String name) {
-        System.out.println(">>>> Client logout");
+        System.out.print("<");
         if (!_msgQueues.containsKey(name)) {
             return MsgTblStone.newStatusMessage("[Err] Not logged in!");
         }
@@ -67,22 +67,42 @@ public class Srv_TblStone {
         return MsgTblStone.newStatusMessage("[Success] OK!");
     }
 
-    public static MsgTblStone processMessageSend(String name, MsgTblStone message) {
-        System.out.println(">>>> Client sending data");
-        
-        // Shutting down on special command
-        if (message.getData().equalsIgnoreCase("shtdwn")) {
-            System.out.println("Shutting down...");
+    public static MsgTblStone processMessageSend(String toName, MsgTblStone message) {
+        System.out.print("+");
+
+        if (toName.equals(".") && message.getData().equalsIgnoreCase("shtdwn")) {
+            System.out.println("\nShutting down...");
             _shtdwnCmd = true;
             return MsgTblStone.newStatusMessage("[Success] Server shut down!");
         }
 
-        return MsgTblStone.newStatusMessage("[Err] Not Yet Implemented!");
+        if (!_msgQueues.containsKey(toName)) {
+            return MsgTblStone.newStatusMessage("[Err] Unknown recipient!");
+        }
+        
+        Queue<MsgTblStone> msgQueue = _msgQueues.get(toName);
+        if (msgQueue == null) {
+            msgQueue = new LinkedList<MsgTblStone>();
+            _msgQueues.put(toName, msgQueue);
+        }
+        
+        msgQueue.add(message);
+        return MsgTblStone.newStatusMessage("[Success] OK!");
     }
     
     public static MsgTblStone processMessageReceive(String name) {
-        System.out.println(">>>> Client requesting data");
-        return MsgTblStone.newStatusMessage("[Err] Not Yet Implemented!");
+        System.out.print("?");
+        
+        if (!_msgQueues.containsKey(name)) {
+            return MsgTblStone.newStatusMessage("[Err] Not logged in!");
+        }
+        
+        Queue<MsgTblStone> msgQueue = _msgQueues.get(name);
+        if (msgQueue == null || msgQueue.size() == 0) {
+            return MsgTblStone.newStatusMessage("[Err] No message!");
+        }
+        
+        return msgQueue.remove();
     }
     // EndRegion: processMessage* methods
     
@@ -91,13 +111,11 @@ public class Srv_TblStone {
         SocketAddress endPoint = new InetSocketAddress(ipAddr, _PORT);  
         ServerSocket server = new ServerSocket();
         server.bind(endPoint);
+        System.out.println("Server ready!\n");
         
         do {
-            System.out.println("Waiting for client!");
-            
             // Wait for the socket connecting to a client
             Socket socket = server.accept();
-            System.out.println("Message received: ");
 
             // Use the input stream of the socket to get the message from the client
             ObjectInputStream inStream = new ObjectInputStream(socket.getInputStream());
@@ -108,7 +126,7 @@ public class Srv_TblStone {
             
             // Use the output stream of the socket to respond to the client with a status message
             ObjectOutputStream outStream = new ObjectOutputStream(socket.getOutputStream());
-            outStream.writeObject(outMessage);            
+            outStream.writeObject(outMessage);
         } while(!_shtdwnCmd);
         
         server.close();
