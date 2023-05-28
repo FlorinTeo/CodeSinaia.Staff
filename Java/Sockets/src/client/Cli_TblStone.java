@@ -3,6 +3,7 @@ package client;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.net.InetAddress;
 import java.net.Socket;
 import java.net.UnknownHostException;
 import java.util.Scanner;
@@ -11,8 +12,15 @@ import common.MsgTblStone;
 
 public class Cli_TblStone {
     
-    private static final String _IP = "127.0.0.1"; //"10.69.112.155";
-    private static final int _PORT = 5025;
+    private static String SERVER_IP = "127.0.0.1"; // TODO: Replace with the server's actual address!
+    private static int SERVER_PORT = 5025;
+
+    // For the cases where client is colocated with the server, override the server's address with the client's local address.
+    static {
+        try {
+            SERVER_IP = InetAddress.getLocalHost().getHostAddress();
+        } catch (UnknownHostException e) { }
+    }
     
     // Region: parseMessage* utility methods
     public static MsgTblStone parseMessage(String message) {
@@ -83,7 +91,7 @@ public class Cli_TblStone {
                 MsgTblStone message = parseMessage(line);
     
                 // Create a socket connecting to the server
-                Socket socket = new Socket(_IP, _PORT);
+                Socket socket = new Socket(SERVER_IP, SERVER_PORT);
                 
                 // Use the output stream of that socket to send the message to server
                 ObjectOutputStream objOutStream = new ObjectOutputStream(socket.getOutputStream());

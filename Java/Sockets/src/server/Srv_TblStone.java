@@ -18,9 +18,7 @@ import common.MsgType;
 
 public class Srv_TblStone {
     
-    private static final String _IP = "127.0.0.1"; //"10.69.112.155";
     private static final int _PORT = 5025;
-    
     private static boolean _shtdwnCmd = false;
     private static HashMap<String, Queue<MsgTblStone>> _msgQueues = new HashMap<String, Queue<MsgTblStone>>();
     
@@ -36,7 +34,7 @@ public class Srv_TblStone {
             outMessage = processMessageLogout(inMessage.getName());
             break;
         case Send:
-            outMessage = processMessageSend(inMessage.getTo(), inMessage);
+            outMessage = processMessageSend(inMessage.getFrom(), inMessage.getTo(), inMessage);
             break;
         case Receive:
             outMessage = processMessageReceive(inMessage.getName());
@@ -67,23 +65,27 @@ public class Srv_TblStone {
         return MsgTblStone.newStatusMessage("[Success] OK!");
     }
 
-    public static MsgTblStone processMessageSend(String toName, MsgTblStone message) {
+    public static MsgTblStone processMessageSend(String from, String to, MsgTblStone message) {
         System.out.print("+");
 
-        if (toName.equals(".") && message.getData().equalsIgnoreCase("shtdwn")) {
+        if (!_msgQueues.containsKey(from)) {
+            return MsgTblStone.newStatusMessage("[Err] Unknown sender!");
+        }
+
+        if (to.equals(".") && message.getData().equalsIgnoreCase("shtdwn")) {
             System.out.println("\nShutting down...");
             _shtdwnCmd = true;
             return MsgTblStone.newStatusMessage("[Success] Server shut down!");
         }
 
-        if (!_msgQueues.containsKey(toName)) {
+        if (!_msgQueues.containsKey(to)) {
             return MsgTblStone.newStatusMessage("[Err] Unknown recipient!");
         }
         
-        Queue<MsgTblStone> msgQueue = _msgQueues.get(toName);
+        Queue<MsgTblStone> msgQueue = _msgQueues.get(to);
         if (msgQueue == null) {
             msgQueue = new LinkedList<MsgTblStone>();
-            _msgQueues.put(toName, msgQueue);
+            _msgQueues.put(to, msgQueue);
         }
         
         msgQueue.add(message);
@@ -107,11 +109,12 @@ public class Srv_TblStone {
     // EndRegion: processMessage* methods
     
     public static void main(String[] args) throws IOException, ClassNotFoundException {
-        InetAddress ipAddr = InetAddress.getByAddress(Helpers.ipToBytes(_IP));
-        SocketAddress endPoint = new InetSocketAddress(ipAddr, _PORT);  
+        //InetAddress inetAddr = InetAddress.getByAddress(Helpers.ipToBytes(_IP));
+        InetAddress inetAddr = InetAddress.getLocalHost();
+        SocketAddress endPoint = new InetSocketAddress(inetAddr, _PORT);  
         ServerSocket server = new ServerSocket();
         server.bind(endPoint);
-        System.out.println("Server ready!\n");
+        System.out.printf("[%s] Server ready!\n", inetAddr.getHostAddress());
         
         do {
             // Wait for the socket connecting to a client
