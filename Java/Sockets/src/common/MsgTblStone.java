@@ -87,8 +87,16 @@ public class MsgTblStone implements Serializable {
         return _from;
     }
     
+    public String getTo() {
+        return _to;
+    }
+    
     public String getData() {
         return new String(_data);
+    }
+    
+    public String getName() {
+        return _name;
     }
     
     public String getStatus() {

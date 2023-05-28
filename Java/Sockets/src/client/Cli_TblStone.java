@@ -14,11 +14,7 @@ public class Cli_TblStone {
     private static final String _IP = "127.0.0.1"; //"10.69.112.155";
     private static final int _PORT = 5025;
     
-    /**
-     * Utility method parsing a message from 
-     * @param message
-     * @return
-     */
+    // Region: parseMessage* utility methods
     public static MsgTblStone parseMessage(String message) {
         String[] parts = message.split(" ", 2);
         if (parts[0].equalsIgnoreCase("login")) {
@@ -70,9 +66,9 @@ public class Cli_TblStone {
         String name = args[0].substring("name:".length());
         return MsgTblStone.newReceiveMessage(name);
     }
+    // EndRegion: parseMessage* utility methods
     
     public static void main(String[] args) throws UnknownHostException, IOException, ClassNotFoundException {
-        
         Scanner console = new Scanner(System.in);
         
         do {
