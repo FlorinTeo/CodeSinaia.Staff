@@ -12,13 +12,15 @@ import common.MsgTblStone;
 
 public class CliTblStone {
     
-    private static String SERVER_IP = "127.0.0.1"; // TODO: Replace with the server's actual address!
+    private static String SERVER_IP = "192.168.4.132"; // TODO: Replace with the server's actual address!
     private static int SERVER_PORT = 5025;
 
     // For the cases where client is colocated with the server, override the server's address with the client's local address.
     static {
         try {
-            SERVER_IP = InetAddress.getLocalHost().getHostAddress();
+            if (SERVER_IP.isEmpty()) {
+                SERVER_IP = InetAddress.getLocalHost().getHostAddress();
+            }
         } catch (UnknownHostException e) { }
     }
     
