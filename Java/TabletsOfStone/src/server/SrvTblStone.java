@@ -31,18 +31,22 @@ public class SrvTblStone {
     private static Map<String, Queue<MsgTblStone>> _msgQueues = new HashMap<String, Queue<MsgTblStone>>();
     // Hash map associating the name of a client with its internet address as detected during login.
     private static Map<InetAddress, String> _inetMap = new HashMap<InetAddress, String>();
+    // Probability of a message to be dropped
+    private static double _chanceDrop = 0.0;
+    // Probability of a message to be reordered
+    private static double _chanceReorder = 0.0;
     
     // Region: processMessage* methods
     /**
-     * Processes a given input message returning an output (response) message.
+     * Processes a given input c returning an output (response) message.
      * @param inetAddress - Internet address of the sender of this message.
      * @param inMessage - message to be processed.
      * @return response message.
      * @throws UnknownHostException
-     * @see SrvTblStone#processMessageLogin(String)
-     * @see SrvTblStone#processMessageLogout(String)
-     * @see SrvTblStone#processMessageSend(String, String, MsgTblStone)
-     * @see SrvTblStone#processMessageReceive(String)
+     * @see SrvTblStone#processMessageLogin(InetAddress, String)
+     * @see SrvTblStone#processMessageLogout(InetAddress, String)
+     * @see SrvTblStone#processMessageSend(InetAddress, String, String, MsgTblStone)
+     * @see SrvTblStone#processMessageReceive(InetAddress, String)
      */
     public static MsgTblStone processMessage(InetAddress inetAddress, MsgTblStone inMessage) throws UnknownHostException {
         MsgTblStone outMessage;
@@ -68,14 +72,14 @@ public class SrvTblStone {
     }
     
     /**
-     * Processes a Login command for the given client name. If the client is already logged
+     * Processes a Login message for the given client name. If the client is already logged
      * in the operation fails and a failing Status message is returned to the caller.
      * @param inetAddress - Internet address of the sender of this message.
      * @param name - The name of the client logging in.
      * @return Status message indicating success or failure.
      * @throws UnknownHostException
-     * @see SrvTblStone#processMessageLogout(String)
-     * @see SrvTblStone#processMessage(String, MsgTblStone)
+     * @see SrvTblStone#processMessageLogout(InetAddress, String)
+     * @see SrvTblStone#processMessage(InetAddress, MsgTblStone)
      */
     public static MsgTblStone processMessageLogin(InetAddress inetAddress, String name) throws UnknownHostException {
         if (_inetMap.containsKey(inetAddress)) {
@@ -89,14 +93,14 @@ public class SrvTblStone {
     }
     
     /**
-     * Processes a Logout command for the given client name. If the client is not already
+     * Processes a Logout message for the given client name. If the client is not already
      * logged in the operation fails and a failing Status message is returned to the caller.
      * @param inetAddress - Internet address of the sender of this message.
      * @param name - The name of the client logging out.
      * @return Status message indicating success or failure.
      * @throws UnknownHostException
-     * @see SrvTblStone#processMessageLogin(String)
-     * @see SrvTblStone#processMessage(String, MsgTblStone)
+     * @see SrvTblStone#processMessageLogin(InetAddress, String)
+     * @see SrvTblStone#processMessage(InetAddress, MsgTblStone)
      */
     public static MsgTblStone processMessageLogout(InetAddress inetAddress, String name) throws UnknownHostException {
         String registeredName = _inetMap.get(inetAddress);
@@ -111,7 +115,7 @@ public class SrvTblStone {
     }
 
     /**
-     * Processes a Send command for a given sender, targetting the given recepient and
+     * Processes a Send message for a given sender, targetting the given recepient and
      * containing the given message as payload. If either the send or the recepient
      * are not logged in, the operation fails and a failing Status message is returned to the caller.
      * @param inetAddress - Internet address of the sender of this message.
@@ -120,8 +124,8 @@ public class SrvTblStone {
      * @param message - the message to be relayed.
      * @return Status message indicating success or failure.
      * @throws UnknownHostException
-     * @see SrvTblStone#processMessageReceive(String)
-     * @see SrvTblStone#processMessage(String, MsgTblStone)
+     * @see SrvTblStone#processMessageReceive(InetAddress, String)
+     * @see SrvTblStone#processMessage(InetAddress, MsgTblStone)
      */
     public static MsgTblStone processMessageSend(InetAddress inetAddress, String from, String to, MsgTblStone message) throws UnknownHostException {
         if (!_inetMap.containsKey(inetAddress)) {
@@ -146,19 +150,29 @@ public class SrvTblStone {
             return MsgTblStone.newStatusMessage("[Err] Unknown recipient!");
         }
         
-        System.out.print(">");
-        Queue<MsgTblStone> msgQueue = _msgQueues.get(to);
-        if (msgQueue == null) {
-            msgQueue = new LinkedList<MsgTblStone>();
-            _msgQueues.put(to, msgQueue);
+        if (Math.random() < _chanceDrop) {
+            System.out.print("v");
+        } else {
+            Queue<MsgTblStone> msgQueue = _msgQueues.get(to);
+            if (msgQueue == null) {
+                msgQueue = new LinkedList<MsgTblStone>();
+                _msgQueues.put(to, msgQueue);
+            }
+            if (Math.random() < _chanceReorder) {
+                System.out.print("~");
+                int iMessage = (int)(Math.random() * msgQueue.size());
+                ((LinkedList<MsgTblStone>)msgQueue).add(iMessage, message);
+            } else {
+                System.out.print(">");
+                msgQueue.add(message);
+            }
         }
         
-        msgQueue.add(message);
         return MsgTblStone.newStatusMessage("[Success] OK!");
     }
     
     /**
-     * Processes a Receive command for a given client. The method takes as parameter the client name
+     * Processes a Receive message for a given client. The method takes as parameter the client name
      * expecting to receive the message. If such a message is available, the method returns it as
      * a Send message, encapsulating the Sender's name, IP address and data playload. If no such
      * message exists, the method returns a failing Status message.
@@ -166,8 +180,8 @@ public class SrvTblStone {
      * @param to - the name of the client requesting a message.
      * @return either a Send message or a Status indicating success or failure.
      * @throws UnknownHostException
-     * @see SrvTblStone#processMessageSend(String, String, MsgTblStone)
-     * @see SrvTblStone#processMessage(String, MsgTblStone)
+     * @see SrvTblStone#processMessageSend(InetAddress, String, String, MsgTblStone)
+     * @see SrvTblStone#processMessage(InetAddress, MsgTblStone)
      */
     public static MsgTblStone processMessageReceive(InetAddress inetAddress, String name) throws UnknownHostException {
         String registeredName = _inetMap.get(inetAddress);

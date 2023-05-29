@@ -3,7 +3,6 @@ package client;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.net.InetAddress;
 import java.net.Socket;
 import java.net.UnknownHostException;
 import java.util.Scanner;
@@ -15,15 +14,6 @@ public class CliTblStone {
     private static String SERVER_IP = "192.168.4.132"; // TODO: Replace with the server's actual address!
     private static int SERVER_PORT = 5025;
 
-    // For the cases where client is colocated with the server, override the server's address with the client's local address.
-    static {
-        try {
-            if (SERVER_IP.isEmpty()) {
-                SERVER_IP = InetAddress.getLocalHost().getHostAddress();
-            }
-        } catch (UnknownHostException e) { }
-    }
-    
     // Region: parseMessage* utility methods
     public static MsgTblStone parseMessage(String message) throws UnknownHostException {
         String[] parts = message.split(" ", 2);
@@ -97,13 +87,13 @@ public class CliTblStone {
                 
                 // Use the output stream of that socket to send the message to server
                 ObjectOutputStream objOutStream = new ObjectOutputStream(socket.getOutputStream());
-                System.out.println(message);
+                System.out.printf("--> %s\n", message.toString());
                 objOutStream.writeObject(message);
                 
                 // Use the input stream of that socket to receive the response from server
                 ObjectInputStream objInStream = new ObjectInputStream(socket.getInputStream());
                 message = (MsgTblStone)objInStream.readObject();
-                System.out.println(message);
+                System.out.printf("<-- %s\n", message.toString());
                 
                 socket.close();
                 System.out.println("DONE");

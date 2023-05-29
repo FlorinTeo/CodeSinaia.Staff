@@ -236,9 +236,7 @@ public class MsgTblStone implements Serializable {
      */
     @Override
     public String toString() {
-        String output = 
-              String.format("--[MsgType:%d]----\n", _msgType.ordinal())
-            + toString(_msgType);
+        String output = String.format("%10s: %s", _msgType.toString(), toString(_msgType));
         return output;
     }
     
@@ -254,25 +252,21 @@ public class MsgTblStone implements Serializable {
         switch(msgType) {
         case Login:
         case Logout:
-            output = 
-                  String.format("  [Name: %s]\n", _name);
+            output = String.format("[Name: %s]", _name);
             break;
         case Send:
-            output = 
-                  String.format("  [From: %s]\n", _from)
-                + String.format("  [To: %s]\n" , _to)
-                + String.format("  \"%s\"\n", new String(_data));
+            output = String.format("[From: %s][To: %s] \\\"%s\\\"", _from, _to, new String(_data));
             break;
         case Receive:
-            output = 
-                  String.format("  [Name: %s]\n", _name);
+            output = String.format("[Name: %s]", _name);
             break;
         case Status:
-            output = "  " + _status;
+            output = _status;
             break;
         default:
-            output = "  Undefined!";
+            output = "Undefined!";
         }
+        
         return output;
     }
 }
