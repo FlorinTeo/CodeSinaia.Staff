@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
-import java.net.InetAddress;
 import java.net.UnknownHostException;
 
 /**
@@ -17,9 +16,6 @@ public class MsgTblStone implements Serializable {
 
     // Message type code for this message
     private MsgType _msgType;
-    
-    // IP address of the creator of this message
-    private String _ipAddress;
     
     // Fields for MsgCode.Login,Logout,Receive
     private String _name;
@@ -42,7 +38,6 @@ public class MsgTblStone implements Serializable {
     private static MsgTblStone newMessage(MsgType msgType, Object... args) throws UnknownHostException {
         MsgTblStone message = new MsgTblStone();
         message._msgType = msgType;
-        message._ipAddress = InetAddress.getLocalHost().getHostAddress();
         
         switch(msgType) {
         case Login:
@@ -136,14 +131,6 @@ public class MsgTblStone implements Serializable {
     }
     
     /**
-     * Gives the IP address of of the creator of this message (used for all message types).
-     * @return the IP address string (i.e. "192.168.105.23")
-     */
-    public String getIp() {
-        return _ipAddress;
-    }
-    
-    /**
      * Gives the client name (used for MsgType.Login,Logout,Receive).
      * @return the client name.
      */
@@ -186,15 +173,13 @@ public class MsgTblStone implements Serializable {
     
     // Region: Serialization / Deserialization
     /**
-     * Serializes this object to the given output stream. The method writes the fields common
-     * across all message types (the MsgType code and the creator's IP address) followed only by
-     * the fields applicable to the specific message type.
+     * Serializes this object to the given output stream. The method writes the fields common across all
+     * message types (the MsgType code) followed only by the fields applicable to this specific type.
      * @param out - output stream to write the object to.
      * @throws IOException
      */
     private void writeObject(ObjectOutputStream out) throws IOException {
         out.writeObject(_msgType);
-        out.writeObject(_ipAddress);
         switch(_msgType) {
         case Login:
         case Logout:
@@ -215,16 +200,14 @@ public class MsgTblStone implements Serializable {
     }
 
     /**
-     * Deserializes this object from the given input stream. The method reads the message type code
-     * and the IP address of its creator, the reads only the fields applicable to the specific
-     * message type.
+     * Deserializes this object from the given input stream. The method reads the message type first
+     * then the reads only the fields applicable to this specific type.
      * @param in - input stream to read the object from.
      * @throws IOException
      * @throws ClassNotFoundException
      */
     private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
         _msgType = (MsgType)in.readObject();
-        _ipAddress = (String)in.readObject();
         switch(_msgType) {
         case Login:
         case Logout:
@@ -246,16 +229,15 @@ public class MsgTblStone implements Serializable {
     // EndRegion:Serialization/Deserialization
     
     /**
-     * Returns a string representation of this object. It formats first the common fields
-     * (creator's IP address and the message type) followed only by the fields applicable
-     * to the specific message type.
+     * Returns a string representation of this object. It formats first the common field
+     * (the message type) followed only by the fields applicable to the specific message type.
      * @return the string representation of the object.
      * @see MsgTblStone#toString(MsgType)
      */
     @Override
     public String toString() {
         String output = 
-              String.format("--[IP:%s:MsgType:%d]----\n", _ipAddress, _msgType.ordinal())
+              String.format("--[MsgType:%d]----\n", _msgType.ordinal())
             + toString(_msgType);
         return output;
     }

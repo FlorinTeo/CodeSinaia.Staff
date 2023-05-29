@@ -11,6 +11,7 @@ import java.net.SocketAddress;
 import java.net.UnknownHostException;
 import java.util.HashMap;
 import java.util.LinkedList;
+import java.util.Map;
 import java.util.Queue;
 
 import common.MsgTblStone;
@@ -27,12 +28,14 @@ public class SrvTblStone {
     // Server listens and accepts messages from clients for as long as the shutdown command below is false.
     private static boolean _shtdwnCmd = false;
     // Hash map associating the name of a client with a queue of messages sent to that client.
-    private static HashMap<String, Queue<MsgTblStone>> _msgQueues = new HashMap<String, Queue<MsgTblStone>>();
+    private static Map<String, Queue<MsgTblStone>> _msgQueues = new HashMap<String, Queue<MsgTblStone>>();
+    // Hash map associating the name of a client with its internet address as detected during login.
+    private static Map<InetAddress, String> _inetMap = new HashMap<InetAddress, String>();
     
     // Region: processMessage* methods
     /**
      * Processes a given input message returning an output (response) message.
-     * @param ipAddress - IP address of the sender of this message.
+     * @param inetAddress - Internet address of the sender of this message.
      * @param inMessage - message to be processed.
      * @return response message.
      * @throws UnknownHostException
@@ -41,25 +44,21 @@ public class SrvTblStone {
      * @see SrvTblStone#processMessageSend(String, String, MsgTblStone)
      * @see SrvTblStone#processMessageReceive(String)
      */
-    public static MsgTblStone processMessage(String ipAddress, MsgTblStone inMessage) throws UnknownHostException {
+    public static MsgTblStone processMessage(InetAddress inetAddress, MsgTblStone inMessage) throws UnknownHostException {
         MsgTblStone outMessage;
-        
-        if (!ipAddress.equalsIgnoreCase(inMessage.getIp())) {
-            return MsgTblStone.newStatusMessage("[Err] Tampered message!");
-        }
-        
+
         switch(inMessage.getType()) {
         case Login:
-            outMessage = processMessageLogin(inMessage.getName());
+            outMessage = processMessageLogin(inetAddress, inMessage.getName());
             break;
         case Logout:
-            outMessage = processMessageLogout(inMessage.getName());
+            outMessage = processMessageLogout(inetAddress, inMessage.getName());
             break;
         case Send:
-            outMessage = processMessageSend(inMessage.getFrom(), inMessage.getTo(), inMessage);
+            outMessage = processMessageSend(inetAddress, inMessage.getFrom(), inMessage.getTo(), inMessage);
             break;
         case Receive:
-            outMessage = processMessageReceive(inMessage.getName());
+            outMessage = processMessageReceive(inetAddress, inMessage.getName());
             break;
         default:
             outMessage = MsgTblStone.newStatusMessage("[Err] Unsupported message!");
@@ -71,36 +70,42 @@ public class SrvTblStone {
     /**
      * Processes a Login command for the given client name. If the client is already logged
      * in the operation fails and a failing Status message is returned to the caller.
+     * @param inetAddress - Internet address of the sender of this message.
      * @param name - The name of the client logging in.
      * @return Status message indicating success or failure.
      * @throws UnknownHostException
      * @see SrvTblStone#processMessageLogout(String)
      * @see SrvTblStone#processMessage(String, MsgTblStone)
      */
-    public static MsgTblStone processMessageLogin(String name) throws UnknownHostException {
-        System.out.print(">");
-        if (_msgQueues.containsKey(name)) {
+    public static MsgTblStone processMessageLogin(InetAddress inetAddress, String name) throws UnknownHostException {
+        if (_inetMap.containsKey(inetAddress)) {
+            System.out.print("x");
             return MsgTblStone.newStatusMessage("[Err] Already logged in!");
         }
-        Queue<MsgTblStone> msgQueue = new LinkedList<MsgTblStone>();
-        _msgQueues.put(name, msgQueue);
+        System.out.print("+");
+        _inetMap.put(inetAddress, name);
+        _msgQueues.put(name, new LinkedList<MsgTblStone>());
         return MsgTblStone.newStatusMessage("[Success] OK!");
     }
     
     /**
      * Processes a Logout command for the given client name. If the client is not already
      * logged in the operation fails and a failing Status message is returned to the caller.
+     * @param inetAddress - Internet address of the sender of this message.
      * @param name - The name of the client logging out.
      * @return Status message indicating success or failure.
      * @throws UnknownHostException
      * @see SrvTblStone#processMessageLogin(String)
      * @see SrvTblStone#processMessage(String, MsgTblStone)
      */
-    public static MsgTblStone processMessageLogout(String name) throws UnknownHostException {
-        System.out.print("<");
-        if (!_msgQueues.containsKey(name)) {
-            return MsgTblStone.newStatusMessage("[Err] Not logged in!");
+    public static MsgTblStone processMessageLogout(InetAddress inetAddress, String name) throws UnknownHostException {
+        String registeredName = _inetMap.get(inetAddress);
+        if (registeredName == null || !registeredName.equals(name)) {
+            System.out.print("x");
+            return MsgTblStone.newStatusMessage("[Err] Denied: Spoofing!");
         }
+        System.out.print("-");
+        _inetMap.remove(inetAddress);
         _msgQueues.remove(name);
         return MsgTblStone.newStatusMessage("[Success] OK!");
     }
@@ -109,6 +114,7 @@ public class SrvTblStone {
      * Processes a Send command for a given sender, targetting the given recepient and
      * containing the given message as payload. If either the send or the recepient
      * are not logged in, the operation fails and a failing Status message is returned to the caller.
+     * @param inetAddress - Internet address of the sender of this message.
      * @param from - the name of the client sending the message.
      * @param to - the name of the client to receive the message.
      * @param message - the message to be relayed.
@@ -117,10 +123,14 @@ public class SrvTblStone {
      * @see SrvTblStone#processMessageReceive(String)
      * @see SrvTblStone#processMessage(String, MsgTblStone)
      */
-    public static MsgTblStone processMessageSend(String from, String to, MsgTblStone message) throws UnknownHostException {
-        System.out.print("+");
+    public static MsgTblStone processMessageSend(InetAddress inetAddress, String from, String to, MsgTblStone message) throws UnknownHostException {
+        if (!_inetMap.containsKey(inetAddress)) {
+            System.out.print("x");
+            return MsgTblStone.newStatusMessage("[Err] Denied: Repudation!");
+        }
 
         if (!_msgQueues.containsKey(from)) {
+            System.out.print("x");
             return MsgTblStone.newStatusMessage("[Err] Unknown sender!");
         }
 
@@ -130,10 +140,13 @@ public class SrvTblStone {
             return MsgTblStone.newStatusMessage("[Success] Server shut down!");
         }
 
-        if (!_msgQueues.containsKey(to)) {
+        if (!_msgQueues.containsKey(to)) 
+        {
+            System.out.print("x");
             return MsgTblStone.newStatusMessage("[Err] Unknown recipient!");
         }
         
+        System.out.print(">");
         Queue<MsgTblStone> msgQueue = _msgQueues.get(to);
         if (msgQueue == null) {
             msgQueue = new LinkedList<MsgTblStone>();
@@ -149,24 +162,27 @@ public class SrvTblStone {
      * expecting to receive the message. If such a message is available, the method returns it as
      * a Send message, encapsulating the Sender's name, IP address and data playload. If no such
      * message exists, the method returns a failing Status message.
+     * @param inetAddress - Internet address of the sender of this message.
      * @param to - the name of the client requesting a message.
      * @return either a Send message or a Status indicating success or failure.
      * @throws UnknownHostException
      * @see SrvTblStone#processMessageSend(String, String, MsgTblStone)
      * @see SrvTblStone#processMessage(String, MsgTblStone)
      */
-    public static MsgTblStone processMessageReceive(String name) throws UnknownHostException {
-        System.out.print("?");
-        
-        if (!_msgQueues.containsKey(name)) {
-            return MsgTblStone.newStatusMessage("[Err] Not logged in!");
+    public static MsgTblStone processMessageReceive(InetAddress inetAddress, String name) throws UnknownHostException {
+        String registeredName = _inetMap.get(inetAddress);
+        if (registeredName == null || !registeredName.equals(name)) {
+            System.out.print("x");
+            return MsgTblStone.newStatusMessage("[Err] Denied: Spoofing!");
         }
         
         Queue<MsgTblStone> msgQueue = _msgQueues.get(name);
         if (msgQueue == null || msgQueue.size() == 0) {
+            System.out.print("?");
             return MsgTblStone.newStatusMessage("[Err] No message!");
         }
         
+        System.out.print("<");    
         return msgQueue.remove();
     }
     // EndRegion: processMessage* methods
@@ -185,14 +201,13 @@ public class SrvTblStone {
         do {
             // Wait for the socket connecting to a client
             Socket socket = server.accept();
-            String clientIpAddress = socket.getInetAddress().getHostAddress();
 
             // Use the input stream of the socket to get the message from the client
             ObjectInputStream inStream = new ObjectInputStream(socket.getInputStream());
             MsgTblStone inMessage = (MsgTblStone)inStream.readObject();
             
             // Process the incoming message and get the response message in return
-            MsgTblStone outMessage = processMessage(clientIpAddress, inMessage);
+            MsgTblStone outMessage = processMessage(socket.getInetAddress(), inMessage);
             
             // Use the output stream of the socket to respond to the client with a status message
             ObjectOutputStream outStream = new ObjectOutputStream(socket.getOutputStream());
