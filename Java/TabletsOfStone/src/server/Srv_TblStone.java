@@ -15,10 +15,18 @@ import java.util.Queue;
 
 import common.MsgTblStone;
 
+/**
+ * This class iplements the messenger functionality in the "Tablets of Stone" game: It is a socket-based server
+ * able to answer to a simple set of commands: login/logout/send/receive. Clients are expected to login before
+ * being able to either send or receive a message.
+ */
 public class Srv_TblStone {
     
+    // The port bound by the server for listening
     private static final int _PORT = 5025;
+    // Server will listen and accept messages from clients for as long as the shut down command below is false.
     private static boolean _shtdwnCmd = false;
+    // Hash map associating the name of a client with a queue of messages sent to that client.
     private static HashMap<String, Queue<MsgTblStone>> _msgQueues = new HashMap<String, Queue<MsgTblStone>>();
     
     // Region: processMessage* methods
@@ -111,8 +119,11 @@ public class Srv_TblStone {
     }
     // EndRegion: processMessage* methods
     
+    /**
+     * Main entry point in the program. The server loops continuously, waiting for a message from any client.
+     * When message is received, it is deserialized, processed, and a response message is sent back.
+     */
     public static void main(String[] args) throws IOException, ClassNotFoundException {
-        //InetAddress inetAddr = InetAddress.getByAddress(Helpers.ipToBytes(_IP));
         InetAddress inetAddr = InetAddress.getLocalHost();
         SocketAddress endPoint = new InetSocketAddress(inetAddr, _PORT);  
         ServerSocket server = new ServerSocket();

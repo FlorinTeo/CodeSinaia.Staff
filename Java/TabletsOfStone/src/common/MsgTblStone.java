@@ -10,7 +10,7 @@ import java.net.UnknownHostException;
 public class MsgTblStone implements Serializable {
     private static final long serialVersionUID = 1L;
 
-    // Command code for this message
+    // Message type code for this message
     private MsgType _msgType;
     
     // IP address of the creator of this message
@@ -20,16 +20,19 @@ public class MsgTblStone implements Serializable {
     private String _name;
     
     // Fields for MsgCode.Send
-    private String _from;
-    private String _to;
-    private char[] _data;
+    private String _from; // name of the sender
+    private String _to;   // name of the recepient
+    private char[] _data; // data payload
         
-    // Response status for all MsgCode.*
+    // Fields for MsgCode.Status
     private String _status;
     
     // Region: Factory methods
     /**
-     * Creates a new generic message, filling in only the necessary fields, according to the message type.
+     * Creates a new MsgTblStone object, of a given type, filling in all fields specifc to that type.
+     * @param msgType - the type of the message being created.
+     * @param args - variable list of arguments.
+     * @return the new message of the given type with the content specific to its type.
      */
     private static MsgTblStone newMessage(MsgType msgType, Object... args) throws UnknownHostException {
         MsgTblStone message = new MsgTblStone();
@@ -60,58 +63,130 @@ public class MsgTblStone implements Serializable {
         return message;
     }
     
+    /**
+     * Creates a new Login message.
+     * @param name - the name of the client logging in.
+     * @return the new Login message.
+     * @throws UnknownHostException
+     * @see {@link MsgTblStone#newMessage(MsgType, Object...)}
+     */
     public static MsgTblStone newLoginMessage(String name) throws UnknownHostException {
         return newMessage(MsgType.Login, name);
     }
     
+    /**
+     * Creates a new Logout message.
+     * @param name - the name of the client logging out.
+     * @return the new Logout message.
+     * @throws UnknownHostException
+     * @see {@link MsgTblStone#newMessage(MsgType, Object...)}
+     */
     public static MsgTblStone newLogoutMessage(String name) throws UnknownHostException {
         return newMessage(MsgType.Logout, name);
     }
     
+    /**
+     * Creates a new Send message.
+     * @param from - the name of the client sending the message.
+     * @param to - the name of the client receiving the message.
+     * @param data - the data payload of the message.
+     * @return the new Send message.
+     * @throws UnknownHostException
+     * @see {@link MsgTblStone#newMessage(MsgType, Object...)}
+     */
     public static MsgTblStone newSendMessage(String from, String to, char[] data) throws UnknownHostException {
         return newMessage(MsgType.Send, from, to, data);
     }
     
+    /**
+     * Creates a new Receive message.
+     * @param name - the name of the client requesting to receive the data.
+     * @return the new Receive message.
+     * @throws UnknownHostException
+     * @see {@link MsgTblStone#newMessage(MsgType, Object...)}
+     */
     public static MsgTblStone newReceiveMessage(String name) throws UnknownHostException {
         return newMessage(MsgType.Receive, name);
     }
     
+    /**
+     * Creates a new Status message.
+     * @param status - the free-form string content for the status.
+     * @return the new Status message.
+     * @throws UnknownHostException
+     * @see {@link MsgTblStone#newMessage(MsgType, Object...)}
+     */
     public static MsgTblStone newStatusMessage(String status) throws UnknownHostException {
         return newMessage(MsgType.Status, status);
     }
     // EndRegion: FactoryMethods
     
     // Region: Accessors
+    /**
+     * Gives the type of this message (used for all message types).
+     * @return the MsgType code of this message.
+     */
     public MsgType getType() {
         return _msgType;
     }
     
+    /**
+     * Gives the IP address of of the creator of this message (used for all message types).
+     * @return the IP address string (i.e. "192.168.105.23")
+     */
     public String getIp() {
         return _ipAddress;
     }
     
+    /**
+     * Gives the client name (used for MsgType.Login,Logout,Receive).
+     * @return the client name.
+     */
     public String getName() {
         return _name;
     }
     
+    /**
+     * Gives the sender's name (used for MsgType.Send)
+     * @return the sender's name.
+     */
     public String getFrom() {
         return _from;
     }
     
+    /**
+     * Gives the recepient's name (used for MsgType.Receive)
+     * @return the recepient's name.
+     */
     public String getTo() {
         return _to;
     }
     
+    /**
+     * Gives the data paylod in this message (used for MsgType.Send).
+     * @return the data payload.
+     */
     public String getData() {
         return new String(_data);
     }
     
+    /**
+     * Gives the status string in this message (used for MsgType.Status).
+     * @return the status string.
+     */
     public String getStatus() {
         return _status;
     }
     // EndRegion: Accessors
     
     // Region: Serialization / Deserialization
+    /**
+     * Serializes this object to the given output stream. The method writes the fields common
+     * across all message types (the MsgType code and the creator's IP address) followed only by
+     * the fields applicable to the specific message type.
+     * @param out - output stream to write the object to.
+     * @throws IOException
+     */
     private void writeObject(ObjectOutputStream out) throws IOException {
         out.writeObject(_msgType);
         out.writeObject(_ipAddress);
@@ -134,6 +209,14 @@ public class MsgTblStone implements Serializable {
         }
     }
 
+    /**
+     * Deserializes this object from the given input stream. The method reads the message type code
+     * and the IP address of its creator, the reads only the fields applicable to the specific
+     * message type.
+     * @param in - input stream to read the object from.
+     * @throws IOException
+     * @throws ClassNotFoundException
+     */
     private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
         _msgType = (MsgType)in.readObject();
         _ipAddress = (String)in.readObject();
@@ -157,6 +240,13 @@ public class MsgTblStone implements Serializable {
     }
     // EndRegion:Serialization/Deserialization
     
+    /**
+     * Returns a string representation of this object. It formats first the common fields
+     * (creator's IP address and the message type) followed only by the fields applicable
+     * to the specific message type.
+     * @return the string representation of the object.
+     * @see MsgTblStone#toString(MsgType)
+     */
     @Override
     public String toString() {
         String output = 
@@ -165,6 +255,13 @@ public class MsgTblStone implements Serializable {
         return output;
     }
     
+    /**
+     * Returns a string representation of a subset of the object's fields, the ones
+     * applicable to the specific message type given as parameter.
+     * @param msgType - the message type to use for filtering the fields to be formatted.
+     * @return the string representation of the fields applicable to msgType.
+     * @see MsgTblStone#toString()
+     */
     public String toString(MsgType msgType) {
         String output = "";
         switch(msgType) {
