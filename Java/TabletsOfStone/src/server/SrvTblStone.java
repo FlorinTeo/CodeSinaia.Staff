@@ -16,20 +16,31 @@ import java.util.Queue;
 import common.MsgTblStone;
 
 /**
- * This class iplements the messenger functionality in the "Tablets of Stone" game: It is a socket-based server
- * able to answer to a simple set of commands: login/logout/send/receive. Clients are expected to login before
- * being able to either send or receive a message.
+ * Class implementing the messenger functionality in the "Tablets of Stone" game: It is a socket-based server
+ * able to answer to a simple set of commands: Login/Logout/Send/Receive. Clients are expected to login before
+ * being able to either send or receive messages.
  */
-public class Srv_TblStone {
+public class SrvTblStone {
     
     // The port bound by the server for listening
     private static final int _PORT = 5025;
-    // Server will listen and accept messages from clients for as long as the shut down command below is false.
+    // Server listens and accepts messages from clients for as long as the shutdown command below is false.
     private static boolean _shtdwnCmd = false;
     // Hash map associating the name of a client with a queue of messages sent to that client.
     private static HashMap<String, Queue<MsgTblStone>> _msgQueues = new HashMap<String, Queue<MsgTblStone>>();
     
     // Region: processMessage* methods
+    /**
+     * Processes a given input message returning an output (response) message.
+     * @param ipAddress - IP address of the sender of this message.
+     * @param inMessage - message to be processed.
+     * @return response message.
+     * @throws UnknownHostException
+     * @see SrvTblStone#processMessageLogin(String)
+     * @see SrvTblStone#processMessageLogout(String)
+     * @see SrvTblStone#processMessageSend(String, String, MsgTblStone)
+     * @see SrvTblStone#processMessageReceive(String)
+     */
     public static MsgTblStone processMessage(String ipAddress, MsgTblStone inMessage) throws UnknownHostException {
         MsgTblStone outMessage;
         
@@ -57,6 +68,15 @@ public class Srv_TblStone {
         return outMessage;
     }
     
+    /**
+     * Processes a Login command for the given client name. If the client is already logged
+     * in the operation fails and a failing Status message is returned to the caller.
+     * @param name - The name of the client logging in.
+     * @return Status message indicating success or failure.
+     * @throws UnknownHostException
+     * @see SrvTblStone#processMessageLogout(String)
+     * @see SrvTblStone#processMessage(String, MsgTblStone)
+     */
     public static MsgTblStone processMessageLogin(String name) throws UnknownHostException {
         System.out.print(">");
         if (_msgQueues.containsKey(name)) {
@@ -67,6 +87,15 @@ public class Srv_TblStone {
         return MsgTblStone.newStatusMessage("[Success] OK!");
     }
     
+    /**
+     * Processes a Logout command for the given client name. If the client is not already
+     * logged in the operation fails and a failing Status message is returned to the caller.
+     * @param name - The name of the client logging out.
+     * @return Status message indicating success or failure.
+     * @throws UnknownHostException
+     * @see SrvTblStone#processMessageLogin(String)
+     * @see SrvTblStone#processMessage(String, MsgTblStone)
+     */
     public static MsgTblStone processMessageLogout(String name) throws UnknownHostException {
         System.out.print("<");
         if (!_msgQueues.containsKey(name)) {
@@ -76,6 +105,18 @@ public class Srv_TblStone {
         return MsgTblStone.newStatusMessage("[Success] OK!");
     }
 
+    /**
+     * Processes a Send command for a given sender, targetting the given recepient and
+     * containing the given message as payload. If either the send or the recepient
+     * are not logged in, the operation fails and a failing Status message is returned to the caller.
+     * @param from - the name of the client sending the message.
+     * @param to - the name of the client to receive the message.
+     * @param message - the message to be relayed.
+     * @return Status message indicating success or failure.
+     * @throws UnknownHostException
+     * @see SrvTblStone#processMessageReceive(String)
+     * @see SrvTblStone#processMessage(String, MsgTblStone)
+     */
     public static MsgTblStone processMessageSend(String from, String to, MsgTblStone message) throws UnknownHostException {
         System.out.print("+");
 
@@ -103,6 +144,17 @@ public class Srv_TblStone {
         return MsgTblStone.newStatusMessage("[Success] OK!");
     }
     
+    /**
+     * Processes a Receive command for a given client. The method takes as parameter the client name
+     * expecting to receive the message. If such a message is available, the method returns it as
+     * a Send message, encapsulating the Sender's name, IP address and data playload. If no such
+     * message exists, the method returns a failing Status message.
+     * @param to - the name of the client requesting a message.
+     * @return either a Send message or a Status indicating success or failure.
+     * @throws UnknownHostException
+     * @see SrvTblStone#processMessageSend(String, String, MsgTblStone)
+     * @see SrvTblStone#processMessage(String, MsgTblStone)
+     */
     public static MsgTblStone processMessageReceive(String name) throws UnknownHostException {
         System.out.print("?");
         

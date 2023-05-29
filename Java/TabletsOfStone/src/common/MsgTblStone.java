@@ -7,6 +7,11 @@ import java.io.Serializable;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 
+/**
+ * Class encapsulating a generic message exchanged between clients and server in the
+ * "Tablets of Stone" game. The clients (governers in the game's story) can exchange
+ * messages with other clients by relaying them through the server (messenger in the game's story)
+ */
 public class MsgTblStone implements Serializable {
     private static final long serialVersionUID = 1L;
 

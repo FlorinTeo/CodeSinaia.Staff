@@ -10,7 +10,7 @@ import java.util.Scanner;
 
 import common.MsgTblStone;
 
-public class Cli_TblStone {
+public class CliTblStone {
     
     private static String SERVER_IP = "127.0.0.1"; // TODO: Replace with the server's actual address!
     private static int SERVER_PORT = 5025;
