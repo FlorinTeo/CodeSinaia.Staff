@@ -4,10 +4,8 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.InetAddress;
-import java.net.InetSocketAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.net.SocketAddress;
 import java.net.UnknownHostException;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -207,9 +205,7 @@ public class SrvTblStone {
      */
     public static void main(String[] args) throws IOException, ClassNotFoundException {
         InetAddress inetAddr = InetAddress.getLocalHost();
-        SocketAddress endPoint = new InetSocketAddress(inetAddr, _PORT);  
-        ServerSocket server = new ServerSocket();
-        server.bind(endPoint);
+        ServerSocket server = new ServerSocket(_PORT);
         System.out.printf("[%s] Server ready!\n", inetAddr.getHostAddress());
         
         do {
@@ -226,6 +222,7 @@ public class SrvTblStone {
             // Use the output stream of the socket to respond to the client with a status message
             ObjectOutputStream outStream = new ObjectOutputStream(socket.getOutputStream());
             outStream.writeObject(outMessage);
+            socket.close();
         } while(!_shtdwnCmd);
         
         server.close();
