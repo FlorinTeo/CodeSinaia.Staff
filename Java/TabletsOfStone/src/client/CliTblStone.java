@@ -11,7 +11,7 @@ import common.MsgTblStone;
 
 public class CliTblStone {
     
-    private static String SERVER_IP = "192.168.4.132"; // TODO: Replace with the server's actual address!
+    private static String SERVER_IP = "172.16.101.193"; // TODO: Replace with the server's actual address!
     private static int SERVER_PORT = 5025;
 
     // Region: parseMessage* utility methods
@@ -25,6 +25,8 @@ public class CliTblStone {
             return parseMessageSend(parts[1].split(" "));
         } else if (parts[0].equalsIgnoreCase("receive")) {
             return parseMessageReceive(parts[1].split(" "));
+        } else if (parts[0].equalsIgnoreCase("status")) {
+            return parseMessageStatus(parts[1].split(" "));
         } else {
             throw new RuntimeException("##Err##: Unrecognized command!");
         }
@@ -66,6 +68,14 @@ public class CliTblStone {
         String name = args[0].substring("name:".length());
         return MsgTblStone.newReceiveMessage(name);
     }
+    
+    public static MsgTblStone parseMessageStatus(String[] args) throws UnknownHostException {
+        if (args.length != 1 || !args[0].startsWith("op:")) {
+            throw new RuntimeException("##Err##: Invalid syntax!");
+        }
+        String op = args[0].substring("op:".length());
+        return MsgTblStone.newStatusMessage(op);
+    }
     // EndRegion: parseMessage* utility methods
     
     public static void main(String[] args) throws UnknownHostException, IOException, ClassNotFoundException {
@@ -78,12 +88,13 @@ public class CliTblStone {
                 break;
             }
             
+            Socket socket = null;
             try {
                 // Prepare the outgoing message
                 MsgTblStone message = parseMessage(line);
     
                 // Create a socket connecting to the server
-                Socket socket = new Socket(SERVER_IP, SERVER_PORT);
+                socket = new Socket(SERVER_IP, SERVER_PORT);
                 
                 // Use the output stream of that socket to send the message to server
                 ObjectOutputStream objOutStream = new ObjectOutputStream(socket.getOutputStream());
@@ -95,10 +106,13 @@ public class CliTblStone {
                 message = (MsgTblStone)objInStream.readObject();
                 System.out.printf("<-- %s\n", message.toString());
                 
-                socket.close();
                 System.out.println("DONE");
             } catch (Exception e) {
                 System.out.println(e.getMessage());
+            }
+            
+            if (socket != null) {
+                socket.close();
             }
         } while(true);
         

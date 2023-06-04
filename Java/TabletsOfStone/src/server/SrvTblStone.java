@@ -62,6 +62,9 @@ public class SrvTblStone {
         case Receive:
             outMessage = processMessageReceive(inetAddress, inMessage.getName());
             break;
+        case Status:
+            outMessage = processMessageStatus(inetAddress, inMessage.getStatus());
+            break;
         default:
             outMessage = MsgTblStone.newStatusMessage("[Err] Unsupported message!");
         }
@@ -197,6 +200,43 @@ public class SrvTblStone {
         System.out.print("<");    
         return msgQueue.remove();
     }
+    
+    /**
+     * Processes a Status message from a registered client. The message contains an "operation" request
+     * in its status string, which can be either an "inquire" for server internal status or a 
+     * "reset" directive to forcefully logout all clients and purge all message queues.
+     * @param inetAddress - Internet address of the sender of this message.
+     * @param status - the status string
+     * @return a Status message indicating success or failure.
+     * @throws UnknownHostException
+     */
+    private static MsgTblStone processMessageStatus(InetAddress inetAddress, String status) throws UnknownHostException {
+        String registeredName = _inetMap.get(inetAddress);
+        if (registeredName == null) {
+            System.out.print("x");
+            return MsgTblStone.newStatusMessage("[Err] Denied: Info Disclosure!");
+        }
+        
+        String info = "[Success]";
+        
+        switch(status.toLowerCase()) {
+        case "inquire":
+            for(Map.Entry<InetAddress, String> kvp: _inetMap.entrySet()) {
+                info += "\n" + kvp.getKey().toString() + " : " + kvp.getValue();
+            }
+            System.out.print("i");
+            break;
+        case "reset":
+            _inetMap.clear();
+            _msgQueues.clear();
+            System.out.print("r");
+            break;
+        default:
+            info = "[Err] Unsupported operation!";
+        }
+        
+        return MsgTblStone.newStatusMessage(info);
+    }
     // EndRegion: processMessage* methods
     
     /**
@@ -209,20 +249,29 @@ public class SrvTblStone {
         System.out.printf("[%s] Server ready!\n", inetAddr.getHostAddress());
         
         do {
-            // Wait for the socket connecting to a client
-            Socket socket = server.accept();
-
-            // Use the input stream of the socket to get the message from the client
-            ObjectInputStream inStream = new ObjectInputStream(socket.getInputStream());
-            MsgTblStone inMessage = (MsgTblStone)inStream.readObject();
+            Socket socket = null;
             
-            // Process the incoming message and get the response message in return
-            MsgTblStone outMessage = processMessage(socket.getInetAddress(), inMessage);
+            try {
+                // Wait for the socket connecting to a client
+                socket = server.accept();
+    
+                // Use the input stream of the socket to get the message from the client
+                ObjectInputStream inStream = new ObjectInputStream(socket.getInputStream());
+                MsgTblStone inMessage = (MsgTblStone)inStream.readObject();
+                
+                // Process the incoming message and get the response message in return
+                MsgTblStone outMessage = processMessage(socket.getInetAddress(), inMessage);
+                
+                // Use the output stream of the socket to respond to the client with a status message
+                ObjectOutputStream outStream = new ObjectOutputStream(socket.getOutputStream());
+                outStream.writeObject(outMessage);
+            } catch (Exception e) {
+                System.out.print("X");
+            }
             
-            // Use the output stream of the socket to respond to the client with a status message
-            ObjectOutputStream outStream = new ObjectOutputStream(socket.getOutputStream());
-            outStream.writeObject(outMessage);
-            socket.close();
+            if (socket != null) {
+                socket.close();
+            }
         } while(!_shtdwnCmd);
         
         server.close();
