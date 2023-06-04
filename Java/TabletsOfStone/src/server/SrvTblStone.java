@@ -218,7 +218,6 @@ public class SrvTblStone {
         }
         
         String info = "[Success]";
-        
         switch(status.toLowerCase()) {
         case "inquire":
             for(Map.Entry<InetAddress, String> kvp: _inetMap.entrySet()) {
