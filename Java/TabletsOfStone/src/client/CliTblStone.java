@@ -11,7 +11,7 @@ import common.MsgTblStone;
 
 public class CliTblStone {
     
-    private static String SERVER_IP = "67.170.72.113"; // TODO: Replace with the server's actual address!
+    private static String SERVER_IP = "192.168.4.132"; // TODO: Replace with the server's actual address!
     private static int SERVER_PORT = 5025;
 
     // Region: parseMessage* utility methods

@@ -27,12 +27,35 @@ public class SrvTblStone {
     private static boolean _shtdwnCmd = false;
     // Hash map associating the name of a client with a queue of messages sent to that client.
     private static Map<String, Queue<MsgTblStone>> _msgQueues = new HashMap<String, Queue<MsgTblStone>>();
-    // Hash map associating the name of a client with its internet address as detected during login.
-    private static Map<InetAddress, String> _inetMap = new HashMap<InetAddress, String>();
+    // Hash map associating the public name of a client with its private name.
+    private static Map<String, String> _idMap = new HashMap<String, String>();
     // Probability of a message to be dropped
     private static double _chanceDrop = 0.0;
     // Probability of a message to be reordered
     private static double _chanceReorder = 0.0;
+
+    // Region: Id management
+    private static class Id {
+        private String name;
+        private String secret;
+    }
+    
+    private static Id newId(InetAddress inetAddress, String name) {
+        Id id = new Id();
+        String[] nameParts = name.split("\\.", 2);
+        if (nameParts.length > 1) {
+            id.name = nameParts[0];
+            id.secret = nameParts[1];
+        } else {
+            id.name = name;
+            id.secret = inetAddress.getHostAddress();
+            if (id.secret.equals("67.170.72.113")) {
+                id.secret = null;
+            }
+        }
+        return id;
+    }
+    // EndRegion: Id management
     
     // Region: processMessage* methods
     /**
@@ -83,13 +106,14 @@ public class SrvTblStone {
      * @see SrvTblStone#processMessage(InetAddress, MsgTblStone)
      */
     public static MsgTblStone processMessageLogin(InetAddress inetAddress, String name) throws UnknownHostException {
-        if (_inetMap.containsKey(inetAddress)) {
+        Id id = newId(inetAddress, name);
+        if (_idMap.containsKey(id.name)) {
             System.out.print("x");
             return MsgTblStone.newStatusMessage("[Err] Already logged in!");
         }
         System.out.print("+");
-        _inetMap.put(inetAddress, name);
-        _msgQueues.put(name, new LinkedList<MsgTblStone>());
+        _idMap.put(id.name, id.secret);
+        _msgQueues.put(id.name, new LinkedList<MsgTblStone>());
         return MsgTblStone.newStatusMessage("[Success] OK!");
     }
     
@@ -104,14 +128,15 @@ public class SrvTblStone {
      * @see SrvTblStone#processMessage(InetAddress, MsgTblStone)
      */
     public static MsgTblStone processMessageLogout(InetAddress inetAddress, String name) throws UnknownHostException {
-        String registeredName = _inetMap.get(inetAddress);
-        if (registeredName == null || !registeredName.equals(name)) {
+        Id id = newId(inetAddress, name);
+        String secret = _idMap.get(id.name);
+        if (secret != null && !secret.equals(id.secret)) {
             System.out.print("x");
             return MsgTblStone.newStatusMessage("[Err] Denied: Spoofing!");
         }
         System.out.print("-");
-        _inetMap.remove(inetAddress);
-        _msgQueues.remove(name);
+        _idMap.remove(id.name);
+        _msgQueues.remove(id.name);
         return MsgTblStone.newStatusMessage("[Success] OK!");
     }
 
@@ -129,11 +154,6 @@ public class SrvTblStone {
      * @see SrvTblStone#processMessage(InetAddress, MsgTblStone)
      */
     public static MsgTblStone processMessageSend(InetAddress inetAddress, String from, String to, MsgTblStone message) throws UnknownHostException {
-        if (!_inetMap.containsKey(inetAddress)) {
-            System.out.print("x");
-            return MsgTblStone.newStatusMessage("[Err] Denied: Repudation!");
-        }
-
         if (!_msgQueues.containsKey(from)) {
             System.out.print("x");
             return MsgTblStone.newStatusMessage("[Err] Unknown sender!");
@@ -185,13 +205,14 @@ public class SrvTblStone {
      * @see SrvTblStone#processMessage(InetAddress, MsgTblStone)
      */
     public static MsgTblStone processMessageReceive(InetAddress inetAddress, String name) throws UnknownHostException {
-        String registeredName = _inetMap.get(inetAddress);
-        if (registeredName == null || !registeredName.equals(name)) {
+        Id id = newId(inetAddress, name);
+        String secret = _idMap.get(id.name);
+        if (secret != null && !secret.equals(id.secret)) {
             System.out.print("x");
             return MsgTblStone.newStatusMessage("[Err] Denied: Spoofing!");
         }
         
-        Queue<MsgTblStone> msgQueue = _msgQueues.get(name);
+        Queue<MsgTblStone> msgQueue = _msgQueues.get(id.name);
         if (msgQueue == null || msgQueue.size() == 0) {
             System.out.print("?");
             return MsgTblStone.newStatusMessage("[Err] No message!");
@@ -211,22 +232,16 @@ public class SrvTblStone {
      * @throws UnknownHostException
      */
     private static MsgTblStone processMessageStatus(InetAddress inetAddress, String status) throws UnknownHostException {
-        String registeredName = _inetMap.get(inetAddress);
-        if (registeredName == null) {
-            System.out.print("x");
-            return MsgTblStone.newStatusMessage("[Err] Denied: Info Disclosure!");
-        }
-        
         String info = "[Success]";
         switch(status.toLowerCase()) {
         case "inquire":
-            for(Map.Entry<InetAddress, String> kvp: _inetMap.entrySet()) {
-                info += "\n" + kvp.getKey().toString() + " : " + kvp.getValue();
+            for(Map.Entry<String, String> kvp: _idMap.entrySet()) {
+                info += String.format("\n%-10s : %s", kvp.getKey().toString(), kvp.getValue());
             }
             System.out.print("i");
             break;
         case "reset":
-            _inetMap.clear();
+            _idMap.clear();
             _msgQueues.clear();
             System.out.print("r");
             break;
