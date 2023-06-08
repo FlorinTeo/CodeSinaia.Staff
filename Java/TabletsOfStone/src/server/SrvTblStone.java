@@ -49,7 +49,7 @@ public class SrvTblStone {
         } else {
             id.name = name;
             id.secret = inetAddress.getHostAddress();
-            if (id.secret.equals("67.170.72.114")) {
+            if (id.secret.equals("168.99.202.84") || id.secret.equals("168.99.199.32")) {
                 id.secret = "";
             }
         }
