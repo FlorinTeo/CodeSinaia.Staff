@@ -49,7 +49,7 @@ public class SrvTblStone {
         } else {
             id.name = name;
             id.secret = inetAddress.getHostAddress();
-            if (id.secret.equals("67.170.72.113")) {
+            if (id.secret.equals("67.170.72.114")) {
                 id.secret = "";
             }
         }
@@ -247,6 +247,10 @@ public class SrvTblStone {
             _msgQueues.clear();
             System.out.print("r");
             break;
+        case "echo":
+        	info = inetAddress.getHostAddress();
+        	System.out.print("e");
+        	break;
         default:
             info = "[Err] Unsupported operation!";
         }
