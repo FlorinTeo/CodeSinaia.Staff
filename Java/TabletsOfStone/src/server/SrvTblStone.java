@@ -50,7 +50,7 @@ public class SrvTblStone {
             id.name = name;
             id.secret = inetAddress.getHostAddress();
             if (id.secret.equals("67.170.72.113")) {
-                id.secret = null;
+                id.secret = "";
             }
         }
         return id;
@@ -130,7 +130,7 @@ public class SrvTblStone {
     public static MsgTblStone processMessageLogout(InetAddress inetAddress, String name) throws UnknownHostException {
         Id id = newId(inetAddress, name);
         String secret = _idMap.get(id.name);
-        if (secret != null && !secret.equals(id.secret)) {
+        if (secret == null || !secret.equals(id.secret)) {
             System.out.print("x");
             return MsgTblStone.newStatusMessage("[Err] Denied: Spoofing!");
         }
@@ -207,7 +207,7 @@ public class SrvTblStone {
     public static MsgTblStone processMessageReceive(InetAddress inetAddress, String name) throws UnknownHostException {
         Id id = newId(inetAddress, name);
         String secret = _idMap.get(id.name);
-        if (secret != null && !secret.equals(id.secret)) {
+        if (secret == null || !secret.equals(id.secret)) {
             System.out.print("x");
             return MsgTblStone.newStatusMessage("[Err] Denied: Spoofing!");
         }
@@ -236,7 +236,9 @@ public class SrvTblStone {
         switch(status.toLowerCase()) {
         case "inquire":
             for(Map.Entry<String, String> kvp: _idMap.entrySet()) {
-                info += String.format("\n%-10s : %s", kvp.getKey().toString(), kvp.getValue());
+            	info += String.format("\n%-13s : ", kvp.getKey().toString());
+            	info += (kvp.getValue().length() > 0) ? "******** " : "         ";
+            	info += String.format("[%d messages]", _msgQueues.get(kvp.getKey()).size());
             }
             System.out.print("i");
             break;
