@@ -7,6 +7,7 @@ import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.UnknownHostException;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Map;
@@ -23,6 +24,12 @@ public class SrvTblStone {
     
     // The port bound by the server for listening
     private static final int _PORT = 5025;
+    private static String[] _PROXY_ENDPOINTS = {
+        "168.99.202.84", // lwhs.wifi
+        "168.99.199.32", // lwhs.lan
+        "67.170.72.113", // fthome.net
+    };
+    
     // Server listens and accepts messages from clients for as long as the shutdown command below is false.
     private static boolean _shtdwnCmd = false;
     // Hash map associating the name of a client with a queue of messages sent to that client.
@@ -49,7 +56,7 @@ public class SrvTblStone {
         } else {
             id.name = name;
             id.secret = inetAddress.getHostAddress();
-            if (id.secret.equals("168.99.202.84") || id.secret.equals("168.99.199.32")) {
+            if (Arrays.asList(_PROXY_ENDPOINTS).contains(id.secret)) {
                 id.secret = "";
             }
         }
