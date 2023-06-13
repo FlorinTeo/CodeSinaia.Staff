@@ -242,11 +242,7 @@ public class SrvTblStone {
         String info = "[Success]";
         switch(status.toLowerCase()) {
         case "inquire":
-            for(Map.Entry<String, String> kvp: _idMap.entrySet()) {
-            	info += String.format("\n%-13s : ", kvp.getKey().toString());
-            	info += (kvp.getValue().length() > 0) ? "******** " : "         ";
-            	info += String.format("[%d messages]", _msgQueues.get(kvp.getKey()).size());
-            }
+            info = serverStatusString();
             System.out.print("i");
             break;
         case "reset":
@@ -255,9 +251,9 @@ public class SrvTblStone {
             System.out.print("r");
             break;
         case "echo":
-        	info = inetAddress.getHostAddress();
-        	System.out.print("e");
-        	break;
+            info = inetAddress.getHostAddress();
+            System.out.print("e");
+            break;
         default:
             info = "[Err] Unsupported operation!";
         }
@@ -281,7 +277,10 @@ public class SrvTblStone {
             try {
                 // Wait for the socket connecting to a client
                 socket = server.accept();
-                System.out.print("#");
+                // Print a marker indicating the reception of a message
+                System.out.print(":");
+                // Set a timeout such that the server does not freeze
+                // if the client never sends a message.
                 socket.setSoTimeout(_TIMEOUT);
     
                 // Use the input stream of the socket to get the message from the client
@@ -291,12 +290,12 @@ public class SrvTblStone {
                 // Process the incoming message and get the response message in return
                 MsgTblStone outMessage = processMessage(socket.getInetAddress(), inMessage);
 
-                MsgTblStone lclInquire = processMessage(socket.getInetAddress(), MsgTblStone.newStatusMessage("inquire"));
-                System.out.println(lclInquire);
-                
                 // Use the output stream of the socket to respond to the client with a status message
                 ObjectOutputStream outStream = new ObjectOutputStream(socket.getOutputStream());
                 outStream.writeObject(outMessage);
+                
+                // Print the updated state of the server
+                System.out.printf("%s\n", serverStatusString());
             } catch (Exception e) {
                 System.out.printf("X:%s\n", e.getMessage());
             }
@@ -308,5 +307,21 @@ public class SrvTblStone {
         
         server.close();
         System.out.println("Server is shutdown! Goodbye!");
+    }
+    
+    /**
+     * Generates a string capturing the internal state of the server:
+     * Who is logged in, whether there's a secrete associated with the login
+     * and how many messages are in that login's queue.
+     * @return the server status string.
+     */
+    public static String serverStatusString() {
+        String info = "";
+        for(Map.Entry<String, String> kvp: _idMap.entrySet()) {
+            info += String.format("\n%-13s : ", kvp.getKey().toString());
+            info += (kvp.getValue().length() > 0) ? "******** " : "         ";
+            info += String.format("[%d messages]", _msgQueues.get(kvp.getKey()).size());
+        }
+        return info;
     }
 }
