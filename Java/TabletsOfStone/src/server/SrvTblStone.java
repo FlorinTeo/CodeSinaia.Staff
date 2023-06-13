@@ -25,10 +25,11 @@ public class SrvTblStone {
     // The port bound by the server for listening
     private static final int _PORT = 5025;
     private static String[] _PROXY_ENDPOINTS = {
-        "168.99.202.84", // lwhs.wifi
+        "168.99.202.84", // lwhs.wifi //
         "168.99.199.32", // lwhs.lan
         "67.170.72.113", // fthome.net
     };
+    private static final int _TIMEOUT = 4000;
     
     // Server listens and accepts messages from clients for as long as the shutdown command below is false.
     private static boolean _shtdwnCmd = false;
@@ -281,6 +282,8 @@ public class SrvTblStone {
             try {
                 // Wait for the socket connecting to a client
                 socket = server.accept();
+                System.out.print("#");
+                socket.setSoTimeout(_TIMEOUT);
     
                 // Use the input stream of the socket to get the message from the client
                 ObjectInputStream inStream = new ObjectInputStream(socket.getInputStream());
@@ -288,12 +291,15 @@ public class SrvTblStone {
                 
                 // Process the incoming message and get the response message in return
                 MsgTblStone outMessage = processMessage(socket.getInetAddress(), inMessage);
+
+                MsgTblStone lclInquire = processMessage(socket.getInetAddress(), MsgTblStone.newStatusMessage("inquire"));
+                System.out.println(lclInquire);
                 
                 // Use the output stream of the socket to respond to the client with a status message
                 ObjectOutputStream outStream = new ObjectOutputStream(socket.getOutputStream());
                 outStream.writeObject(outMessage);
             } catch (Exception e) {
-                System.out.print("X");
+                System.out.printf("X:%s\n", e.getMessage());
             }
             
             if (socket != null) {
