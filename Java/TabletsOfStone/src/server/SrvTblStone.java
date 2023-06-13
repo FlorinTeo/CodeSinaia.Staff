@@ -27,7 +27,6 @@ public class SrvTblStone {
     private static String[] _PROXY_ENDPOINTS = {
         "168.99.202.84", // lwhs.wifi //
         "168.99.199.32", // lwhs.lan
-        "67.170.72.113", // fthome.net
     };
     private static final int _TIMEOUT = 4000;
     
