@@ -5,7 +5,7 @@ import java.io.ObjectOutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
 
-public class HelloSocketsSrv {
+public class SrvHelloSockets {
     private static final int SERVER_PORT = 5025;
 
     public static void main(String[] args) throws Exception {

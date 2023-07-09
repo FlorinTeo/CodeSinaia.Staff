@@ -4,7 +4,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
 
-public class HelloSocketsCli {
+public class CliHelloSockets {
     private static final int SERVER_PORT = 5025;
     private static final String SERVER_IP = "127.0.0.1";
     public static void main(String[] args) throws Exception {
