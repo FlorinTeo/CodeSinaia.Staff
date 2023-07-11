@@ -6,6 +6,13 @@
     "configurations": [
         {
             "type": "java",
+            "name": "Program",
+            "request": "launch",
+            "mainClass": "SimpleServer.Program",
+            "projectName": "2023_efcf5140"
+        },
+        {
+            "type": "java",
             "name": "SimpleMap",
             "request": "launch",
             "mainClass": "DataStructures.SimpleMap",
