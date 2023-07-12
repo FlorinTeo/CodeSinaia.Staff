@@ -8,6 +8,13 @@
             "type": "java",
             "name": "Program",
             "request": "launch",
+            "mainClass": "Regex.Program",
+            "projectName": "2023_efcf5140"
+        },
+        {
+            "type": "java",
+            "name": "Program",
+            "request": "launch",
             "mainClass": "EightQueens.Program",
             "projectName": "2023_efcf5140"
         },
