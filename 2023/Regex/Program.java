@@ -26,28 +26,31 @@ public class Program {
     }
 
     private static boolean regexMatch(String regex, String text) {
-        for (int i = 0; i < regex.length(); i++) {
-            switch(regex.charAt(i)) {
-            case '?':
-                return (i < text.length()) 
-                    && regexMatch(regex.substring(i+1), text.substring(i+1));
-            case '.':
-                return regexMatch(regex.substring(i+1), text.substring(i))
-                    || (i < text.length() && regexMatch(regex.substring(i+1), text.substring(i+1)));
-            case '*':
-                for (int j = i; j < text.length(); j++) {
-                    if (regexMatch(regex.substring(i+1), text.substring(j))) {
-                        return true;
-                    }
-                }
-                return (text.length() == i);
-            default:
-                if (i < text.length() && text.charAt(i) != regex.charAt(i)) {
-                    return false;
-                }
-            }
+        int i = 0;
+        while (i < Math.min(regex.length(), text.length()) && regex.charAt(i) == text.charAt(i)) {
+            i++;
         }
 
-        return true;
+        if (i == regex.length()) {
+            return (i == text.length());
+        }
+
+        switch(regex.charAt(i)) {
+        case '?':
+            return (i < text.length()) 
+                && regexMatch(regex.substring(i+1), text.substring(i+1));
+        case '.':
+            return regexMatch(regex.substring(i+1), text.substring(i))
+                || (i < text.length() && regexMatch(regex.substring(i+1), text.substring(i+1)));
+        case '*':
+            for (int j = i; j <= text.length(); j++) {
+                if (regexMatch(regex.substring(i+1), text.substring(j))) {
+                    return true;
+                }
+            }
+            return false;
+        default:
+            return false;
+        }
     }
 }
