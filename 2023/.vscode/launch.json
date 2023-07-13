@@ -8,6 +8,20 @@
             "type": "java",
             "name": "Program",
             "request": "launch",
+            "mainClass": "Permutations.Program",
+            "projectName": "2023_efcf5140"
+        },
+        {
+            "type": "java",
+            "name": "Program",
+            "request": "launch",
+            "mainClass": "Anagrams.Program",
+            "projectName": "2023_efcf5140"
+        },
+        {
+            "type": "java",
+            "name": "Program",
+            "request": "launch",
             "mainClass": "Regex.Program",
             "projectName": "2023_efcf5140"
         },
