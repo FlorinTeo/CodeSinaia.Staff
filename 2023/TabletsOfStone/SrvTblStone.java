@@ -23,8 +23,9 @@ public class SrvTblStone {
     // The port bound by the server for listening
     private static final int _PORT = 5025;
     private static String[] _PROXY_ENDPOINTS = {
-        "168.99.202.84", // lwhs.wifi //
-        "168.99.199.32", // lwhs.lan
+        // add addresses that do not uniquely identify a user (i.e. internet side of NATs)
+        // "168.99.202.84", // lwhs.wifi
+        // "168.99.199.32", // lwhs.lan
     };
     private static final int _TIMEOUT = 4000;
     
