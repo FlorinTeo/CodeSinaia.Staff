@@ -24,7 +24,6 @@ public class Program {
 
         int crtDepth = 0;
         int codeDepth = 0;
-        boolean inLiteral = false;
         
         while(codeReader.hasNextLine()) {
             Scanner lineReader = new Scanner(codeReader.nextLine());
