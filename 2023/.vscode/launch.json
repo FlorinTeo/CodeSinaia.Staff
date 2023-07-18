@@ -15,16 +15,23 @@
             "type": "java",
             "name": "Program",
             "request": "launch",
-            "mainClass": "Permutations.Program",
+            "mainClass": "HeatWave.Program",
             "projectName": "2023_efcf5140"
         },
         {
             "type": "java",
             "name": "Program",
             "request": "launch",
-            "mainClass": "Anagrams.Program",
+            "mainClass": "LongestWords.Program",
+            "projectName": "2023_efcf5140"
+        },        {
+            "type": "java",
+            "name": "Program",
+            "request": "launch",
+            "mainClass": "Permutations.Program",
             "projectName": "2023_efcf5140"
         },
+
         {
             "type": "java",
             "name": "Program",
