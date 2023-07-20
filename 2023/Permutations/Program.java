@@ -17,7 +17,7 @@ public class Program {
             }
 
             int nPrinted = printPermutations("", text, 0);
-            System.out.printf("\n---- Total number of anagrams : %d ----\n", nPrinted);
+            System.out.printf("\n---- Total number of permutations : %d ----\n", nPrinted);
         } while(true);
 
         System.out.println("Goodbye!");
