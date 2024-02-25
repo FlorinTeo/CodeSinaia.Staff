@@ -1,20 +1,25 @@
 import { Node } from "./node.js"
 
+/**
+ * Models the drawing canvas in the html page
+ */
 export class Canvas {
     constructor(hCanvas, width, height) {
         this.hCanvas = hCanvas;
+        this.label = 'A';
+        this.nodes = new Map();
         this.repaint(width, height);
     }
 
     repaint(width, height) {
-        this.label = 'A';
         this.hCanvas.width = width;
         this.hCanvas.height = height;
         let context = this.hCanvas.getContext("2d");
         context.fillStyle = "white";
         context.fillRect(0, 0, width, height);
-        context.font = "bold 12px Arial";
-        context.textAlign = "center";
+        this.nodes.forEach((node, label) => {
+            node.repaint();
+        });
     }
 
     onMouseClickEvent(event) {
@@ -24,6 +29,7 @@ export class Canvas {
 
         // create a new node for that location and paint it on the canvas
         let node = new Node(this.hCanvas, this.label, x, y);
+        this.nodes.set(this.label, node);
         node.repaint();
 
         // increment label

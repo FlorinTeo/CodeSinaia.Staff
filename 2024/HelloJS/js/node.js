@@ -1,3 +1,6 @@
+/**
+ * Models a node in the Graph
+ */
 export class Node {
     constructor(hCanvas, label, x, y) {
         this.hCanvas = hCanvas;
@@ -15,6 +18,8 @@ export class Node {
         context.lineWidth = 1;
         context.strokeStyle = 'black';
         context.stroke();
+        context.font = "bold 12px Arial";
+        context.textAlign = "center";
         context.fillStyle = "red";
         context.fillText(this.label, this.x, this.y+4);
     }
