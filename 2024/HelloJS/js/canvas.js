@@ -1,14 +1,16 @@
+import { Node } from "./node.js"
+
 export class Canvas {
     constructor(hCanvas, width, height) {
-        this.hElement = hCanvas;
-        this.resize(width, height);
+        this.hCanvas = hCanvas;
+        this.repaint(width, height);
     }
 
-    resize(width, height) {
+    repaint(width, height) {
         this.label = 'A';
-        this.hElement.width = width;
-        this.hElement.height = height;
-        let context = this.hElement.getContext("2d");
+        this.hCanvas.width = width;
+        this.hCanvas.height = height;
+        let context = this.hCanvas.getContext("2d");
         context.fillStyle = "white";
         context.fillRect(0, 0, width, height);
         context.font = "bold 12px Arial";
@@ -16,18 +18,15 @@ export class Canvas {
     }
 
     onMouseClickEvent(event) {
-        const x = event.clientX - this.hElement.offsetLeft;
-        const y = event.clientY - this.hElement.offsetTop;
-        let context = this.hElement.getContext("2d");
-        context.beginPath();
-        context.arc(x, y, 16, 0, 2 * Math.PI, false);
-        context.fillStyle = 'lightgray';
-        context.fill();
-        context.lineWidth = 1;
-        context.strokeStyle = 'black';
-        context.stroke();
-        context.fillStyle = "red";
-        context.fillText(this.label, x, y+4);
+        // get the canvas x,y coordinates of the click
+        let x = event.clientX - this.hCanvas.offsetLeft;
+        let y = event.clientY - this.hCanvas.offsetTop;
+
+        // create a new node for that location and paint it on the canvas
+        let node = new Node(this.hCanvas, this.label, x, y);
+        node.repaint();
+
+        // increment label
         this.label = String.fromCharCode(this.label.charCodeAt(0) + 1);
     }
 }

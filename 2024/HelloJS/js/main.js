@@ -12,7 +12,7 @@ const resizeObserver = new ResizeObserver(entries => {
     for(const entry of entries) {
         switch(entry.target.id) {
         case hDiv.id:
-            canvas.resize(entries[0].contentRect.width, entries[0].contentRect.height);
+            canvas.repaint(entries[0].contentRect.width, entries[0].contentRect.height);
             return;
         }
     }
