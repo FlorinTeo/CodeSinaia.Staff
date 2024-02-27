@@ -23,6 +23,4 @@ const resizeObserver = new ResizeObserver(entries => {
 resizeObserver.observe(hDiv);
 // mouse click event handler
 hCanvas.addEventListener('click', graph.onMouseClickEvent.bind(graph));
-// mouse right-click event handler
-hCanvas.addEventListener('contextmenu', graph.onContextMenu.bind(graph));
 // #endregion - hook user interface callbacks

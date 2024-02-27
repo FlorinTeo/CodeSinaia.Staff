@@ -33,24 +33,15 @@ export class Graph {
         }
     }
 
+    /**
+     * Clicking on the canvas either removes the node if one exists,
+     * or creates a new node at that position if none was there.
+     */
     onMouseClickEvent(event) {
         // get the canvas x,y coordinates of the click
         let x = event.clientX - this.hCanvas.offsetLeft;
         let y = event.clientY - this.hCanvas.offsetTop;
 
-        // create a new node for that location and paint it on the canvas
-        let node = new Node(this.hCanvas, this.nextLabel, x, y);
-        this.nodes.set(node.label, node);
-        node.repaint();
-        // increment label
-        this.nextLabel = String.fromCharCode(this.nextLabel.charCodeAt(0) + 1);
-    }
-
-    onContextMenu(event) {
-        event.preventDefault();
-        // get the canvas x,y coordinates of the click
-        let x = event.clientX - this.hCanvas.offsetLeft;
-        let y = event.clientY - this.hCanvas.offsetTop;
         for(const[label, node] of this.nodes.entries()) {
             if (node.isTarget(x, y)) {
                 this.nodes.delete(label);
@@ -58,5 +49,12 @@ export class Graph {
                 return;
             }
         }
+
+        // create a new node for that location and paint it on the canvas
+        let node = new Node(this.hCanvas, this.nextLabel, x, y);
+        this.nodes.set(node.label, node);
+        node.repaint();
+        // increment label
+        this.nextLabel = String.fromCharCode(this.nextLabel.charCodeAt(0) + 1);
     }
 }
