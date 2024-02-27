@@ -12,7 +12,8 @@ const resizeObserver = new ResizeObserver(entries => {
     for(const entry of entries) {
         switch(entry.target.id) {
         case hDiv.id:
-            graph.repaint(entries[0].contentRect.width, entries[0].contentRect.height);
+            graph.resize(entry.contentRect.width, entry.contentRect.height);
+            graph.repaint();
             return;
         }
     }

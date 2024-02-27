@@ -19,12 +19,15 @@ export class Graph {
         this.repaint(width, height);
     }
 
-    repaint(width, height) {
+    resize(width, height) {
         this.hCanvas.width = width;
         this.hCanvas.height = height;
+    }
+
+    repaint() {
         let context = this.hCanvas.getContext("2d");
         context.fillStyle = "white";
-        context.fillRect(0, 0, width, height);
+        context.fillRect(0, 0, this.hCanvas.width, this.hCanvas.height);
         for(const[label, node] of this.nodes) {
             node.repaint();
         }
@@ -51,8 +54,9 @@ export class Graph {
         for(const[label, node] of this.nodes.entries()) {
             if (node.isTarget(x, y)) {
                 this.nodes.delete(label);
+                this.repaint();
+                return;
             }
         }
-        this.repaint();
     }
 }
