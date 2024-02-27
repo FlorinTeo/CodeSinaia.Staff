@@ -4,10 +4,12 @@ import { Graph } from "./graph.js"
 export let hDiv = document.getElementById("hMainDiv")
 export let hCanvas = document.getElementById("hMainCanvas")
 
-// custom objects
-export let graph = new Graph(hCanvas, hDiv.clientWidth, hDiv.clientHeight)
+// main entry point
+export let graph = new Graph(hCanvas, hDiv.clientWidth, hDiv.clientHeight);
+graph.repaint();
 
-// hook resize event handlers
+// #region - hook user interface callbacks
+// browser resize event handlers
 const resizeObserver = new ResizeObserver(entries => {
     for(const entry of entries) {
         switch(entry.target.id) {
@@ -19,7 +21,8 @@ const resizeObserver = new ResizeObserver(entries => {
     }
 });
 resizeObserver.observe(hDiv);
-
-// hook click event handlers
+// mouse click event handler
 hCanvas.addEventListener('click', graph.onMouseClickEvent.bind(graph));
+// mouse right-click event handler
 hCanvas.addEventListener('contextmenu', graph.onContextMenu.bind(graph));
+// #endregion - hook user interface callbacks

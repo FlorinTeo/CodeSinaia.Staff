@@ -16,7 +16,7 @@ export class Graph {
         this.hCanvas = hCanvas;
         this.nextLabel = 'A';
         this.nodes = new Map();
-        this.repaint(width, height);
+        this.resize();
     }
 
     resize(width, height) {
