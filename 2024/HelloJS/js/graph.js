@@ -33,15 +33,29 @@ export class Graph {
         }
     }
 
-    /**
-     * Clicking on the canvas either removes the node if one exists,
-     * or creates a new node at that position if none was there.
-     */
-    onMouseClickEvent(event) {
-        // get the canvas x,y coordinates of the click
-        let x = event.clientX - this.hCanvas.offsetLeft;
-        let y = event.clientY - this.hCanvas.offsetTop;
+    onDragStart(fromX, fromY) {
+        for(const[label, node] of this.nodes.entries()) {
+            if (node.isTarget(fromX, fromY)) {
+                this.draggedNode = node;
+                return;
+            }
+        }
+    }
 
+    onDrag(x, y) {
+        if (this.draggedNode != undefined) {
+            this.draggedNode.x = x;
+            this.draggedNode.y = y;
+            this.repaint();
+        }
+    }
+
+    onDragEnd(toX, toY) {
+        this.onDrag(toX, toY);
+        this.draggedNode = undefined;
+    }
+
+    onClick(x, y) {
         for(const[label, node] of this.nodes.entries()) {
             if (node.isTarget(x, y)) {
                 this.nodes.delete(label);
@@ -49,7 +63,6 @@ export class Graph {
                 return;
             }
         }
-
         // create a new node for that location and paint it on the canvas
         let node = new Node(this.hCanvas, this.nextLabel, x, y);
         this.nodes.set(node.label, node);
