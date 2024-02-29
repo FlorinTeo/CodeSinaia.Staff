@@ -86,10 +86,10 @@ hCanvas.addEventListener('mouseup', (event) => {
     // check if we were dragging or just clicking
     if (dragging) {
       // dragging over an existent node => reset edge from clickedNode to droppedNode
-      // TODO: graph.resetEdge(clickedNode, droppedNode)
+      graph.resetEdge(clickedNode, droppedNode)
     } else {
       // clicking over an existent node => remove it
-      graph.removeNode(droppedNode.label);
+      graph.removeNode(droppedNode);
     }
   } else {
     // dropped over an empty area

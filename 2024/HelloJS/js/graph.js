@@ -18,9 +18,29 @@ export class Graph {
     }
 
     repaint() {
-        let context = this.hCanvas.getContext("2d");
-        for(const[label, node] of this.nodes) {
+        this.traverse((node)=>{
             node.repaint();
+        });
+    }
+
+    traverse(lambda) {
+        // reset all the node markers
+        for(const[label, node] of this.nodes) {
+            node.marker = 0;
+        }
+        // repeteadly ...
+        let done = false;
+        while (!done) {
+            done = true;
+            // look for an un-marked node
+            for(const[label,node] of this.nodes) {
+                // and if found, traverse the node and do it all over again
+                if (node.marker == 0) {
+                    node.traverse(lambda);
+                    done = false;
+                    break;
+                }
+            }
         }
     }
 
@@ -40,7 +60,22 @@ export class Graph {
         this.nextLabel = String.fromCharCode(this.nextLabel.charCodeAt(0) + 1);
     }
 
-    removeNode(label) {
-        this.nodes.delete(label);
+    removeNode(node) {
+        for(const [label, otherNode] of this.nodes) {
+            if (otherNode.hasEdge(node)) {
+                otherNode.removeEdge(node);
+            }
+        }
+        this.nodes.delete(node.label);
+    }
+
+    resetEdge(fromNode, toNode) {
+        if (fromNode.hasEdge(toNode)) {
+            fromNode.removeEdge(toNode);
+            toNode.removeEdge(fromNode);
+        } else {
+            fromNode.addEdge(toNode);
+            toNode.addEdge(fromNode);
+        }
     }
 }
