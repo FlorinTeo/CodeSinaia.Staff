@@ -1,3 +1,4 @@
+import { RADIUS } from "./node.js"
 import { Graph } from "./graph.js"
 import { Graphics } from "./graphics.js"
 
@@ -45,8 +46,12 @@ hCanvas.addEventListener('mousemove', (event) => {
   dragging = (clickedNode != null);
   if (dragging) {
     graphics.clear();
-    let color = (graph.getNode(x,y) != null) ? "#000000" : "#CCCCCC";
-    graphics.drawLine(clickedNode.x, clickedNode.y, x, y, color);
+    let hoverNode = graph.getNode(x, y);
+    if (hoverNode != null) {
+      graphics.drawLine(clickedNode.x, clickedNode.y, hoverNode.x, hoverNode.y, RADIUS, RADIUS, 'black');
+    } else {
+      graphics.drawLine(clickedNode.x, clickedNode.y, x, y, RADIUS, 0, '#CCCCCC');
+    }
     graph.repaint();
   }
 });
@@ -89,9 +94,6 @@ hCanvas.addEventListener('mouseup', (event) => {
 });
 
 hDebug.addEventListener('click', (event) => {
-  graphics.drawLine(100, 100, 200, 200, 'red');
-  graphics.drawArrow(100, 100, 200, 200, 20, 10, 4, 4, 'black');
-  graphics.drawLine(300, 300, 200, 400, 'blue');
-  graphics.drawArrow(300, 300, 200, 400, 20, 20, 6, 'blue');
+  console.log('Debug code!');
 });
 // #endregion - hook user interface callbacks

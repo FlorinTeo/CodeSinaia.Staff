@@ -26,10 +26,10 @@ export class Node {
 
     repaint() {
         for(const [label, neighbor] of this.neighbors) {
-            if (neighbor.marker == 0) {
-                this.graphics.drawLine(this.x, this.y, neighbor.x, neighbor.y, 'black');
-                this.graphics.drawArrow(this.x, this.y, neighbor.x, neighbor.y, RADIUS, ARROW_LENGTH, ARROW_WIDTH, 'black');
+            if (neighbor.marker == 0 || !neighbor.hasEdge(this)) {
+                this.graphics.drawLine(this.x, this.y, neighbor.x, neighbor.y, RADIUS, RADIUS, 'black');
             }
+            this.graphics.drawArrow(this.x, this.y, neighbor.x, neighbor.y, RADIUS, ARROW_LENGTH, ARROW_WIDTH, 'black');
         }
         this.graphics.drawNode(this.label,this.x, this.y, RADIUS);
     }

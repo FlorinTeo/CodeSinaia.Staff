@@ -12,7 +12,18 @@ export class Graphics {
     }
 
     // draws a line between the given coordinates, in given color
-    drawLine(fromX, fromY, toX, toY, color) {
+    drawLine(fromX, fromY, toX, toY, marginFrom, marginTo, color) {
+        let dX = toX - fromX;
+        let dY = toY - fromY;
+        let length = Math.sqrt(Math.pow(dX, 2) + Math.pow(dY, 2));
+        if (length == 0) {
+            return;
+        }
+        fromX += dX * marginFrom/length;
+        fromY += dY * marginFrom/length;
+        toX -= dX * marginTo/length;
+        toY -= dY * marginTo/length;
+
         let context = this.hCanvas.getContext("2d");
         context.beginPath();
         context.strokeStyle = color;
@@ -38,13 +49,13 @@ export class Graphics {
         context.fillText(label, x, y + 4);
     }
 
-    drawArrow(fromX, fromY, toX, toY, arrowOffset, arrowLength, arrowWidth, color) {
+    drawArrow(fromX, fromY, toX, toY, marginTo, arrowLength, arrowWidth, color) {
         let dX = toX - fromX;
         let dY = toY - fromY;
         let length = Math.sqrt(Math.pow(dX, 2) + Math.pow(dY, 2));
-        let pointX = toX - dX * arrowOffset / length;
-        let pointY = toY - dY * arrowOffset / length;
-        length -= arrowOffset;
+        let pointX = toX - dX * marginTo / length;
+        let pointY = toY - dY * marginTo / length;
+        length -= marginTo;
         dX = pointX - fromX;
         dY = pointY - fromY;
         let baseX = pointX - dX * arrowLength / length;

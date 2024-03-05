@@ -72,10 +72,10 @@ export class Graph {
     resetEdge(fromNode, toNode) {
         if (fromNode.hasEdge(toNode)) {
             fromNode.removeEdge(toNode);
-            toNode.removeEdge(fromNode);
+            //toNode.removeEdge(fromNode);
         } else {
             fromNode.addEdge(toNode);
-            toNode.addEdge(fromNode);
+            //toNode.addEdge(fromNode);
         }
     }
 }
