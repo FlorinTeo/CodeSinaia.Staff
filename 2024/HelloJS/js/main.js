@@ -1,39 +1,16 @@
 import { Graph } from "./graph.js"
+import { Graphics } from "./graphics.js"
 
 // html elements
 export let hDiv = document.getElementById("hMainDiv")
 export let hCanvas = document.getElementById("hMainCanvas")
 
+// global objects
+export let graphics = new Graphics(hCanvas);
+export let graph = new Graph(graphics);
+
 // main entry point
-export let graph = new Graph(hCanvas, hDiv.clientWidth, hDiv.clientHeight);
 graph.repaint();
-
-// #region - graphic functions
-// clears the content of the drawing canvas
-function canvasClear() {
-  let context = hCanvas.getContext("2d");
-  context.fillStyle = "white";
-  context.fillRect(0, 0, hCanvas.width, hCanvas.height);
-}
-
-// resizes the drawing canvas to the given width and height
-function canvasResize(width, height) {
-    hCanvas.width = width;
-    hCanvas.height = height;
-}
-
-// draws a line between the given coordinates, in given color
-function drawLine(fromX, fromY, toX, toY, color) {
-    // draw a  line from the clickedNode to the mouse position
-    let context = hCanvas.getContext("2d");
-    // if currently hovering over a node, line is black, otherwise is lightgray
-    context.strokeStyle = color;
-    context.lineWidth = 2;
-    context.moveTo(fromX, fromY);
-    context.lineTo(toX, toY);
-    context.stroke();
-}
-// #endregion - graphic functions
 
 // #region - UI callback functions
 // state variables to control UI actions
@@ -45,8 +22,7 @@ const resizeObserver = new ResizeObserver(entries => {
     for(const entry of entries) {
         switch(entry.target.id) {
         case hDiv.id:
-            canvasResize(entry.contentRect.width, entry.contentRect.height);
-            canvasClear();
+            graphics.resize(entry.contentRect.width, entry.contentRect.height);
             graph.repaint();
             return;
         }
@@ -67,9 +43,9 @@ hCanvas.addEventListener('mousemove', (event) => {
   let y = event.clientY - hCanvas.offsetTop;
   dragging = (clickedNode != null);
   if (dragging) {
-    canvasClear();
+    graphics.clear();
     let color = (graph.getNode(x,y) != null) ? "#000000" : "#CCCCCC";
-    drawLine(clickedNode.x, clickedNode.y, x, y, color);
+    graphics.drawLine(clickedNode.x, clickedNode.y, x, y, color);
     graph.repaint();
   }
 });
@@ -104,7 +80,7 @@ hCanvas.addEventListener('mouseup', (event) => {
     }
   }
   // in all cases repaint the graph
-  canvasClear();
+  graphics.clear();
   graph.repaint();
   // and reset dragging state
   dragging = false;

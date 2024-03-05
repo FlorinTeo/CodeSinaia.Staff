@@ -6,13 +6,13 @@ import { Node } from "./node.js"
 export class Graph {
     /*
     Class members:
+        graphics  - the graphics engine
         nodes     - Map of <label, Node> entries
-        hCanvas   - the html canvas element hosting the node
         nextLabel - the next label to be used when adding a new Node
     */
 
-    constructor(hCanvas, width, height) {
-        this.hCanvas = hCanvas;
+    constructor(graphics) {
+        this.graphics = graphics;
         this.nextLabel = 'A';
         this.nodes = new Map();
     }
@@ -54,7 +54,7 @@ export class Graph {
     }
 
     addNode(x, y) {
-        let node = new Node(this.hCanvas, this.nextLabel, x, y);
+        let node = new Node(this.graphics, this.nextLabel, x, y);
         this.nodes.set(node.label, node);
         // increment label
         this.nextLabel = String.fromCharCode(this.nextLabel.charCodeAt(0) + 1);
