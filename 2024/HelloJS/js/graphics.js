@@ -4,6 +4,7 @@ export class Graphics {
         this.hCanvas = hCanvas;
     }
 
+    // resizes the drawing canvas
     resize(width, height) {
         this.hCanvas.width = width;
         this.hCanvas.height = height;
@@ -21,6 +22,7 @@ export class Graphics {
         context.stroke();
     }
 
+    // draws a node as a labeled circle
     drawNode(label, x, y, radius) {
         let context = this.hCanvas.getContext("2d");
         context.beginPath();
@@ -36,6 +38,7 @@ export class Graphics {
         context.fillText(label, x, y + 4);
     }
 
+    // clears the drawing canvas
     clear() {
         let context = this.hCanvas.getContext("2d");
         context.fillStyle = "white";
