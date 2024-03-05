@@ -4,6 +4,8 @@ import { Graphics } from "./graphics.js"
  * Models a node in the Graph
  */
 export const RADIUS = 16;
+export const ARROW_WIDTH = 5;
+export const ARROW_LENGTH = 8;
 
 export class Node {
     /*
@@ -26,6 +28,7 @@ export class Node {
         for(const [label, neighbor] of this.neighbors) {
             if (neighbor.marker == 0) {
                 this.graphics.drawLine(this.x, this.y, neighbor.x, neighbor.y, 'black');
+                this.graphics.drawArrow(this.x, this.y, neighbor.x, neighbor.y, RADIUS, ARROW_LENGTH, ARROW_WIDTH, 'black');
             }
         }
         this.graphics.drawNode(this.label,this.x, this.y, RADIUS);

@@ -2,8 +2,9 @@ import { Graph } from "./graph.js"
 import { Graphics } from "./graphics.js"
 
 // html elements
-export let hDiv = document.getElementById("hMainDiv")
-export let hCanvas = document.getElementById("hMainCanvas")
+export let hDiv = document.getElementById("hMainDiv");
+export let hCanvas = document.getElementById("hMainCanvas");
+export let hDebug = document.getElementById("hDebug");
 
 // global objects
 export let graphics = new Graphics(hCanvas);
@@ -85,5 +86,12 @@ hCanvas.addEventListener('mouseup', (event) => {
   // and reset dragging state
   dragging = false;
   clickedNode = null;
+});
+
+hDebug.addEventListener('click', (event) => {
+  graphics.drawLine(100, 100, 200, 200, 'red');
+  graphics.drawArrow(100, 100, 200, 200, 20, 10, 4, 4, 'black');
+  graphics.drawLine(300, 300, 200, 400, 'blue');
+  graphics.drawArrow(300, 300, 200, 400, 20, 20, 6, 'blue');
 });
 // #endregion - hook user interface callbacks
