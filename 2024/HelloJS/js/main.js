@@ -70,8 +70,16 @@ hCanvas.addEventListener('mouseup', (event) => {
       // dragging over an existent node => reset edge from clickedNode to droppedNode
       graph.resetEdge(clickedNode, droppedNode)
     } else {
-      // clicking over an existent node => remove it
-      graph.removeNode(droppedNode);
+      switch(event.button) {
+        case 0: // left-click => remove node
+          graph.removeNode(droppedNode);
+          break;
+        case 1: // middle-click
+          break;
+        case 2: // right-click
+        droppedNode.toggleFill(0);
+        break;
+      }
     }
   } else {
     // dropped over an empty area
@@ -93,7 +101,24 @@ hCanvas.addEventListener('mouseup', (event) => {
   clickedNode = null;
 });
 
-hDebug.addEventListener('click', (event) => {
-  console.log('Debug code!');
+hCanvas.addEventListener('contextmenu', (event) => {
+  event.preventDefault();
 });
+
+hCanvas.addEventListener('wheel', (event) => {
+  event.preventDefault(); 
+  let x = event.clientX - hCanvas.offsetLeft;
+  let y = event.clientY - hCanvas.offsetTop;
+  let targetNode = graph.getNode(x, y);
+  if (targetNode != null) {
+    targetNode.toggleFill(event.deltaY);
+    graphics.clear();
+    graph.repaint();
+  }
+});
+
+// hDebug.addEventListener('click', (event) => {
+//   console.log('Debug code!');
+// });
+
 // #endregion - hook user interface callbacks

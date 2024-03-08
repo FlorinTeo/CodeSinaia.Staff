@@ -7,12 +7,20 @@ export const RADIUS = 16;
 export const ARROW_WIDTH = 5;
 export const ARROW_LENGTH = 8;
 
+const DEFAULT_FILL = '#EBEBEB';
+const FILL_PALLETE = ['#9AF4F5', '#94F594', '#F5DC93', '#C999F5'];
+
 export class Node {
+
     /*
     Class members:
-        graphics - the graphics engine
-        x, y     - coordinates of the center of this node
-        label    - text to be printed inside the node
+        graphics    - the graphics engine
+        x, y        - coordinates of the center of this node
+        label       - text to be printed inside the node
+        marker      - state holder for this node
+        neigbhors   - map of neighbors, indexed by the neighbor's label
+        fillColor   - color to be used for filling the ndoe
+        fillIndex   - index of the last custom filling color used
     */
 
     constructor(graphics, label, x, y) {
@@ -22,6 +30,18 @@ export class Node {
         this.label = label;
         this.marker = 0;
         this.neighbors = new Map();
+        this.fillIndex = 0;
+        this.fillColor = DEFAULT_FILL;
+    }
+
+    toggleFill(deltaIndex) {
+        deltaIndex = Math.sign(deltaIndex) + FILL_PALLETE.length;
+        if (deltaIndex != FILL_PALLETE.length) {
+            this.fillIndex = (this.fillIndex + deltaIndex) % FILL_PALLETE.length;
+        }
+        this.fillColor =  (this.fillColor === DEFAULT_FILL || deltaIndex != FILL_PALLETE.length) 
+                        ? FILL_PALLETE[this.fillIndex]
+                        : DEFAULT_FILL;
     }
 
     repaint() {
@@ -31,7 +51,7 @@ export class Node {
             }
             this.graphics.drawArrow(this.x, this.y, neighbor.x, neighbor.y, RADIUS, ARROW_LENGTH, ARROW_WIDTH, 'black');
         }
-        this.graphics.drawNode(this.label,this.x, this.y, RADIUS);
+        this.graphics.drawNode(this.label,this.x, this.y, RADIUS, this.fillColor);
     }
 
     traverse(lambda) {

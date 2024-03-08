@@ -34,18 +34,18 @@ export class Graphics {
     }
 
     // draws a node as a labeled circle
-    drawNode(label, x, y, radius) {
+    drawNode(label, x, y, radius, fillColor) {
         let context = this.hCanvas.getContext("2d");
         context.beginPath();
         context.arc(x, y, radius, 0, 2 * Math.PI, false);
-        context.fillStyle = 'lightgray';
+        context.fillStyle = fillColor;
         context.fill();
         context.lineWidth = 1;
         context.strokeStyle = 'black';
         context.stroke();
         context.font = "bold 12px Arial";
         context.textAlign = "center";
-        context.fillStyle = "red";
+        context.fillStyle = 'black';
         context.fillText(label, x, y + 4);
     }
 
