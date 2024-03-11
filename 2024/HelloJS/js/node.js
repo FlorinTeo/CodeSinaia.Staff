@@ -18,7 +18,6 @@ export class Node {
         label       - text to be printed inside the node
         marker      - state holder for this node
         neigbhors   - map of neighbors, indexed by the neighbor's label
-        fillColor   - color to be used for filling the ndoe
         fillIndex   - index of the last custom filling color used
     */
 
@@ -30,13 +29,11 @@ export class Node {
         this.marker = 0;
         this.neighbors = new Map();
         this.fillIndex = 0;
-        this.fillColor =  FILL_PALLETE[this.fillIndex];
     }
 
     toggleFill(deltaIndex) {
         deltaIndex = Math.sign(deltaIndex);
         this.fillIndex = (deltaIndex < 0) ? 0 : (this.fillIndex + deltaIndex) % FILL_PALLETE.length;
-        this.fillColor =  FILL_PALLETE[this.fillIndex];
     }
 
     repaint() {
@@ -46,7 +43,7 @@ export class Node {
             }
             this.graphics.drawArrow(this.x, this.y, neighbor.x, neighbor.y, RADIUS, ARROW_LENGTH, ARROW_WIDTH, 'black');
         }
-        this.graphics.drawNode(this.label,this.x, this.y, RADIUS, this.fillColor);
+        this.graphics.drawNode(this.label,this.x, this.y, RADIUS, FILL_PALLETE[this.fillIndex]);
     }
 
     traverse(lambda) {

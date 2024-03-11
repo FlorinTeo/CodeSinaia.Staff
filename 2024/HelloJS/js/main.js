@@ -9,6 +9,8 @@ export let hDebug = document.getElementById("hDebug");
 export let hCtxMenu = document.getElementById("hCtxMenu");
 export let hCtxMenu_Enqueue = document.getElementById("hCtxMenu_Enqueue");
 export let hCtxMenu_Dequeue = document.getElementById("hCtxMenu_Dequeue");
+export let hCtxMenu_Reset = document.getElementById("hCtxMenu_Reset");
+
 
 // global objects
 export let graphics = new Graphics(hCanvas);
@@ -119,10 +121,17 @@ hCanvas.addEventListener('contextmenu', (event) => {
   let y = event.clientY - hCanvas.offsetTop;
   let targetNode = graph.getNode(x, y);
   if (targetNode != null) {
-    hCtxMenu.style.left=`${event.pageX-4}px`;
-    hCtxMenu.style.top = `${event.pageY-10}px`;
-    hCtxMenu.style.display = "block";
+    hCtxMenu_Dequeue.style.display = "block";
+    hCtxMenu_Enqueue.style.display = "block";
+    hCtxMenu_Reset.style.display = "none";
+  } else {
+    hCtxMenu_Dequeue.style.display = "none";
+    hCtxMenu_Enqueue.style.display = "none";
+    hCtxMenu_Reset.style.display = "block";
   }
+  hCtxMenu.style.left=`${event.pageX-4}px`;
+  hCtxMenu.style.top = `${event.pageY-10}px`;
+  hCtxMenu.style.display = "block";
 });
 
 // #region - context menu handlers
@@ -145,6 +154,16 @@ hCtxMenu_Enqueue.addEventListener('click', (event) => {
 // Handler for 'Dequeue' menu click
 hCtxMenu_Dequeue.addEventListener('click', (event) => {
   //alert('Not implemented yet!');
+  hCtxMenu.style.display = "none";
+});
+
+// Handler for 'Reset' menu click
+hCtxMenu_Reset.addEventListener('click', (event) => {
+  //alert('Not implemented yet!');
+  graph.traverse((node)=>{
+    node.fillIndex=0;
+  });
+  graph.repaint();
   hCtxMenu.style.display = "none";
 });
 // #endregion - context menu management
