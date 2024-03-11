@@ -1,5 +1,7 @@
 import { Node } from "./node.js"
 
+const ALL_LABELS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz';
+
 /**
  * Models the entire Graph
  */
@@ -8,13 +10,20 @@ export class Graph {
     Class members:
         graphics  - the graphics engine
         nodes     - Map of <label, Node> entries
-        nextLabel - the next label to be used when adding a new Node
     */
 
     constructor(graphics) {
         this.graphics = graphics;
-        this.nextLabel = 'A';
         this.nodes = new Map();
+    }
+
+    nextLabel() {
+        for(const label of ALL_LABELS) {
+            if (!this.nodes.has(label)) {
+                return label;
+            }
+        }
+        return null;
     }
 
     repaint() {
@@ -54,10 +63,13 @@ export class Graph {
     }
 
     addNode(x, y) {
-        let node = new Node(this.graphics, this.nextLabel, x, y);
-        this.nodes.set(node.label, node);
-        // increment label
-        this.nextLabel = String.fromCharCode(this.nextLabel.charCodeAt(0) + 1);
+        let nextLabel = this.nextLabel();
+        if (nextLabel != null) {
+            let node = new Node(this.graphics, nextLabel, x, y);
+            this.nodes.set(node.label, node);
+            // increment label
+            //this.nextLabel = String.fromCharCode(this.nextLabel.charCodeAt(0) + 1);
+        }
     }
 
     removeNode(node) {
@@ -72,10 +84,8 @@ export class Graph {
     resetEdge(fromNode, toNode) {
         if (fromNode.hasEdge(toNode)) {
             fromNode.removeEdge(toNode);
-            //toNode.removeEdge(fromNode);
         } else {
             fromNode.addEdge(toNode);
-            //toNode.addEdge(fromNode);
         }
     }
 }

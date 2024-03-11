@@ -9,3 +9,22 @@ body {
     border: 1px solid #000000;
     height: 99%;
 }
+
+.ctxmenu {
+    display: none;
+    position: fixed;
+    background: rgb(238, 235, 221);
+    color: black;
+    cursor: pointer;
+    border: 1px black solid
+}
+  
+.ctxmenu > p {
+    padding: 0 1rem;
+    margin: 0
+}
+  
+.ctxmenu > p:hover {
+    background: rgb(116, 116, 116);
+    color: ghostwhite
+}

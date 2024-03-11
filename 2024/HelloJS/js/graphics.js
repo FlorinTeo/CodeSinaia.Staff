@@ -27,7 +27,7 @@ export class Graphics {
         let context = this.hCanvas.getContext("2d");
         context.beginPath();
         context.strokeStyle = color;
-        context.lineWidth = 2;
+        context.lineWidth = 1;
         context.moveTo(fromX, fromY);
         context.lineTo(toX, toY);
         context.stroke();

@@ -7,8 +7,7 @@ export const RADIUS = 16;
 export const ARROW_WIDTH = 5;
 export const ARROW_LENGTH = 8;
 
-const DEFAULT_FILL = '#EBEBEB';
-const FILL_PALLETE = ['#9AF4F5', '#94F594', '#F5DC93', '#C999F5'];
+const FILL_PALLETE = ['#EBEBEB', '#FFFD55', '#9FFCFD', '#A1FB8E', '#FFD1D1'];
 
 export class Node {
 
@@ -31,17 +30,13 @@ export class Node {
         this.marker = 0;
         this.neighbors = new Map();
         this.fillIndex = 0;
-        this.fillColor = DEFAULT_FILL;
+        this.fillColor =  FILL_PALLETE[this.fillIndex];
     }
 
     toggleFill(deltaIndex) {
-        deltaIndex = Math.sign(deltaIndex) + FILL_PALLETE.length;
-        if (deltaIndex != FILL_PALLETE.length) {
-            this.fillIndex = (this.fillIndex + deltaIndex) % FILL_PALLETE.length;
-        }
-        this.fillColor =  (this.fillColor === DEFAULT_FILL || deltaIndex != FILL_PALLETE.length) 
-                        ? FILL_PALLETE[this.fillIndex]
-                        : DEFAULT_FILL;
+        deltaIndex = Math.sign(deltaIndex);
+        this.fillIndex = (deltaIndex < 0) ? 0 : (this.fillIndex + deltaIndex) % FILL_PALLETE.length;
+        this.fillColor =  FILL_PALLETE[this.fillIndex];
     }
 
     repaint() {

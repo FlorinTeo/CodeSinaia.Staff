@@ -6,6 +6,9 @@ import { Graphics } from "./graphics.js"
 export let hDiv = document.getElementById("hMainDiv");
 export let hCanvas = document.getElementById("hMainCanvas");
 export let hDebug = document.getElementById("hDebug");
+export let hCtxMenu = document.getElementById("hCtxMenu");
+export let hCtxMenu_Enqueue = document.getElementById("hCtxMenu_Enqueue");
+export let hCtxMenu_Dequeue = document.getElementById("hCtxMenu_Dequeue");
 
 // global objects
 export let graphics = new Graphics(hCanvas);
@@ -33,6 +36,7 @@ const resizeObserver = new ResizeObserver(entries => {
 resizeObserver.observe(hDiv);
 
 // mouse down event handler
+// retain the target node (if any) at the beginning of a click or drag action
 hCanvas.addEventListener('mousedown', (event) => {
   let x = event.clientX - hCanvas.offsetLeft;
   let y = event.clientY - hCanvas.offsetTop;
@@ -40,6 +44,7 @@ hCanvas.addEventListener('mousedown', (event) => {
 });
 
 // mouse move event handler
+// draw the guide line from the target node (if any) to the mouse position
 hCanvas.addEventListener('mousemove', (event) => {
   let x = event.clientX - hCanvas.offsetLeft;
   let y = event.clientY - hCanvas.offsetTop;
@@ -69,17 +74,8 @@ hCanvas.addEventListener('mouseup', (event) => {
     if (dragging) {
       // dragging over an existent node => reset edge from clickedNode to droppedNode
       graph.resetEdge(clickedNode, droppedNode)
-    } else {
-      switch(event.button) {
-        case 0: // left-click => remove node
-          graph.removeNode(droppedNode);
-          break;
-        case 1: // middle-click
-          break;
-        case 2: // right-click
-        droppedNode.toggleFill(0);
-        break;
-      }
+    } else if (event.button == 0) { // left-click => remove node
+      graph.removeNode(droppedNode);
     }
   } else {
     // dropped over an empty area
@@ -88,8 +84,7 @@ hCanvas.addEventListener('mouseup', (event) => {
       // dragging over an empty area => move the node clicked at the begining
       clickedNode.x = x;
       clickedNode.y = y;
-    } else {
-      // clicking over an empty area => create a new node at that location
+    } else if (event.button == 0) { // left-click => add node
       graph.addNode(x, y);
     }
   }
@@ -101,10 +96,9 @@ hCanvas.addEventListener('mouseup', (event) => {
   clickedNode = null;
 });
 
-hCanvas.addEventListener('contextmenu', (event) => {
-  event.preventDefault();
-});
-
+// wheel action event
+// when targeting a node resets, wheel-up resets the node's state color
+// to default light gray, wheel-down rotates through different state colors
 hCanvas.addEventListener('wheel', (event) => {
   event.preventDefault(); 
   let x = event.clientX - hCanvas.offsetLeft;
@@ -117,8 +111,42 @@ hCanvas.addEventListener('wheel', (event) => {
   }
 });
 
-// hDebug.addEventListener('click', (event) => {
-//   console.log('Debug code!');
-// });
+// context menu action
+// When right-click on a node, open the context menu options 
+hCanvas.addEventListener('contextmenu', (event) => {
+  event.preventDefault();
+  let x = event.clientX - hCanvas.offsetLeft;
+  let y = event.clientY - hCanvas.offsetTop;
+  let targetNode = graph.getNode(x, y);
+  if (targetNode != null) {
+    hCtxMenu.style.left=`${event.pageX-4}px`;
+    hCtxMenu.style.top = `${event.pageY-10}px`;
+    hCtxMenu.style.display = "block";
+  }
+});
+
+// #region - context menu handlers
+// When leaving context menu area, hide the menu
+hCtxMenu.addEventListener('mouseleave', (event) => {
+  hCtxMenu.style.display = "none";
+});
+
+// Prevent default context menu when right-click-ing on the menu itself
+hCtxMenu.addEventListener('contextmenu', (event) => {
+  event.preventDefault();
+});
+
+// Handler for 'Enqueue' menu click
+hCtxMenu_Enqueue.addEventListener('click', (event) => {
+  //alert('Not implemented yet!');
+  hCtxMenu.style.display = "none";
+});
+
+// Handler for 'Dequeue' menu click
+hCtxMenu_Dequeue.addEventListener('click', (event) => {
+  //alert('Not implemented yet!');
+  hCtxMenu.style.display = "none";
+});
+// #endregion - context menu management
 
 // #endregion - hook user interface callbacks
