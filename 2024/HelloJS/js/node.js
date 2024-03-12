@@ -1,5 +1,3 @@
-import { Graphics } from "./graphics.js"
-
 /**
  * Models a node in the Graph
  */
@@ -7,7 +5,7 @@ export const RADIUS = 16;
 export const ARROW_WIDTH = 5;
 export const ARROW_LENGTH = 8;
 
-const FILL_PALLETE = ['#EBEBEB', '#FFFD55', '#9FFCFD', '#A1FB8E', '#FFD1D1'];
+const FILL_PALLETE = ['#EBEBEB', '#FFFD55', '#9FFCFD', '#FFD1D1', '#A1FB8E'];
 
 export class Node {
 

@@ -1,6 +1,7 @@
 import { RADIUS } from "./node.js"
 import { Graph } from "./graph.js"
 import { Graphics } from "./graphics.js"
+import { Queue } from "./queue.js"
 
 // html elements
 export let hDiv = document.getElementById("hMainDiv");
@@ -15,6 +16,7 @@ export let hCtxMenu_Reset = document.getElementById("hCtxMenu_Reset");
 // global objects
 export let graphics = new Graphics(hCanvas);
 export let graph = new Graph(graphics);
+export let queue = new Queue(graphics);
 
 // main entry point
 graph.repaint();
