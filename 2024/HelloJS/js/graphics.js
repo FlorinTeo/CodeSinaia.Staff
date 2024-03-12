@@ -84,7 +84,16 @@ export class Graphics {
         context.stroke();
     }
 
-    drawMargin(fromX, fromY, height, color) {
+    /**
+     * Draws a vertical square bracket with the top-right corner at
+     * the given x,y, with given height, painted in given color.
+     * @param {*} fromX top-right X coordinate of the margin area
+     * @param {*} fromY top-right y coordinate of the margin area
+     * @param {*} height height of the margin
+     * @param {*} color color to use for drawing the margin
+     * @returns width of the margin area
+     */
+    drawVMargin(fromX, fromY, height, color) {
         let context = this.hCanvas.getContext("2d");
         context.beginPath();
         context.strokeStyle = color;
