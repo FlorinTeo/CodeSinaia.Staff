@@ -1,7 +1,7 @@
-import { RADIUS } from "./node.js"
-import { Graph } from "./graph.js"
+import { RADIUS } from "./graph/node.js"
+import { Graph } from "./graph/graph.js"
+import { Queue } from "./queue/queue.js"
 import { Graphics } from "./graphics.js"
-import { Queue } from "./queue.js"
 
 // html elements
 export let hDiv = document.getElementById("hMainDiv");
