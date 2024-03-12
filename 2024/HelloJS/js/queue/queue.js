@@ -1,3 +1,4 @@
+import { Item } from "./item.js"
 export class Queue {
     /*
     Class members:
@@ -12,7 +13,9 @@ export class Queue {
         this.size = 0;
     }
 
-    enqueue(item) {
+    enqueue(data) {
+        let item = new Item(data);
+
         if (this.head == null) {
             item.next = item;
             item.prev = item;
@@ -30,13 +33,11 @@ export class Queue {
         if (this.head == null) {
             return null;
         }
-
         let item = this.head;
         item.prev.next = item.next;
         item.next.prev = item.prev;
-        this.head = (item.prev == item.next) ? null : item.next;
         this.size--;
-        item.next = item.prev = null;
-        return item;
+        this.head = (this.size == 0) ? null : item.next;
+        return item.data;
     }
 }

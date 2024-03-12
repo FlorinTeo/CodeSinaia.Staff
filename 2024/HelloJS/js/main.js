@@ -12,7 +12,6 @@ export let hCtxMenu_Enqueue = document.getElementById("hCtxMenu_Enqueue");
 export let hCtxMenu_Dequeue = document.getElementById("hCtxMenu_Dequeue");
 export let hCtxMenu_Reset = document.getElementById("hCtxMenu_Reset");
 
-
 // global objects
 export let graphics = new Graphics(hCanvas);
 export let graph = new Graph(graphics);
@@ -124,8 +123,8 @@ hCanvas.addEventListener('contextmenu', (event) => {
   event.preventDefault();
   let x = event.clientX - hCanvas.offsetLeft;
   let y = event.clientY - hCanvas.offsetTop;
-  let targetNode = graph.getNode(x, y);
-  if (targetNode != null) {
+  clickedNode = graph.getNode(x, y);
+  if (clickedNode != null) {
     hCtxMenu_Dequeue.style.display = "block";
     hCtxMenu_Enqueue.style.display = "block";
     hCtxMenu_Reset.style.display = "none";
@@ -151,14 +150,16 @@ hCtxMenu.addEventListener('contextmenu', (event) => {
 
 // Handler for 'Enqueue' menu click
 hCtxMenu_Enqueue.addEventListener('click', (event) => {
-  //alert('Not implemented yet!');
   hCtxMenu.style.display = "none";
+  queue.enqueue(clickedNode.label);
+  clickedNode = null;
 });
 
 // Handler for 'Dequeue' menu click
 hCtxMenu_Dequeue.addEventListener('click', (event) => {
-  //alert('Not implemented yet!');
   hCtxMenu.style.display = "none";
+  let label = queue.dequeue();
+  clickedNode = null;
 });
 
 // Handler for 'Reset' menu click
