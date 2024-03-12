@@ -40,4 +40,8 @@ export class Queue {
         this.head = (this.size == 0) ? null : item.next;
         return item.data;
     }
+
+    peek() {
+        return (this.head != null) ? this.head.data : null;
+    }
 }

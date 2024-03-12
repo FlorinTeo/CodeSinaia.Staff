@@ -53,7 +53,7 @@ hCanvas.addEventListener('mousedown', (event) => {
 hCanvas.addEventListener('mousemove', (event) => {
   let x = event.clientX - hCanvas.offsetLeft;
   let y = event.clientY - hCanvas.offsetTop;
-  dragging = (clickedNode != null);
+  dragging = (event.button == 0) && (clickedNode != null);
   if (dragging) {
     graphics.clear();
     let hoverNode = graph.getNode(x, y);
@@ -125,7 +125,7 @@ hCanvas.addEventListener('contextmenu', (event) => {
   let y = event.clientY - hCanvas.offsetTop;
   clickedNode = graph.getNode(x, y);
   if (clickedNode != null) {
-    hCtxMenu_Dequeue.style.display = "block";
+    hCtxMenu_Dequeue.style.display = (clickedNode.label == queue.peek()) ? "block" : "none";
     hCtxMenu_Enqueue.style.display = "block";
     hCtxMenu_Reset.style.display = "none";
   } else {
@@ -141,6 +141,7 @@ hCanvas.addEventListener('contextmenu', (event) => {
 // When leaving context menu area, hide the menu
 hCtxMenu.addEventListener('mouseleave', (event) => {
   hCtxMenu.style.display = "none";
+  clickedNode = null;
 });
 
 // Prevent default context menu when right-click-ing on the menu itself
