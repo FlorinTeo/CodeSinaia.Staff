@@ -18,7 +18,13 @@ export let graph = new Graph(graphics);
 export let queue = new Queue(graphics);
 
 // main entry point
-graph.repaint();
+function repaint() {
+  graphics.clear();
+  graph.repaint();
+  queue.repaint();
+}
+
+repaint();
 
 // #region - window event handlers
 // state variables to control UI actions
@@ -31,7 +37,7 @@ const resizeObserver = new ResizeObserver(entries => {
         switch(entry.target.id) {
         case hDiv.id:
             graphics.resize(entry.contentRect.width, entry.contentRect.height);
-            graph.repaint();
+            repaint();
             return;
         }
     }
@@ -55,14 +61,13 @@ hCanvas.addEventListener('mousemove', (event) => {
   let y = event.clientY - hCanvas.offsetTop;
   dragging = (event.button == 0) && (clickedNode != null);
   if (dragging) {
-    graphics.clear();
+    repaint();
     let hoverNode = graph.getNode(x, y);
     if (hoverNode != null) {
       graphics.drawLine(clickedNode.x, clickedNode.y, hoverNode.x, hoverNode.y, RADIUS, RADIUS, 'black');
     } else {
       graphics.drawLine(clickedNode.x, clickedNode.y, x, y, RADIUS, 0, '#CCCCCC');
     }
-    graph.repaint();
   }
 });
 
@@ -94,8 +99,7 @@ hCanvas.addEventListener('mouseup', (event) => {
     }
   }
   // in all cases repaint the graph
-  graphics.clear();
-  graph.repaint();
+  repaint();
   // and reset dragging state
   dragging = false;
   clickedNode = null;
@@ -111,8 +115,7 @@ hCanvas.addEventListener('wheel', (event) => {
   let targetNode = graph.getNode(x, y);
   if (targetNode != null) {
     targetNode.toggleFill(event.deltaY);
-    graphics.clear();
-    graph.repaint();
+    repaint();
   }
 });
 // #endregion - mouse event handlers
@@ -153,6 +156,7 @@ hCtxMenu.addEventListener('contextmenu', (event) => {
 hCtxMenu_Enqueue.addEventListener('click', (event) => {
   hCtxMenu.style.display = "none";
   queue.enqueue(clickedNode.label);
+  repaint();
   clickedNode = null;
 });
 
@@ -160,6 +164,7 @@ hCtxMenu_Enqueue.addEventListener('click', (event) => {
 hCtxMenu_Dequeue.addEventListener('click', (event) => {
   hCtxMenu.style.display = "none";
   let label = queue.dequeue();
+  repaint();
   clickedNode = null;
 });
 
@@ -169,7 +174,7 @@ hCtxMenu_Reset.addEventListener('click', (event) => {
   graph.traverse((node)=>{
     node.fillIndex=0;
   });
-  graph.repaint();
+  repaint();
   hCtxMenu.style.display = "none";
 });
 // #endregion - context menu handlers

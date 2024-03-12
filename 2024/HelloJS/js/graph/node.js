@@ -5,7 +5,7 @@ export const RADIUS = 16;
 export const ARROW_WIDTH = 5;
 export const ARROW_LENGTH = 8;
 
-const FILL_PALLETE = ['#EBEBEB', '#FFFD55', '#9FFCFD', '#FFD1D1', '#A1FB8E'];
+const FILL_PALLETE = ['#EBEBEB', '#FFFD55', '#6EFBFF', '#FFD1D1', '#93FF2D'];
 
 export class Node {
 

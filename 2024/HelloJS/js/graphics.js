@@ -1,11 +1,21 @@
 export class Graphics {
+    /*
+    Class members:
+        hCanvas - the canvas html element painted by this graphics engine
+        width   - the canvas width
+        height  - the canvas height
+    */
 
     constructor(hCanvas) {
+        this.width = hCanvas.width;
+        this.height = hCanvas.height;
         this.hCanvas = hCanvas;
     }
 
     // resizes the drawing canvas
     resize(width, height) {
+        this.width = width;
+        this.height = height;
         this.hCanvas.width = width;
         this.hCanvas.height = height;
         this.clear();
@@ -72,6 +82,19 @@ export class Graphics {
         context.lineTo(pointX, pointY);
         context.lineTo(xB, yB);
         context.stroke();
+    }
+
+    drawMargin(fromX, fromY, height, color) {
+        let context = this.hCanvas.getContext("2d");
+        context.beginPath();
+        context.strokeStyle = color;
+        context.lineWidth = 1;
+        context.moveTo(fromX, fromY);
+        context.lineTo(fromX-4, fromY);
+        context.lineTo(fromX-4, fromY + height);
+        context.lineTo(fromX, fromY + height);
+        context.stroke();
+        return 4;
     }
 
     // clears the drawing canvas

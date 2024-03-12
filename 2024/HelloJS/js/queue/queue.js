@@ -13,6 +13,19 @@ export class Queue {
         this.size = 0;
     }
 
+    repaint() {
+        if (this.size > 0) {
+            let crtItem = this.head.prev;
+            let crtX = this.graphics.width - 10;
+            crtX -= this.graphics.drawMargin(crtX, 10, 20, 'black') + 4;
+            while(crtItem != this.head) {
+                crtX -= this.graphics.drawMargin(crtX, 10, 20, 'lightgray') + 4;
+                crtItem = crtItem.prev;
+            }
+            crtX -= this.graphics.drawMargin(crtX, 10, 20, 'black') + 4;
+        }
+    }
+
     enqueue(data) {
         let item = new Item(data);
 
