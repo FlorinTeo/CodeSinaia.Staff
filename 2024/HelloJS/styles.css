@@ -11,6 +11,8 @@ body {
 }
 
 .ctxmenu {
+    font-family:Helvetica, sans-serif;
+    font-size: 10pt;
     display: none;
     position: fixed;
     background: rgb(238, 235, 221);

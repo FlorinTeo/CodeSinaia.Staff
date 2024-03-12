@@ -19,7 +19,7 @@ export let graph = new Graph(graphics);
 // main entry point
 graph.repaint();
 
-// #region - UI callback functions
+// #region - window event handlers
 // state variables to control UI actions
 let clickedNode = null;
 let dragging = false;
@@ -36,7 +36,9 @@ const resizeObserver = new ResizeObserver(entries => {
     }
 });
 resizeObserver.observe(hDiv);
+// #endregion - window event handlers
 
+// #region - mouse event handlers
 // mouse down event handler
 // retain the target node (if any) at the beginning of a click or drag action
 hCanvas.addEventListener('mousedown', (event) => {
@@ -112,8 +114,9 @@ hCanvas.addEventListener('wheel', (event) => {
     graph.repaint();
   }
 });
+// #endregion - mouse event handlers
 
-// context menu action
+// #region - context menu handlers
 // When right-click on a node, open the context menu options 
 hCanvas.addEventListener('contextmenu', (event) => {
   event.preventDefault();
@@ -134,7 +137,6 @@ hCanvas.addEventListener('contextmenu', (event) => {
   hCtxMenu.style.display = "block";
 });
 
-// #region - context menu handlers
 // When leaving context menu area, hide the menu
 hCtxMenu.addEventListener('mouseleave', (event) => {
   hCtxMenu.style.display = "none";
@@ -166,6 +168,4 @@ hCtxMenu_Reset.addEventListener('click', (event) => {
   graph.repaint();
   hCtxMenu.style.display = "none";
 });
-// #endregion - context menu management
-
-// #endregion - hook user interface callbacks
+// #endregion - context menu handlers
