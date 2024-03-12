@@ -15,6 +15,6 @@ export class Item {
     }
 
     repaint(fromX, fromY, height, color) {
-        return this.graphics.drawVMargin(fromX, fromY, height, color) + 4;
+        return this.graphics.drawHText(fromX, fromY, height, color, this.data) + 4;
     }
 }

@@ -106,6 +106,21 @@ export class Graphics {
         return 4;
     }
 
+    drawHText(fromX, fromY, height, color, text) {
+        let crtX = fromX;
+        let context = this.hCanvas.getContext("2d");
+        let textMetrics = context.measureText(text);
+        crtX -= textMetrics.width;
+        context.beginPath();
+        context.font = "12px Arial";
+        context.textAlign = "left";
+        context.fillStyle = 'gray';
+        context.fillText(text, crtX, fromY + (height + 12)/2);
+        context.stroke();
+        crtX -= this.drawVMargin(crtX, fromY, height, color);
+        return fromX - crtX;
+    }
+
     // clears the drawing canvas
     clear() {
         let context = this.hCanvas.getContext("2d");

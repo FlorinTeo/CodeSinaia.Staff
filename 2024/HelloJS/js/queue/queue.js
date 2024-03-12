@@ -20,7 +20,7 @@ export class Queue {
                 crtX -= this.graphics.drawVMargin(crtX, 10, 20, 'black') + 4;
                 let crtItem = this.head.prev;
                 while(crtItem != this.head) {
-                    crtX -= crtItem.repaint(crtX, 10, 20, 'lightgray');
+                    crtX -= crtItem.repaint(crtX, 10, 20, 'gray');
                     crtItem = crtItem.prev;
                 } 
                 crtX -= this.head.repaint(crtX, 10, 20, 'black') + 4;
