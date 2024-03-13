@@ -1,6 +1,24 @@
 import { Node } from "./node.js"
 
-const ALL_LABELS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz';
+export let LABELS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ123456789'.split("").sort();
+
+function nextLabel(label, deltaIndex) {
+    let nextIndex = 0;
+    if (label != undefined) {
+        LABELS.push(label);
+        LABELS.sort();
+        nextIndex = (LABELS.indexOf(label) + deltaIndex) % LABELS.length;
+    } else {
+        while(nextIndex < LABELS.length) {
+            if (LABELS[nextIndex] > '9') {
+                break;
+            }
+            nextIndex++;
+        }
+        nextIndex = nextIndex % LABELS.length;
+    }
+    return LABELS.splice(nextIndex, 1)[0];
+}
 
 /**
  * Models the entire Graph
@@ -15,15 +33,6 @@ export class Graph {
     constructor(graphics) {
         this.graphics = graphics;
         this.nodes = new Map();
-    }
-
-    nextLabel() {
-        for(const label of ALL_LABELS) {
-            if (!this.nodes.has(label)) {
-                return label;
-            }
-        }
-        return null;
     }
 
     repaint() {
@@ -53,6 +62,18 @@ export class Graph {
         }
     }
 
+    reLabel(node, deltaY) {
+        let label = nextLabel(node.label, Math.sign(deltaY));
+        for(const[l, n] of this.nodes) {
+            if (n.neighbors.delete(node.label)) {
+                n.neighbors.set(label, node);
+            }
+        }
+        this.nodes.delete(node.label);
+        this.nodes.set(label, node);
+        node.label = label;
+    }
+
     getNode(x, y) {
         for(const[label, node] of this.nodes.entries()) {
             if (node.isTarget(x, y)) {
@@ -63,12 +84,9 @@ export class Graph {
     }
 
     addNode(x, y) {
-        let nextLabel = this.nextLabel();
-        if (nextLabel != null) {
-            let node = new Node(this.graphics, nextLabel, x, y);
+        if (LABELS.length > 0) {
+            let node = new Node(this.graphics, nextLabel(), x, y);
             this.nodes.set(node.label, node);
-            // increment label
-            //this.nextLabel = String.fromCharCode(this.nextLabel.charCodeAt(0) + 1);
         }
     }
 
@@ -79,6 +97,8 @@ export class Graph {
             }
         }
         this.nodes.delete(node.label);
+        LABELS.push(node.label);
+        LABELS.sort();
     }
 
     resetEdge(fromNode, toNode) {

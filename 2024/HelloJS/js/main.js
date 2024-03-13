@@ -114,7 +114,11 @@ hCanvas.addEventListener('wheel', (event) => {
   let y = event.clientY - hCanvas.offsetTop;
   let targetNode = graph.getNode(x, y);
   if (targetNode != null) {
-    targetNode.toggleFill(event.deltaY);
+    if (event.ctrlKey) {
+      graph.reLabel(targetNode, event.deltaY);
+    } else {
+      targetNode.toggleFill(event.deltaY);
+    }
     repaint();
   }
 });
