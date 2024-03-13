@@ -59,4 +59,9 @@ export class Queue {
     peek() {
         return (this.head != null) ? this.head.data : null;
     }
+
+    purge() {
+        this.head = null;
+        this.size = 0;
+    }
 }

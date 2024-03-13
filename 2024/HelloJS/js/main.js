@@ -10,7 +10,8 @@ export let hDebug = document.getElementById("hDebug");
 export let hCtxMenu = document.getElementById("hCtxMenu");
 export let hCtxMenu_Enqueue = document.getElementById("hCtxMenu_Enqueue");
 export let hCtxMenu_Dequeue = document.getElementById("hCtxMenu_Dequeue");
-export let hCtxMenu_Reset = document.getElementById("hCtxMenu_Reset");
+export let hCtxMenu_ResetS = document.getElementById("hCtxMenu_ResetS");
+export let hCtxMenu_ResetQ = document.getElementById("hCtxMenu_ResetQ");
 
 // global objects
 export let graphics = new Graphics(hCanvas);
@@ -85,6 +86,7 @@ hCanvas.addEventListener('mouseup', (event) => {
       // dragging over an existent node => reset edge from clickedNode to droppedNode
       graph.resetEdge(clickedNode, droppedNode)
     } else if (event.button == 0) { // left-click => remove node
+      queue.purge();
       graph.removeNode(droppedNode);
     }
   } else {
@@ -116,6 +118,7 @@ hCanvas.addEventListener('wheel', (event) => {
   if (targetNode != null) {
     if (event.ctrlKey) {
       graph.reLabel(targetNode, event.deltaY);
+      queue.purge();
     } else {
       targetNode.toggleFill(event.deltaY);
     }
@@ -134,11 +137,13 @@ hCanvas.addEventListener('contextmenu', (event) => {
   if (clickedNode != null) {
     hCtxMenu_Dequeue.style.display = (clickedNode.label == queue.peek()) ? "block" : "none";
     hCtxMenu_Enqueue.style.display = "block";
-    hCtxMenu_Reset.style.display = "none";
+    hCtxMenu_ResetS.style.display = "none";
+    hCtxMenu_ResetQ.style.display = "none";
   } else {
     hCtxMenu_Dequeue.style.display = "none";
     hCtxMenu_Enqueue.style.display = "none";
-    hCtxMenu_Reset.style.display = "block";
+    hCtxMenu_ResetS.style.display = "block";
+    hCtxMenu_ResetQ.style.display = "block";
   }
   hCtxMenu.style.left=`${event.pageX-4}px`;
   hCtxMenu.style.top = `${event.pageY-10}px`;
@@ -173,11 +178,16 @@ hCtxMenu_Dequeue.addEventListener('click', (event) => {
 });
 
 // Handler for 'Reset' menu click
-hCtxMenu_Reset.addEventListener('click', (event) => {
-  //alert('Not implemented yet!');
+hCtxMenu_ResetS.addEventListener('click', (event) => {
   graph.traverse((node)=>{
     node.fillIndex=0;
   });
+  repaint();
+  hCtxMenu.style.display = "none";
+});
+
+hCtxMenu_ResetQ.addEventListener('click', (event) => {
+  queue.purge();
   repaint();
   hCtxMenu.style.display = "none";
 });
