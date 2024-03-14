@@ -112,9 +112,9 @@ export class Graphics {
         let textMetrics = context.measureText(text);
         crtX -= textMetrics.width;
         context.beginPath();
-        context.font = "12px Arial";
-        context.textAlign = "left";
-        context.fillStyle = 'gray';
+        context.font = '12px Arial';
+        context.textAlign = 'left';
+        context.fillStyle = 'black';
         context.fillText(text, crtX, fromY + (height + 12)/2);
         context.stroke();
         crtX -= this.drawVMargin(crtX, fromY, height, color);
@@ -124,7 +124,7 @@ export class Graphics {
     // clears the drawing canvas
     clear() {
         let context = this.hCanvas.getContext("2d");
-        context.fillStyle = "white";
+        context.fillStyle = 'white';
         context.fillRect(0, 0, this.hCanvas.width, this.hCanvas.height);
     }
 }
