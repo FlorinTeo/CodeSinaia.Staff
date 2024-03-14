@@ -7,11 +7,13 @@ import { Graphics } from "./graphics.js"
 export let hDiv = document.getElementById("hMainDiv");
 export let hCanvas = document.getElementById("hMainCanvas");
 export let hDebug = document.getElementById("hDebug");
-export let hCtxMenu = document.getElementById("hCtxMenu");
-export let hCtxMenu_Enqueue = document.getElementById("hCtxMenu_Enqueue");
-export let hCtxMenu_Dequeue = document.getElementById("hCtxMenu_Dequeue");
-export let hCtxMenu_ResetS = document.getElementById("hCtxMenu_ResetS");
-export let hCtxMenu_ResetQ = document.getElementById("hCtxMenu_ResetQ");
+export let hCtxMenuNode = document.getElementById("hCtxMenuNode");
+export let hCtxMenuNode_Enqueue = document.getElementById("hCtxMenu_Enqueue");
+export let hCtxMenuNode_Dequeue = document.getElementById("hCtxMenu_Dequeue");
+
+export let hCtxMenuCanvas = document.getElementById("hCtxMenuCanvas");
+export let hCtxMenuCanvas_ResetC = document.getElementById("hCtxMenu_ResetC");
+export let hCtxMenuCanvas_ResetQ = document.getElementById("hCtxMenu_ResetQ");
 
 // global objects
 export let graphics = new Graphics(hCanvas);
@@ -135,60 +137,67 @@ hCanvas.addEventListener('contextmenu', (event) => {
   let y = event.clientY - hCanvas.offsetTop;
   clickedNode = graph.getNode(x, y);
   if (clickedNode != null) {
-    hCtxMenu_Dequeue.style.display = (clickedNode.label == queue.peek()) ? "block" : "none";
-    hCtxMenu_Enqueue.style.display = "block";
-    hCtxMenu_ResetS.style.display = "none";
-    hCtxMenu_ResetQ.style.display = "none";
+    // customize and show hCtxMenuNode
+    hCtxMenuNode_Dequeue.style.display = (clickedNode.label == queue.peek()) ? "block" : "none";
+    hCtxMenuNode.style.left=`${event.pageX-4}px`;
+    hCtxMenuNode.style.top = `${event.pageY-10}px`;
+    hCtxMenuNode.style.display = "block";
   } else {
-    hCtxMenu_Dequeue.style.display = "none";
-    hCtxMenu_Enqueue.style.display = "none";
-    hCtxMenu_ResetS.style.display = "block";
-    hCtxMenu_ResetQ.style.display = "block";
+    // customize and show hCtxMenuCanvas
+    hCtxMenuCanvas.style.left=`${event.pageX-4}px`;
+    hCtxMenuCanvas.style.top = `${event.pageY-10}px`;
+    hCtxMenuCanvas.style.display = "block";
   }
-  hCtxMenu.style.left=`${event.pageX-4}px`;
-  hCtxMenu.style.top = `${event.pageY-10}px`;
-  hCtxMenu.style.display = "block";
 });
 
-// When leaving context menu area, hide the menu
-hCtxMenu.addEventListener('mouseleave', (event) => {
-  hCtxMenu.style.display = "none";
+// When leaving any context menu area, hide the menu
+hCtxMenuNode.addEventListener('mouseleave', (event) => {
+  hCtxMenuNode.style.display = "none";
   clickedNode = null;
 });
 
-// Prevent default context menu when right-click-ing on the menu itself
-hCtxMenu.addEventListener('contextmenu', (event) => {
+hCtxMenuCanvas.addEventListener('mouseleave', (event) => {
+  hCtxMenuCanvas.style.display = "none";
+  clickedNode = null;
+});
+
+// Prevent default context menu when right-click-ing on any manu
+hCtxMenuNode.addEventListener('contextmenu', (event) => {
+  event.preventDefault();
+});
+
+hCtxMenuCanvas.addEventListener('contextmenu', (event) => {
   event.preventDefault();
 });
 
 // Handler for 'Enqueue' menu click
-hCtxMenu_Enqueue.addEventListener('click', (event) => {
-  hCtxMenu.style.display = "none";
+hCtxMenuNode_Enqueue.addEventListener('click', (event) => {
+  hCtxMenuNode.style.display = "none";
   queue.enqueue(clickedNode.label);
   repaint();
   clickedNode = null;
 });
 
 // Handler for 'Dequeue' menu click
-hCtxMenu_Dequeue.addEventListener('click', (event) => {
-  hCtxMenu.style.display = "none";
+hCtxMenuNode_Dequeue.addEventListener('click', (event) => {
+  hCtxMenuNode.style.display = "none";
   let label = queue.dequeue();
   repaint();
   clickedNode = null;
 });
 
 // Handler for 'Reset' menu click
-hCtxMenu_ResetS.addEventListener('click', (event) => {
+hCtxMenuCanvas_ResetC.addEventListener('click', (event) => {
   graph.traverse((node)=>{
     node.fillIndex=0;
   });
   repaint();
-  hCtxMenu.style.display = "none";
+  hCtxMenuCanvas.style.display = "none";
 });
 
-hCtxMenu_ResetQ.addEventListener('click', (event) => {
+hCtxMenuCanvas_ResetQ.addEventListener('click', (event) => {
   queue.purge();
   repaint();
-  hCtxMenu.style.display = "none";
+  hCtxMenuCanvas.style.display = "none";
 });
 // #endregion - context menu handlers
