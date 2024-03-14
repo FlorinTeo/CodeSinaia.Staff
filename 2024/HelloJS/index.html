@@ -12,14 +12,22 @@
 <body>
     <div id="hMainDiv" class="canvas">
         <canvas id="hMainCanvas"></canvas>
-        <!-- <button id="hDebug" type="button">Debug</button> -->
+        <div id="hNodeState" class="nodeState"></div>
     </div>
     <div id="hCtxMenuNode" class="ctxmenu">
-        <p id="hCtxMenu_Enqueue">Enqueue</p>
-        <p id="hCtxMenu_Dequeue">Dequeue</p>
+        <p id="hCtxMenuNode_State">
+            <label for="hInput_NodeS">State___</label>
+            <input id="hInput_NodeS" class="editMenu" type="text">
+        </p>
+        <p id="hCtxMenuNode_Enqueue">Enqueue</p>
+        <p id="hCtxMenuNode_Dequeue">Dequeue</p>
     </div>
     <div id="hCtxMenuCanvas" class="ctxmenu">
-        <p id="hCtxMenu_ResetC">Reset colors</p>
-        <p id="hCtxMenu_ResetQ">Reset queue</p>
+        <p id="hCtxMenuCanvas_ResetS">
+            <label for="hInput_ResetS">Reset states</label>
+            <input id="hInput_ResetS" class="editMenu" type="text">
+        </p>
+        <p id="hCtxMenuCanvas_ResetC">Reset colors</p>
+        <p id="hCtxMenuCanvas_ResetQ">Reset queue</p>
     </div>
 </body>

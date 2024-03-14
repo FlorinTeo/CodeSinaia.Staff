@@ -14,9 +14,10 @@ export class Node {
         graphics    - the graphics engine
         x, y        - coordinates of the center of this node
         label       - text to be printed inside the node
-        marker      - state holder for this node
+        state       - public state holder for this node
         neigbhors   - map of neighbors, indexed by the neighbor's label
         fillIndex   - index of the last custom filling color used
+        marker      - internal state holder for this node 
     */
 
     constructor(graphics, label, x, y) {
@@ -24,9 +25,14 @@ export class Node {
         this.x = x;
         this.y = y;
         this.label = label;
-        this.marker = 0;
+        this.state = 0;
         this.neighbors = new Map();
         this.fillIndex = 0;
+        this.marker = 0;
+    }
+
+    toString() {
+        return `<b>${this.label}</b>: ${this.state}`;
     }
 
     toggleFill(deltaIndex) {

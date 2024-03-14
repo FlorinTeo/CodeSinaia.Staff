@@ -7,7 +7,7 @@ body {
 
 .canvas {
     border: 1px solid #000000;
-    height: 99%;
+    height: 98%;
 }
 
 .ctxmenu {
@@ -23,10 +23,18 @@ body {
   
 .ctxmenu > p {
     padding: 0 1rem;
-    margin: 0
+    margin: 0;
 }
   
 .ctxmenu > p:hover {
     background: rgb(116, 116, 116);
-    color: ghostwhite
+    color: ghostwhite;
+}
+
+.editMenu {
+    width: 32px;
+}
+
+.nodeState {
+   margin-top: 4px; 
 }
