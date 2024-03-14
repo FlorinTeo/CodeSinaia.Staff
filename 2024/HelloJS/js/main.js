@@ -18,6 +18,7 @@ export let hCtxMenuCanvas_ResetS = document.getElementById("hCtxMenuCanvas_Reset
 export let hInput_ResetS = document.getElementById("hInput_ResetS");
 export let hCtxMenuCanvas_ResetC = document.getElementById("hCtxMenuCanvas_ResetC");
 export let hCtxMenuCanvas_ResetQ = document.getElementById("hCtxMenuCanvas_ResetQ");
+export let hCtxMenuCanvas_ResetG = document.getElementById("hCtxMenuCanvas_ResetG");
 
 // global objects
 export let graphics = new Graphics(hCanvas);
@@ -184,6 +185,8 @@ hCtxMenuNode_Dequeue.addEventListener('click', (event) => {
 
 // #region - handlers for node's 'State' menu click and input
 hCtxMenuNode_State.addEventListener('click', (event) => {
+  clickedNode.state = hInput_NodeS.value;
+  hNodeState.innerHTML = clickedNode.toString();
   hCtxMenuNode.style.display = "none";
 });
 hInput_NodeS.addEventListener('mouseenter', (event) => { hInput_NodeS.select(); });
@@ -209,6 +212,14 @@ hCtxMenuCanvas_ResetC.addEventListener('click', (event) => {
 
 // Handler for the 'Reset queue' menu click
 hCtxMenuCanvas_ResetQ.addEventListener('click', (event) => {
+  queue.purge();
+  repaint();
+  hCtxMenuCanvas.style.display = "none";
+});
+
+// Handler for the 'Reset graph' menu click
+hCtxMenuCanvas_ResetG.addEventListener('click', (event) => {
+  graph.clear();
   queue.purge();
   repaint();
   hCtxMenuCanvas.style.display = "none";

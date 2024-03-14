@@ -32,7 +32,7 @@ export class Graph {
 
     constructor(graphics) {
         this.graphics = graphics;
-        this.nodes = new Map();
+        this.clear();
     }
 
     repaint() {
@@ -107,5 +107,10 @@ export class Graph {
         } else {
             fromNode.addEdge(toNode);
         }
+    }
+
+    clear() {
+        this.nodes = new Map();
+        LABELS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ123456789'.split("").sort();
     }
 }
