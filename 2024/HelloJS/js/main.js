@@ -8,13 +8,13 @@ export let hDiv = document.getElementById("hMainDiv");
 export let hCanvas = document.getElementById("hMainCanvas");
 export let hNodeState = document.getElementById("hNodeState");
 export let hCtxMenuNode = document.getElementById("hCtxMenuNode");
-export let hCtxMenuNode_State = document.getElementById("hCtxMenuNode_State");
-export let hInput_NodeS  = document.getElementById("hInput_NodeS");
+export let hLabel_NodeS = document.getElementById("hLabel_NodeS");
+export let hInput_NodeS = document.getElementById("hInput_NodeS");
 export let hCtxMenuNode_Enqueue = document.getElementById("hCtxMenuNode_Enqueue");
 export let hCtxMenuNode_Dequeue = document.getElementById("hCtxMenuNode_Dequeue");
 
 export let hCtxMenuCanvas = document.getElementById("hCtxMenuCanvas");
-export let hCtxMenuCanvas_ResetS = document.getElementById("hCtxMenuCanvas_ResetS")
+export let hLabel_ResetS = document.getElementById("hLabel_ResetS");
 export let hInput_ResetS = document.getElementById("hInput_ResetS");
 export let hCtxMenuCanvas_ResetC = document.getElementById("hCtxMenuCanvas_ResetC");
 export let hCtxMenuCanvas_ResetQ = document.getElementById("hCtxMenuCanvas_ResetQ");
@@ -184,7 +184,7 @@ hCtxMenuNode_Dequeue.addEventListener('click', (event) => {
 });
 
 // #region - handlers for node's 'State' menu click and input
-hCtxMenuNode_State.addEventListener('click', (event) => {
+hLabel_NodeS.addEventListener('click', (event) => {
   clickedNode.state = hInput_NodeS.value;
   hNodeState.innerHTML = clickedNode.toString();
   hCtxMenuNode.style.display = "none";
@@ -196,10 +196,11 @@ hInput_NodeS.addEventListener('keydown', (event) => {
     clickedNode.state = hInput_NodeS.value;
     hNodeState.innerHTML = clickedNode.toString();
     hCtxMenuNode.style.display = "none";
+  } else if (event.key === 'Escape') {
+    hCtxMenuNode.style.display = "none";
   }
 });
 // #endregion - handlers for node's 'State' menu click and input
-
 
 // Handler for 'Reset color' menu click
 hCtxMenuCanvas_ResetC.addEventListener('click', (event) => {
@@ -226,7 +227,7 @@ hCtxMenuCanvas_ResetG.addEventListener('click', (event) => {
 });
 
 // #region - handlers for 'Reset state' menu click and input
-hCtxMenuCanvas_ResetS.addEventListener('click', (event) => {
+hLabel_ResetS.addEventListener('click', (event) => {
   graph.traverse((node) => { node.state = hInput_ResetS.value; });
   hCtxMenuCanvas.style.display = "none";
 });
@@ -235,6 +236,8 @@ hInput_ResetS.addEventListener('mouseleave', (event) => { hInput_ResetS.blur(); 
 hInput_ResetS.addEventListener('keydown', (event) => { 
   if (event.key === 'Enter') {
     graph.traverse((node) => { node.state = hInput_ResetS.value; });
+    hCtxMenuCanvas.style.display = "none";
+  } else if (event.key === 'Escape') {
     hCtxMenuCanvas.style.display = "none";
   }
 });
