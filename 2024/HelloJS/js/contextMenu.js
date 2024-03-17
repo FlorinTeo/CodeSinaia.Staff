@@ -81,6 +81,15 @@ export class ContextMenu {
     }
     // #endregion - internal event handlers
 
+    configure(visibilityMap) {
+        for(const [hCtxMenuEntryId, isVisible] of visibilityMap) {
+            let menuEntry = this.menuEntries.get(hCtxMenuEntryId);
+            if (menuEntry) {
+                menuEntry.hP.style.display = isVisible ? 'block' : 'none';
+            }
+        }
+    }
+
     addContextMenuListener(hCtxMenuEntryId, fOnClick) {
         if (this.menuEntries.has(hCtxMenuEntryId)) {
             this.menuEntries.get(hCtxMenuEntryId).fOnClick = fOnClick;

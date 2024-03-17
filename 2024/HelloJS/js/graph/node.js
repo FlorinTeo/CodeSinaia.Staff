@@ -37,7 +37,7 @@ export class Node {
 
     toggleFill(deltaIndex) {
         deltaIndex = Math.sign(deltaIndex);
-        this.fillIndex = (deltaIndex < 0) ? 0 : (this.fillIndex + deltaIndex) % FILL_PALLETE.length;
+        this.fillIndex = (deltaIndex < 0) ? 0 : Math.max(1,(this.fillIndex + deltaIndex) % FILL_PALLETE.length);
     }
 
     repaint() {

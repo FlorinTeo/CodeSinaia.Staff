@@ -151,6 +151,12 @@ hCanvas.addEventListener('contextmenu', (event) => {
   } else {
     // customize and show hCtxMenuCanvas
     ctxMenuCanvas.setInput('hCtxMenuCanvas_ResetS', 0);
+    ctxMenuCanvas.configure(new Map([
+      ['hCtxMenuCanvas_ResetS', graph.nodes.size > 0],
+      ['hCtxMenuCanvas_ResetC', graph.nodes.size > 0],
+      ['hCtxMenuCanvas_ResetQ', queue.size > 0],
+      ['hCtxMenuCanvas_ResetG', graph.nodes.size > 0],
+    ]));
     ctxMenuCanvas.show(event.pageX-4, event.pageY-10);
   }
 });
