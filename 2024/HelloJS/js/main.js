@@ -10,7 +10,7 @@ export let hCanvas = document.getElementById("hMainCanvas");
 export let hNodeState = document.getElementById("hNodeState");
 
 export let ctxMenuCanvas = new ContextMenu("hCtxMenuCanvas");
-export let ctxMenuNode = new ContextMenu("hCtxMenuNode");
+//export let ctxMenuNode = new ContextMenu("hCtxMenuNode");
 
 export let hCtxMenuNode = document.getElementById("hCtxMenuNode");
 export let hLabel_NodeS = document.getElementById("hLabel_NodeS");

@@ -3,14 +3,15 @@ export class ContextMenu {
     Class members:
     hCtxMenu    - html element for this context menu <div>
     menuEntries - Map of {html id, {hP:paragraph, hLabel:label, hInput:input, fOnClick:lambda}}
-    fOnClose    - Lambda to be called when menu is closed  
+    fOnClose    - Lambda to be called when menu is closed
     */
 
+    // #region - setup
     constructor(ctxMenuId) {
         this.hCtxMenu = document.getElementById(ctxMenuId);
         this.menuEntries = new Map();
         this.loadMenuEntries();
-        this.addListeners();
+        this.setupListeners();
     }
 
     loadMenuEntries() {
@@ -39,29 +40,33 @@ export class ContextMenu {
         }
     }
 
-    addListeners() {
+    setupListeners() {
         this.hCtxMenu.addEventListener('contextmenu', (event) => { event.preventDefault(); });
         this.hCtxMenu.addEventListener('mouseleave', (event) => { this.onClose(event); });
-
         for(const menuEntry of this.menuEntries.values()) {
-            if (menuEntry.input != null) {
+            if (menuEntry.hInput != null) {
+                menuEntry.hInput.addEventListener('click', (event) => { this.onClick(event); });
+            } else {
+                menuEntry.hP.addEventListener('click', (event) => { this.onClick(event); });
             }
-            menuEntry.hP.addEventListener('click', this.onClick);
         }
     }
+    // #endregion - setup
 
+    // #region - internal event handlers
     onClose(event) {
-        if (this.fOnClose != null) {
+        if (this.fOnClose && this.fOnClose != null) {
             this.fOnClose(event);
+            this.fOnClose = null;
         }
         this.hide();
-        this.fOnClose = null;
     }
 
     onClick(event) {
         // locate the menu being clicked and process the click
-        //this.onClose(event);
+        this.onClose(event);
     }
+    // #endregion - internal event handlers
 
     show(x, y, fOnClose) {
         this.hCtxMenu.style.left = x;
