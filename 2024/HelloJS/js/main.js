@@ -18,13 +18,6 @@ export let hInput_NodeS = document.getElementById("hInput_NodeS");
 export let hCtxMenuNode_Enqueue = document.getElementById("hCtxMenuNode_Enqueue");
 export let hCtxMenuNode_Dequeue = document.getElementById("hCtxMenuNode_Dequeue");
 
-export let hCtxMenuCanvas = document.getElementById("hCtxMenuCanvas");
-export let hLabel_ResetS = document.getElementById("hLabel_ResetS");
-export let hInput_ResetS = document.getElementById("hInput_ResetS");
-export let hCtxMenuCanvas_ResetC = document.getElementById("hCtxMenuCanvas_ResetC");
-export let hCtxMenuCanvas_ResetQ = document.getElementById("hCtxMenuCanvas_ResetQ");
-export let hCtxMenuCanvas_ResetG = document.getElementById("hCtxMenuCanvas_ResetG");
-
 // global objects
 export let graphics = new Graphics(hCanvas);
 export let graph = new Graph(graphics);
@@ -100,7 +93,7 @@ hCanvas.addEventListener('mouseup', (event) => {
       // dragging over an existent node => reset edge from clickedNode to droppedNode
       graph.resetEdge(clickedNode, droppedNode)
     } else if (event.button == 0) { // left-click => remove node
-      queue.purge();
+      queue.clear();
       graph.removeNode(droppedNode);
     }
   } else {
@@ -132,7 +125,7 @@ hCanvas.addEventListener('wheel', (event) => {
   if (targetNode != null) {
     if (event.ctrlKey) {
       graph.reLabel(targetNode, event.deltaY);
-      queue.purge();
+      queue.clear();
     } else {
       targetNode.toggleFill(event.deltaY);
     }
@@ -157,20 +150,37 @@ hCanvas.addEventListener('contextmenu', (event) => {
     hCtxMenuNode.style.display = "block";
   } else {
     // customize and show hCtxMenuCanvas
-    hInput_ResetS.value = '0';
-    hCtxMenuCanvas.style.left=`${event.pageX-4}px`;
-    hCtxMenuCanvas.style.top = `${event.pageY-10}px`;
-    hCtxMenuCanvas.style.display = "block";
+    ctxMenuCanvas.setInput('hCtxMenuCanvas_ResetS', 0);
+    ctxMenuCanvas.show(event.pageX-4, event.pageY-10);
   }
 });
 
+// #region - Canvas context menu handlers
+ctxMenuCanvas.addContextMenuListener('hCtxMenuCanvas_ResetS', (hInput, value) => {
+  graph.traverse((node) => { node.state = value; });
+});
+
+ctxMenuCanvas.addContextMenuListener('hCtxMenuCanvas_ResetC', () => {
+  graph.traverse((node)=>{ node.fillIndex=0; });
+  repaint();
+});
+
+ctxMenuCanvas.addContextMenuListener('hCtxMenuCanvas_ResetQ', () => {
+  queue.clear();
+  repaint();
+});
+
+ctxMenuCanvas.addContextMenuListener('hCtxMenuCanvas_ResetG', () => {
+  graph.clear();
+  queue.clear();
+  repaint();
+});
+// #endregion - Canvas context menu handlers
+
+// #region - Node context menu handlers
 // Prevent default context menu behavior on node's context menu. Close the menu on mouse leave
 hCtxMenuNode.addEventListener('contextmenu', (event) => { event.preventDefault(); });
 hCtxMenuNode.addEventListener('mouseleave', (event) => { hCtxMenuNode.style.display = "none"; clickedNode = null; });
-
-// Prevent default context menu behavior on canvas's context menu. Close the menu on mouse leave
-hCtxMenuCanvas.addEventListener('contextmenu', (event) => { event.preventDefault(); });
-hCtxMenuCanvas.addEventListener('mouseleave', (event) => { hCtxMenuCanvas.style.display = "none"; });
 
 // Handler for 'Enqueue' menu click
 hCtxMenuNode_Enqueue.addEventListener('click', (event) => {
@@ -188,14 +198,15 @@ hCtxMenuNode_Dequeue.addEventListener('click', (event) => {
   clickedNode = null;
 });
 
-// #region - handlers for node's 'State' menu click and input
+// Handlers for node's 'State' menu click and input
 hLabel_NodeS.addEventListener('click', (event) => {
   clickedNode.state = hInput_NodeS.value;
   hNodeState.innerHTML = clickedNode.toString();
   hCtxMenuNode.style.display = "none";
 });
+hInput_NodeS.addEventListener('click', (event) => { hInput_NodeS.select(); });
 hInput_NodeS.addEventListener('mouseenter', (event) => { hInput_NodeS.select(); });
-hInput_NodeS.addEventListener('mouseleave', (event) => { hInput_ResetS.blur(); });
+hInput_NodeS.addEventListener('mouseleave', (event) => { hInput_NodeS.blur(); });
 hInput_NodeS.addEventListener('keydown', (event) => { 
   if (event.key === 'Enter') {
     clickedNode.state = hInput_NodeS.value;
@@ -205,47 +216,6 @@ hInput_NodeS.addEventListener('keydown', (event) => {
     hCtxMenuNode.style.display = "none";
   }
 });
-// #endregion - handlers for node's 'State' menu click and input
-
-// Handler for 'Reset color' menu click
-hCtxMenuCanvas_ResetC.addEventListener('click', (event) => {
-  graph.traverse((node)=>{
-    node.fillIndex=0;
-  });
-  repaint();
-  hCtxMenuCanvas.style.display = "none";
-});
-
-// Handler for the 'Reset queue' menu click
-hCtxMenuCanvas_ResetQ.addEventListener('click', (event) => {
-  queue.purge();
-  repaint();
-  hCtxMenuCanvas.style.display = "none";
-});
-
-// Handler for the 'Reset graph' menu click
-hCtxMenuCanvas_ResetG.addEventListener('click', (event) => {
-  graph.clear();
-  queue.purge();
-  repaint();
-  hCtxMenuCanvas.style.display = "none";
-});
-
-// #region - handlers for 'Reset state' menu click and input
-hLabel_ResetS.addEventListener('click', (event) => {
-  graph.traverse((node) => { node.state = hInput_ResetS.value; });
-  hCtxMenuCanvas.style.display = "none";
-});
-hInput_ResetS.addEventListener('mouseenter', (event) => { hInput_ResetS.select(); });
-hInput_ResetS.addEventListener('mouseleave', (event) => { hInput_ResetS.blur(); });
-hInput_ResetS.addEventListener('keydown', (event) => { 
-  if (event.key === 'Enter') {
-    graph.traverse((node) => { node.state = hInput_ResetS.value; });
-    hCtxMenuCanvas.style.display = "none";
-  } else if (event.key === 'Escape') {
-    hCtxMenuCanvas.style.display = "none";
-  }
-});
-// #endregion - handlers for 'Reset state' menu click and input
+// #endregion - Node context menu handlers
 
 // #endregion - context menu handlers

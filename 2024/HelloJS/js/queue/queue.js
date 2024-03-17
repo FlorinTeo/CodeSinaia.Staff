@@ -60,7 +60,7 @@ export class Queue {
         return (this.head != null) ? this.head.data : null;
     }
 
-    purge() {
+    clear() {
         this.head = null;
         this.size = 0;
     }
