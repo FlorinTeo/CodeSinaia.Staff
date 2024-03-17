@@ -2,11 +2,16 @@ import { RADIUS } from "./graph/node.js"
 import { Graph } from "./graph/graph.js"
 import { Queue } from "./queue/queue.js"
 import { Graphics } from "./graphics.js"
+import { ContextMenu } from "./contextMenu.js"
 
 // html elements
 export let hDiv = document.getElementById("hMainDiv");
 export let hCanvas = document.getElementById("hMainCanvas");
 export let hNodeState = document.getElementById("hNodeState");
+
+export let ctxMenuCanvas = new ContextMenu("hCtxMenuCanvas");
+export let ctxMenuNode = new ContextMenu("hCtxMenuNode");
+
 export let hCtxMenuNode = document.getElementById("hCtxMenuNode");
 export let hLabel_NodeS = document.getElementById("hLabel_NodeS");
 export let hInput_NodeS = document.getElementById("hInput_NodeS");
