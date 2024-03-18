@@ -9,16 +9,9 @@ export let hDiv = document.getElementById("hMainDiv");
 export let hCanvas = document.getElementById("hMainCanvas");
 export let hNodeState = document.getElementById("hNodeState");
 
-export let ctxMenuCanvas = new ContextMenu("hCtxMenuCanvas");
-//export let ctxMenuNode = new ContextMenu("hCtxMenuNode");
-
-export let hCtxMenuNode = document.getElementById("hCtxMenuNode");
-export let hLabel_NodeS = document.getElementById("hLabel_NodeS");
-export let hInput_NodeS = document.getElementById("hInput_NodeS");
-export let hCtxMenuNode_Enqueue = document.getElementById("hCtxMenuNode_Enqueue");
-export let hCtxMenuNode_Dequeue = document.getElementById("hCtxMenuNode_Dequeue");
-
 // global objects
+export let ctxMenuCanvas = new ContextMenu("hCtxMenuCanvas");
+export let ctxMenuNode = new ContextMenu("hCtxMenuNode");
 export let graphics = new Graphics(hCanvas);
 export let graph = new Graph(graphics);
 export let queue = new Queue(graphics);
@@ -143,17 +136,17 @@ hCanvas.addEventListener('contextmenu', (event) => {
   clickedNode = graph.getNode(x, y);
   if (clickedNode != null) {
     // customize and show hCtxMenuNode
-    hInput_NodeS.value = clickedNode.state;
-    hCtxMenuNode_Dequeue.style.display = (clickedNode.label == queue.peek()) ? "block" : "none";
-    hCtxMenuNode.style.left=`${event.pageX-4}px`;
-    hCtxMenuNode.style.top = `${event.pageY-10}px`;
-    hCtxMenuNode.style.display = "block";
+    ctxMenuNode.setInput('hCtxMenuNode_State', clickedNode.state);
+    ctxMenuNode.setVisible(new Map([
+      ['hCtxMenuNode_Dequeue', clickedNode.label == queue.peek()],
+    ]));
+    ctxMenuNode.show(event.pageX-4, event.pageY-10, () => { clickedNode = null; } );
   } else {
     // customize and show hCtxMenuCanvas
     ctxMenuCanvas.setInput('hCtxMenuCanvas_ResetS', 0);
-    ctxMenuCanvas.configure(new Map([
-      ['hCtxMenuCanvas_ResetS', graph.nodes.size > 0],
-      ['hCtxMenuCanvas_ResetC', graph.nodes.size > 0],
+    ctxMenuCanvas.setVisible(new Map([
+      ['hCtxMenuCanvas_ResetS', graph.nodes.size > 0 && !graph.matchAll((node) => { return node.state == 0; })],
+      ['hCtxMenuCanvas_ResetC', graph.nodes.size > 0 && !graph.matchAll((node) => { return node.fillIndex == 0; })],
       ['hCtxMenuCanvas_ResetQ', queue.size > 0],
       ['hCtxMenuCanvas_ResetG', graph.nodes.size > 0],
     ]));
@@ -162,7 +155,7 @@ hCanvas.addEventListener('contextmenu', (event) => {
 });
 
 // #region - Canvas context menu handlers
-ctxMenuCanvas.addContextMenuListener('hCtxMenuCanvas_ResetS', (hInput, value) => {
+ctxMenuCanvas.addContextMenuListener('hCtxMenuCanvas_ResetS', (_, value) => {
   graph.traverse((node) => { node.state = value; });
 });
 
@@ -184,44 +177,19 @@ ctxMenuCanvas.addContextMenuListener('hCtxMenuCanvas_ResetG', () => {
 // #endregion - Canvas context menu handlers
 
 // #region - Node context menu handlers
-// Prevent default context menu behavior on node's context menu. Close the menu on mouse leave
-hCtxMenuNode.addEventListener('contextmenu', (event) => { event.preventDefault(); });
-hCtxMenuNode.addEventListener('mouseleave', (event) => { hCtxMenuNode.style.display = "none"; clickedNode = null; });
+ctxMenuNode.addContextMenuListener('hCtxMenuNode_State', (_, value) => {
+  clickedNode.state = value;
+  hNodeState.innerHTML = clickedNode.toString();
+});
 
-// Handler for 'Enqueue' menu click
-hCtxMenuNode_Enqueue.addEventListener('click', (event) => {
-  hCtxMenuNode.style.display = "none";
+ctxMenuNode.addContextMenuListener('hCtxMenuNode_Enqueue', () => {
   queue.enqueue(clickedNode.label);
   repaint();
-  clickedNode = null;
 });
 
-// Handler for 'Dequeue' menu click
-hCtxMenuNode_Dequeue.addEventListener('click', (event) => {
-  hCtxMenuNode.style.display = "none";
-  let label = queue.dequeue();
+ctxMenuNode.addContextMenuListener('hCtxMenuNode_Dequeue', () => {
+  queue.dequeue(clickedNode.label);
   repaint();
-  clickedNode = null;
-});
-
-// Handlers for node's 'State' menu click and input
-hLabel_NodeS.addEventListener('click', (event) => {
-  clickedNode.state = hInput_NodeS.value;
-  hNodeState.innerHTML = clickedNode.toString();
-  hCtxMenuNode.style.display = "none";
-});
-hInput_NodeS.addEventListener('click', (event) => { hInput_NodeS.select(); });
-hInput_NodeS.addEventListener('mouseenter', (event) => { hInput_NodeS.select(); });
-hInput_NodeS.addEventListener('mouseleave', (event) => { hInput_NodeS.blur(); });
-hInput_NodeS.addEventListener('keydown', (event) => { 
-  if (event.key === 'Enter') {
-    clickedNode.state = hInput_NodeS.value;
-    hNodeState.innerHTML = clickedNode.toString();
-    hCtxMenuNode.style.display = "none";
-  } else if (event.key === 'Escape') {
-    hCtxMenuNode.style.display = "none";
-  }
 });
 // #endregion - Node context menu handlers
-
 // #endregion - context menu handlers

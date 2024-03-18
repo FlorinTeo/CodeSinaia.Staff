@@ -81,15 +81,6 @@ export class ContextMenu {
     }
     // #endregion - internal event handlers
 
-    configure(visibilityMap) {
-        for(const [hCtxMenuEntryId, isVisible] of visibilityMap) {
-            let menuEntry = this.menuEntries.get(hCtxMenuEntryId);
-            if (menuEntry) {
-                menuEntry.hP.style.display = isVisible ? 'block' : 'none';
-            }
-        }
-    }
-
     addContextMenuListener(hCtxMenuEntryId, fOnClick) {
         if (this.menuEntries.has(hCtxMenuEntryId)) {
             this.menuEntries.get(hCtxMenuEntryId).fOnClick = fOnClick;
@@ -107,15 +98,24 @@ export class ContextMenu {
         this.hCtxMenu.style.display = 'none';
     }
 
+    getInput(name) {
+        if (this.menuEntries.has(name)) {
+            return this.menuEntries.get(name).hInput.value;
+        }
+    }
+
     setInput(name, value) {
         if (this.menuEntries.has(name)) {
             this.menuEntries.get(name).hInput.value=value;
         }
     }
 
-    getInput(name) {
-        if (this.menuEntries.has(name)) {
-            return this.menuEntries.get(name).hInput.value;
+    setVisible(visibilityMap) {
+        for(const [hCtxMenuEntryId, isVisible] of visibilityMap) {
+            let menuEntry = this.menuEntries.get(hCtxMenuEntryId);
+            if (menuEntry) {
+                menuEntry.hP.style.display = isVisible ? 'block' : 'none';
+            }
         }
     }
  }

@@ -109,6 +109,15 @@ export class Graph {
         }
     }
 
+    matchAll(fMatch) {
+        for(const node of this.nodes.values()) {
+            if (!fMatch(node)) {
+                return false;
+            }
+        }
+        return true;
+    }
+
     clear() {
         this.nodes = new Map();
         LABELS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ123456789'.split("").sort();
