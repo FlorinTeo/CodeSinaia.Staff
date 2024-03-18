@@ -117,8 +117,8 @@ hCanvas.addEventListener('wheel', (event) => {
   let targetNode = graph.getNode(x, y);
   if (targetNode != null) {
     if (event.ctrlKey) {
-      graph.reLabel(targetNode, event.deltaY);
-      queue.clear();
+      let prevLabel = graph.reLabel(targetNode, event.deltaY);
+      prevLabel = queue.reLabel(prevLabel, targetNode.label);
     } else {
       targetNode.toggleFill(event.deltaY);
     }

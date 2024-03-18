@@ -63,15 +63,17 @@ export class Graph {
     }
 
     reLabel(node, deltaY) {
-        let label = nextLabel(node.label, Math.sign(deltaY));
+        let prevLabel = node.label;
+        let newLabel = nextLabel(node.label, Math.sign(deltaY));
         for(const[l, n] of this.nodes) {
             if (n.neighbors.delete(node.label)) {
-                n.neighbors.set(label, node);
+                n.neighbors.set(newLabel, node);
             }
         }
         this.nodes.delete(node.label);
-        this.nodes.set(label, node);
-        node.label = label;
+        this.nodes.set(newLabel, node);
+        node.label = newLabel;
+        return prevLabel;
     }
 
     getNode(x, y) {
