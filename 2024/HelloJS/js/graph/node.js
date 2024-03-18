@@ -5,7 +5,7 @@ export const RADIUS = 16;
 export const ARROW_WIDTH = 5;
 export const ARROW_LENGTH = 8;
 
-const FILL_PALLETE = ['#EBEBEB', '#FFFD55', '#6EFBFF', '#FFD1D1', '#93FF2D'];
+const FILL_PALLETE = ['#EBEBEB', '#FFFD55', '#6EFBFF', '#FFCACA', '#93FF2D', '#ECA4FF'];
 
 export class Node {
 
@@ -37,7 +37,7 @@ export class Node {
 
     toggleFill(deltaIndex) {
         deltaIndex = Math.sign(deltaIndex);
-        this.fillIndex = (deltaIndex < 0) ? 0 : (this.fillIndex + deltaIndex) % FILL_PALLETE.length;
+        this.fillIndex = (deltaIndex < 0) ? 0 : Math.max(1,(this.fillIndex + deltaIndex) % FILL_PALLETE.length);
     }
 
     repaint() {
