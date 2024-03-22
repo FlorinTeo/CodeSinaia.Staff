@@ -140,7 +140,7 @@ hCanvas.addEventListener('contextmenu', (event) => {
     ctxMenuNode.setVisible(new Map([
       ['hCtxMenuNode_Dequeue', clickedNode.label == queue.peek()],
     ]));
-    ctxMenuNode.show(event.pageX-4, event.pageY-10, () => { clickedNode = null; } );
+    ctxMenuNode.show(event.pageX-10, event.pageY-10, () => { clickedNode = null; } );
   } else {
     // customize and show hCtxMenuCanvas
     ctxMenuCanvas.setInput('hCtxMenuCanvas_ResetS', 0);
@@ -150,7 +150,7 @@ hCanvas.addEventListener('contextmenu', (event) => {
       ['hCtxMenuCanvas_ResetQ', queue.size > 0],
       ['hCtxMenuCanvas_ResetG', graph.nodes.size > 0],
     ]));
-    ctxMenuCanvas.show(event.pageX-4, event.pageY-10);
+    ctxMenuCanvas.show(event.pageX-10, event.pageY-10);
   }
 });
 
