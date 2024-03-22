@@ -174,6 +174,10 @@ ctxMenuCanvas.addContextMenuListener('hCtxMenuCanvas_ResetG', () => {
   queue.clear();
   repaint();
 });
+
+ctxMenuCanvas.addContextMenuListener('hCtxMenuCanvas_Help', ()=>{
+  alert('Not implemented yet');
+})
 // #endregion - Canvas context menu handlers
 
 // #region - Node context menu handlers
