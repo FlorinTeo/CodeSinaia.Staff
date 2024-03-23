@@ -136,7 +136,7 @@ hCanvas.addEventListener('contextmenu', (event) => {
   clickedNode = graph.getNode(x, y);
   if (clickedNode != null) {
     // customize and show hCtxMenuNode
-    ctxMenuNode.setInput('hCtxMenuNode_State', clickedNode.state);
+    ctxMenuNode.setInput('hCtxMenuNode_State', clickedNode.state); // Hello, there!
     ctxMenuNode.setVisible(new Map([
       ['hCtxMenuNode_Dequeue', clickedNode.label == queue.peek()],
     ]));
