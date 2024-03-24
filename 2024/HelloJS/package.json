@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "serve -p 3001",
+    "start": "serve -p 5500",
     "cy:open": "cypress open"
   },
   "author": "Code Sinaia 2024",

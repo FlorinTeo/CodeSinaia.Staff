@@ -1,6 +1,6 @@
 describe('Enqueue and Dequeue two nodes', () => {
   it('passes', () => {
-    cy.visit("http://localhost:3001")
+    cy.visit("http://localhost:5500")
     
     // create two nodes
     cy.get('#hMainCanvas').click(100,100)
